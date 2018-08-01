@@ -30,8 +30,13 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
+import javax.xml.namespace.QName;
 
 import org.apache.cxf.endpoint.Client;
+
+import com.alibaba.fastjson.JSONArray;
+
+import net.sf.json.JSONObject;
 
 public class Secondpage extends JFrame{
 
@@ -58,15 +63,15 @@ public class Secondpage extends JFrame{
 	public String weld;
 	private Dimension screensize;
 	public ArrayList<String> listarray21;
-	public ArrayList<String> listarray22;
+	public ArrayList<String> listarray22 = new ArrayList<String>();
 	public ArrayList<String> listarray3;
-	public ArrayList<String> listarray4;
+	public ArrayList<String> listarray4 = new ArrayList<String>();
 	public String weldernum;
 	public String weldowner;
 	public ImageIcon img;
 	private Secondpage sd;
 	public Client client;
-	private ArrayList<String> listarraywe;
+	private ArrayList<String> listarraywe = new ArrayList<String>();
 	private ArrayList<String> listarrayta;
 	private String welderid;
 	
@@ -80,11 +85,11 @@ public class Secondpage extends JFrame{
 		weldowner = weldowner1;
 		screensize = screensize1;
 		listarray21 = listarray221;
-		listarray22 = listarray222;
+		//listarray22 = listarray222;
 		listarray3 = listarray31;
-		listarray4 = listarray41;
+		//listarray4 = listarray41;
 		client = client1;
-		listarraywe = listarraywe1;
+		//listarraywe = listarraywe1;
 		listarrayta = listarrayta1;
 		welderid = welderid1;
 		
@@ -101,6 +106,69 @@ public class Secondpage extends JFrame{
 		Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
 		setLayout(null);
 		setVisible(true);
+		
+		try {
+			//任务webservice
+			String obj11 = "{\"CLASSNAME\":\"junctionWebServiceImpl\",\"METHOD\":\"getWeldedJunctionAll\"}";
+			Object[] objects1 = client.invoke(new QName("http://webservice.ssmcxf.sshome.com/", "enterNoParamWs"),
+					new Object[] { obj11 });
+			String restr1 = objects1[0].toString();
+	        JSONArray ary1 = JSONArray.parseArray(restr1);
+	        listarray4.clear();
+	        for(int i=0;i<ary1.size();i++){
+		        String str = ary1.getString(i);
+		        JSONObject js = JSONObject.fromObject(str);
+		        
+		        if(js.getString("OPERATESTATUS").equals("0")){
+		        	listarray4.add(js.getString("ITEMNAME"));
+	        		listarray4.add(js.getString("REWELDERNO"));
+	        		listarray4.add(js.getString("REWELDERNAME"));
+		        	listarray4.add(js.getString("MACHINENO"));
+		        	listarray4.add(js.getString("TASKNO"));
+		        	listarray4.add("焊接");
+		        	listarray4.add(js.getString("STARTTIME"));
+		        	listarray4.add(js.getString("TASKDES"));
+		        }
+		        
+		        String a = js.getString("MACHINENO");
+	        }
+		
+			//焊机webservice
+			String obj21 = "{\"CLASSNAME\":\"weldingMachineWebServiceImpl\",\"METHOD\":\"getWeldingMachineAll\"}";
+			Object[] objects2 = client.invoke(new QName("http://webservice.ssmcxf.sshome.com/", "enterNoParamWs"),
+					new Object[] { obj21 });
+		    String restr2 = objects2[0].toString();
+	        JSONArray ary2 = JSONArray.parseArray(restr2);
+	        listarray22.clear();
+	        listarraywe.clear();
+	        for(int i=0;i<ary2.size();i++){
+		        String str = ary2.getString(i);
+		        JSONObject js = JSONObject.fromObject(str);
+		        listarray22.add(js.getString("MACHINENO"));
+		        listarray22.add(js.getString("MANUFACTURERNAME"));
+		        listarray22.add(js.getString("INSFRAMEWORKNAME"));
+		        listarray22.add(js.getString("POSITION"));
+		        listarraywe.add(js.getString("MACHINENO"));
+		        listarraywe.add(js.getString("ID"));
+	        }
+	        
+	        //筛选去除正在工作的焊机
+	        for(int i=0;i<listarray4.size();i+=8){
+	        	for(int j=0;j<listarray22.size();j+=4){
+	        		if(listarray4.get(i+3).equals(listarray22.get(j))){
+	        			listarray22.set(j, "");
+	        			listarray22.set(j+1, "");
+	        			listarray22.set(j+2, "");
+	        			listarray22.set(j+3, "");
+	        			break;
+	        		}
+	        	}
+	        }
+	        
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		//加载状态信息栏
 		p1.setBorder(BorderFactory.createTitledBorder("焊工信息"));
@@ -194,13 +262,159 @@ public class Secondpage extends JFrame{
 					String labelname = listarray22.get(i);
 					String weldtype = listarray22.get(i+1);
 					String weldposition = listarray22.get(i+3);
-					JLabel l21 = new JLabel();
-					JLabel l22 = new JLabel();
+					
+					//不为被清除的焊机列表
+					if(!labelname.equals("")){
+						JLabel l21 = new JLabel();
+						JLabel l22 = new JLabel();
+						l21.setBounds(50, 100, 200, 200);
+						l22.setBounds(70, 400, 200, 200);
+						
+						if(listarray22.get(i+2).equals(a[1])){
+							if(listarray22.get(i+1).equals("OTC")){
+								img = new ImageIcon(getClass().getResource("/images/otc.jpg"));
+								l21.setIcon(img);
+							}else if(listarray22.get(i+1).equals("米勒")){
+								img = new ImageIcon(getClass().getResource("/images/miller.jpg"));
+								l21.setIcon(img);
+							}else if(listarray22.get(i+1).equals("威特力")){
+								img = new ImageIcon(getClass().getResource("/images/wtl.jpg"));
+								l21.setIcon(img);
+							}else if(listarray22.get(i+1).equals("伊萨")){
+								img = new ImageIcon(getClass().getResource("/images/esab.jpg"));
+								l21.setIcon(img);
+							}
+							l21.addMouseListener(new MouseListener(){
+	
+								//图片点击监听
+								@Override
+								public void mouseClicked(MouseEvent e) {
+									// TODO Auto-generated method stub
+									
+									weld = labelname;
+									
+									String weldid = "";
+									weld = labelname;
+									for(int i=0;i<listarraywe.size();i+=2){
+										if(weld.equals(listarraywe.get(i))){
+											weldid = listarraywe.get(i+1);
+										}
+									}
+									
+									if(weldtype.equals("OTC")){
+										img = new ImageIcon(getClass().getResource("/images/otc.jpg"));
+										l21.setIcon(img);
+									}else if(weldtype.equals("米勒")){
+										img = new ImageIcon(getClass().getResource("/images/miller.jpg"));
+										l21.setIcon(img);
+									}else if(weldtype.equals("威特力")){
+										img = new ImageIcon(getClass().getResource("/images/wtl.jpg"));
+										l21.setIcon(img);
+									}else if(weldtype.equals("伊萨")){
+										img = new ImageIcon(getClass().getResource("/images/esab.jpg"));
+										l21.setIcon(img);
+									}
+									
+									//弹窗
+									/*int j = JOptionPane.showConfirmDialog(null, "是否选择" + weld + " 号焊机", "确认",JOptionPane.YES_NO_OPTION);
+									//JOptionPane.showMessageDialog(null, "确认选择" + weld + "号焊机" + "执行" + task + "任务?", "  确认",JOptionPane.INFORMATION_MESSAGE);
+									if(j==0){
+										
+										l13.setText("焊机编号:  " + labelname);
+										
+										//开启选择任务视窗
+										new Thirdpage(worktime,welder,weldernum,weldowner,weld,screensize,listarray21,listarray22,listarray3,listarray4,img);
+										
+										//关闭当前视窗
+										setVisible(false);
+									}*/
+									
+									JWeldButton jb = new JWeldButton(weldposition,weldtype,weld,img,sd,listarraywe,listarrayta,weldid,welderid);
+									jb.setVisible(true);
+									
+								}
+								@Override
+								public void mousePressed(MouseEvent e) {
+									// TODO Auto-generated method stub
+									
+								}
+								@Override
+								public void mouseReleased(MouseEvent e) {
+									// TODO Auto-generated method stub
+									
+								}
+								@Override
+								public void mouseEntered(MouseEvent e) {
+									// TODO Auto-generated method stub
+									
+								}
+								@Override
+								public void mouseExited(MouseEvent e) {
+									// TODO Auto-generated method stub
+									
+								}
+							});
+							
+							l22.setText(labelname);
+							
+							p2.add(l21);
+							p2.add(l22);
+						}
+					}
+				}
+				
+				sd.repaint();
+			}
+		});
+		add(jcb);
+		
+		//加载焊机列表
+		p2.setBorder(BorderFactory.createTitledBorder("可选焊机"));
+		p2.setFont(new Font("Dialog",1,20));
+		p2.setBackground(Color.white);
+		screensize.setSize(screensize.width-400, screensize.height);
+		p2.setPreferredSize(screensize);
+		//add(p2);
+		
+		if(listarray22.size() == 0){
+			JOptionPane.showMessageDialog(null, "无可选择焊机.", "  错误",JOptionPane.ERROR_MESSAGE);
+		}else{
+			
+			/*int j = 0;
+			String[] weldtotal = new String[100];
+			for(int i =0;i<listarray22.size();i+=3){
+				String labelname = listarray22.get(i);
+				String weldtype = listarray22.get(i+1);
+				String weldins = listarray22.get(i+2);
+				if(j == 0){
+					weldtotal[j] = weldins;
+					j++;
+				}else{
+					for(int k=0;k<j;k++){
+						if(!weldtotal[k].equals(weldins)){
+							weldtotal[j] = weldins;
+							j++;
+						}else{
+							break;
+						}
+					}
+				}
+			}*/
+			
+			for(int i=0;i<listarray22.size();i+=4){
+				String labelname = listarray22.get(i);
+				String weldtype = listarray22.get(i+1);
+				String weldposition = listarray22.get(i+3);
+				
+				//不为被清除的焊机列表
+				if(!labelname.equals("")){
+					l21 = new JLabel();
+					l22 = new JLabel();
 					l21.setBounds(50, 100, 200, 200);
 					l22.setBounds(70, 400, 200, 200);
 					
-					if(listarray22.get(i+2).equals(a[1])){
-						if(listarray22.get(i+1).equals("144")){
+					if(listarray22.get(i+2).equals(weldowner)){
+						if(listarray22.get(i+1).equals("OTC")){
 							img = new ImageIcon(getClass().getResource("/images/otc.jpg"));
 							l21.setIcon(img);
 						}else if(listarray22.get(i+1).equals("米勒")){
@@ -209,18 +423,17 @@ public class Secondpage extends JFrame{
 						}else if(listarray22.get(i+1).equals("威特力")){
 							img = new ImageIcon(getClass().getResource("/images/wtl.jpg"));
 							l21.setIcon(img);
-						}else{
+						}else if(listarray22.get(i+1).equals("伊萨")){
 							img = new ImageIcon(getClass().getResource("/images/esab.jpg"));
 							l21.setIcon(img);
 						}
+						
 						l21.addMouseListener(new MouseListener(){
-
+	
 							//图片点击监听
 							@Override
 							public void mouseClicked(MouseEvent e) {
 								// TODO Auto-generated method stub
-								
-								weld = labelname;
 								
 								String weldid = "";
 								weld = labelname;
@@ -239,7 +452,7 @@ public class Secondpage extends JFrame{
 								}else if(weldtype.equals("威特力")){
 									img = new ImageIcon(getClass().getResource("/images/wtl.jpg"));
 									l21.setIcon(img);
-								}else{
+								}else if(weldtype.equals("伊萨")){
 									img = new ImageIcon(getClass().getResource("/images/esab.jpg"));
 									l21.setIcon(img);
 								}
@@ -288,150 +501,16 @@ public class Secondpage extends JFrame{
 						
 						p2.add(l21);
 						p2.add(l22);
+						
 					}
-				}
-				
-			
-				sd.repaint();
-			}
-		});
-		add(jcb);
-		
-		//加载焊机列表
-		p2.setBorder(BorderFactory.createTitledBorder("可选焊机"));
-		p2.setFont(new Font("Dialog",1,20));
-		p2.setBackground(Color.white);
-		screensize.setSize(screensize.width-400, screensize.height);
-		p2.setPreferredSize(screensize);
-		//add(p2);
-		
-		if(listarray22.size() == 0){
-			JOptionPane.showMessageDialog(null, "无可选择焊机.", "  错误",JOptionPane.ERROR_MESSAGE);
-		}else{
-			
-			/*int j = 0;
-			String[] weldtotal = new String[100];
-			for(int i =0;i<listarray22.size();i+=3){
-				String labelname = listarray22.get(i);
-				String weldtype = listarray22.get(i+1);
-				String weldins = listarray22.get(i+2);
-				if(j == 0){
-					weldtotal[j] = weldins;
-					j++;
-				}else{
-					for(int k=0;k<j;k++){
-						if(!weldtotal[k].equals(weldins)){
-							weldtotal[j] = weldins;
-							j++;
-						}else{
-							break;
-						}
-					}
-				}
-			}*/
-			
-			for(int i=0;i<listarray22.size();i+=4){
-				String labelname = listarray22.get(i);
-				String weldtype = listarray22.get(i+1);
-				String weldposition = listarray22.get(i+3);
-				l21 = new JLabel();
-				l22 = new JLabel();
-				l21.setBounds(50, 100, 200, 200);
-				l22.setBounds(70, 400, 200, 200);
-				
-				if(listarray22.get(i+2).equals(weldowner)){
-					if(listarray22.get(i+1).equals("OTC")){
-						img = new ImageIcon(getClass().getResource("/images/otc.jpg"));
-						l21.setIcon(img);
-					}else if(listarray22.get(i+1).equals("米勒")){
-						img = new ImageIcon(getClass().getResource("/images/miller.jpg"));
-						l21.setIcon(img);
-					}else if(listarray22.get(i+1).equals("威特力")){
-						img = new ImageIcon(getClass().getResource("/images/wtl.jpg"));
-						l21.setIcon(img);
-					}else{
-						img = new ImageIcon(getClass().getResource("/images/esab.jpg"));
-						l21.setIcon(img);
-					}
-					l21.addMouseListener(new MouseListener(){
-
-						//图片点击监听
-						@Override
-						public void mouseClicked(MouseEvent e) {
-							// TODO Auto-generated method stub
-							
-							String weldid = "";
-							weld = labelname;
-							for(int i=0;i<listarraywe.size();i+=2){
-								if(weld.equals(listarraywe.get(i))){
-									weldid = listarraywe.get(i+1);
-								}
-							}
-							
-							if(weldtype.equals("OTC")){
-								img = new ImageIcon(getClass().getResource("/images/otc.jpg"));
-								l21.setIcon(img);
-							}else if(weldtype.equals("米勒")){
-								img = new ImageIcon(getClass().getResource("/images/miller.jpg"));
-								l21.setIcon(img);
-							}else if(weldtype.equals("威特力")){
-								img = new ImageIcon(getClass().getResource("/images/wtl.jpg"));
-								l21.setIcon(img);
-							}else{
-								img = new ImageIcon(getClass().getResource("/images/esab.jpg"));
-								l21.setIcon(img);
-							}
-							
-							//弹窗
-							/*int j = JOptionPane.showConfirmDialog(null, "是否选择" + weld + " 号焊机", "确认",JOptionPane.YES_NO_OPTION);
-							//JOptionPane.showMessageDialog(null, "确认选择" + weld + "号焊机" + "执行" + task + "任务?", "  确认",JOptionPane.INFORMATION_MESSAGE);
-							if(j==0){
-								
-								l13.setText("焊机编号:  " + labelname);
-								
-								//开启选择任务视窗
-								new Thirdpage(worktime,welder,weldernum,weldowner,weld,screensize,listarray21,listarray22,listarray3,listarray4,img);
-								
-								//关闭当前视窗
-								setVisible(false);
-							}*/
-							
-							JWeldButton jb = new JWeldButton(weldposition,weldtype,weld,img,sd,listarraywe,listarrayta,weldid,welderid);
-							jb.setVisible(true);
-							
-						}
-						@Override
-						public void mousePressed(MouseEvent e) {
-							// TODO Auto-generated method stub
-							
-						}
-						@Override
-						public void mouseReleased(MouseEvent e) {
-							// TODO Auto-generated method stub
-							
-						}
-						@Override
-						public void mouseEntered(MouseEvent e) {
-							// TODO Auto-generated method stub
-							
-						}
-						@Override
-						public void mouseExited(MouseEvent e) {
-							// TODO Auto-generated method stub
-							
-						}
-					});
-					
-					l22.setText(labelname);
-					
-					p2.add(l21);
-					p2.add(l22);
 				}
 			}
+			
 			sp2 = new JScrollPane(p2);
 			sp2.setBounds(0, 100, screensize.width+100, screensize.height-300);
 			sp2.setBackground(Color.white);
 			add(sp2);
+			
 		}
 		
 		//班组

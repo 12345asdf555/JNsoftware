@@ -59,7 +59,7 @@ public class JProcessBarDemo extends JFrame{
 		
 		setTitle("确认中");		//设置窗体标题
 		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 设置窗体退出的操作
-		setBounds((screensize.width-250)/2, (screensize.height-220)/2, 250, 220);// 设置窗体的位置和大小
+		setBounds((screensize.width-250)/2, (screensize.height-200)/2, 250, 200);// 设置窗体的位置和大小
 		setUndecorated(true);
 		this.getRootPane().setWindowDecorationStyle(JRootPane.INFORMATION_DIALOG);
 		
@@ -73,7 +73,7 @@ public class JProcessBarDemo extends JFrame{
 		jpb.setStringPainted(true);// 设置进度条上的字符串显示，false则不能显示
 		jpb.setBackground(Color.white);
 		
-		b.setText("取消");
+		/*b.setText("取消");
 		b.setBounds(10, 10, 100, 10);
 		b.addActionListener(new ActionListener(){
 
@@ -83,7 +83,7 @@ public class JProcessBarDemo extends JFrame{
 				cancel = true;
 				setVisible(false);
 			}
-		});
+		});*/
 		
 		// 创建线程显示进度
 		new Thread(){
@@ -119,6 +119,7 @@ public class JProcessBarDemo extends JFrame{
 						
 						if(!cancel){
 							new Firstpage();
+							
 							td.setVisible(false);
 						}
 				    }else if(restr.equals("false")){
@@ -136,6 +137,6 @@ public class JProcessBarDemo extends JFrame{
 		contentPane.add(l13);
 		contentPane.add(l14);
 		contentPane.add(jpb);// 向面板添加进度控件
-		contentPane.add(b);
+		//contentPane.add(b);
 	}
 }

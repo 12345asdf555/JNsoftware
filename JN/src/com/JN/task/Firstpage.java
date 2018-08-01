@@ -83,199 +83,249 @@ public class Firstpage extends JFrame{
 		super("江南派工");
 		setFont(new Font("Dialog",1,20)); //标题字体
 		
-		initdate(); //获取数据
+		new Thread(initdate).start();  //获取数据
+		//initdate(); //获取数据
 		initframe(); //绘制界面
 		time(); //电子时钟
 		
 		context = this;
 	}
 	
-	private void initdate() {
-		// TODO Auto-generated method stub 
-		
-		iutil  =  new  IsnullUtil();
-		dcf = JaxWsDynamicClientFactory.newInstance();
-		client = dcf.createClient("http://192.168.3.231:8080/CIWJN_Service/cIWJNWebService?wsdl");
-		iutil.Authority(client);
-		
-		//任务webservice
-		try {
-			String obj1 = "{\"CLASSNAME\":\"junctionWebServiceImpl\",\"METHOD\":\"getWeldedJunctionAll\"}";
-			Object[] objects = client.invoke(new QName("http://webservice.ssmcxf.sshome.com/", "enterNoParamWs"),
-					new Object[] { obj1 });
-			String restr = objects[0].toString();
-	        JSONArray ary = JSONArray.parseArray(restr);
-	        for(int i=0;i<ary.size();i++){
-		        String str = ary.getString(i);
-		        JSONObject js = JSONObject.fromObject(str);
-		        
-		        if(js.getString("OPERATESTATUS").equals("")){
-		        	listarray3.add(js.getString("TASKNO"));
-		        	listarray3.add(js.getString("ITEMNAME"));
-		        	listarray3.add(js.getString("WELDERNAME"));
-		        	listarray3.add(js.getString("TASKDES"));
-		        	listarrayta.add(js.getString("TASKNO"));
-		        	listarrayta.add(js.getString("ID"));
-		        }else if(js.getString("OPERATESTATUS").equals("0")){
-		        	listarray4.add(js.getString("ITEMNAME"));
-	        		listarray4.add(js.getString("REWELDERNAME"));
-		        	listarray4.add(js.getString("MACHINENO"));
-		        	listarray4.add(js.getString("TASKNO"));
-		        	listarray4.add("焊接");
-		        	listarray4.add(js.getString("STARTTIME"));
-		        	listarray4.add(js.getString("TASKDES"));
+	Runnable initdate = new Runnable(){
+		public void run(){
+			iutil  =  new  IsnullUtil();
+			dcf = JaxWsDynamicClientFactory.newInstance();
+			client = dcf.createClient("http://192.168.3.231:8080/CIWJN_Service/cIWJNWebService?wsdl");
+			iutil.Authority(client);
+			
+			//任务webservice
+			try {
+				String obj1 = "{\"CLASSNAME\":\"junctionWebServiceImpl\",\"METHOD\":\"getWeldedJunctionAll\"}";
+				Object[] objects = client.invoke(new QName("http://webservice.ssmcxf.sshome.com/", "enterNoParamWs"),
+						new Object[] { obj1 });
+				String restr = objects[0].toString();
+		        JSONArray ary = JSONArray.parseArray(restr);
+		        for(int i=0;i<ary.size();i++){
+			        String str = ary.getString(i);
+			        JSONObject js = JSONObject.fromObject(str);
+			        
+			        if(js.getString("OPERATESTATUS").equals("")){
+			        	listarray3.add(js.getString("TASKNO"));
+			        	listarray3.add(js.getString("ITEMNAME"));
+			        	listarray3.add(js.getString("WELDERNAME"));
+			        	listarray3.add(js.getString("TASKDES"));
+			        	listarrayta.add(js.getString("TASKNO"));
+			        	listarrayta.add(js.getString("ID"));
+			        }else if(js.getString("OPERATESTATUS").equals("0")){
+			        	listarray4.add(js.getString("ITEMNAME"));
+		        		listarray4.add(js.getString("REWELDERNO"));
+		        		listarray4.add(js.getString("REWELDERNAME"));
+			        	listarray4.add(js.getString("MACHINENO"));
+			        	listarray4.add(js.getString("TASKNO"));
+			        	listarray4.add("焊接");
+			        	listarray4.add(js.getString("STARTTIME"));
+			        	listarray4.add(js.getString("TASKDES"));
+			        }
+			        
+			        String a = js.getString("MACHINENO");
 		        }
-		        
-		        String a = js.getString("MACHINENO");
-	        }
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        
-		Timer tExit = null; 
-		tExit = new Timer();  
-        tExit.schedule(new TimerTask() {  
-            @Override  
-            public void run() {
-            	try {
-            		if(!first){
-            			context.t4.removeAll();
-            			context.s4.remove(t4);
-            			context.remove(s4);
-            			context.repaint();
-            			
-                		s4 = new JScrollPane(t4);
-            			s4.setBounds(0, 510, screensize.width, screensize.height-530);
-            			s4.setBackground(Color.white);
-            			add(s4);
-                		
-                		listarray3.clear();
-                		listarray4.clear();
-                		listarrayta.clear();
-                		
-                		String obj1 = "{\"CLASSNAME\":\"junctionWebServiceImpl\",\"METHOD\":\"getWeldedJunctionAll\"}";
-            			Object[] objects = client.invoke(new QName("http://webservice.ssmcxf.sshome.com/", "enterNoParamWs"),
-            					new Object[] { obj1 });
-            			String restr = objects[0].toString();
-            	        JSONArray ary = JSONArray.parseArray(restr);
-            	        for(int i=0;i<ary.size();i++){
-            		        String str = ary.getString(i);
-            		        JSONObject js = JSONObject.fromObject(str);
-            		        
-            		        if(js.getString("OPERATESTATUS").equals("")){
-            		        	listarray3.add(js.getString("TASKNO"));
-            		        	listarray3.add(js.getString("ITEMNAME"));
-            		        	listarray3.add(js.getString("WELDERNAME"));
-            		        	listarray3.add(js.getString("TASKDES"));
-            		        	listarrayta.add(js.getString("TASKNO"));
-            		        	listarrayta.add(js.getString("ID"));
-            		        }else if(js.getString("OPERATESTATUS").equals("0")){
-            		        	listarray4.add(js.getString("ITEMNAME"));
-            	        		listarray4.add(js.getString("REWELDERNAME"));
-            		        	listarray4.add(js.getString("MACHINENO"));
-            		        	listarray4.add(js.getString("TASKNO"));
-            		        	listarray4.add("焊接");
-            		        	listarray4.add(js.getString("STARTTIME"));
-            		        	listarray4.add(js.getString("TASKDES"));
-            		        }
-            		        
-            		        String a = js.getString("MACHINENO");
-            	        }
-            	        
-            	      //table列名以及值
-            			String[] cn = {"班组","焊工", "焊机", "任务号","当前状态","开始时间","任务描述"};  
-            			Object[][] obj = new Object[listarray4.size()/7][7];  
-            			for(int i=0;i<listarray4.size()/7;i++){
-            				for(int j=0;j<7;j++){
-            					obj[i][j] = listarray4.get(i*7+j);
-            				}
-            			}
-            			//绘图
-            			t4 = new JTable(obj,cn){
-            				public boolean isCellEditable(int row, int column)
-            	            {
-            	                   return false;//表格不允许被编辑
-            	            }
-            			};
-            			t4.setFont(new Font("Dialog",1,15));
-            			
-            			//设置table宽高
-            			TableColumn column = null;  
-            	        int colunms = t4.getColumnCount();  
-            	        for(int i = 0; i < colunms; i++)  
-            	        {  
-            	            column = t4.getColumnModel().getColumn(i);
-            	            if(i == 0 || i == 1 || i == 2 || i == 3 || i == 4){
-            	            	column.setPreferredWidth(90);
-            	            }else if(i == 5){
-            	            	column.setPreferredWidth(200);
-            	            }else if(i == 6){
-            	            	column.setPreferredWidth(1250);
-            	            }
-            	        }  
-            	        
-            	        //居中显示，关闭自动编辑
-            	        DefaultTableCellRenderer r = new DefaultTableCellRenderer();   
-            	        r.setHorizontalAlignment(JLabel.CENTER);   
-            	        t4.setDefaultRenderer(Object.class, r);
-            	        t4.setRowHeight(50);
-            	        t4.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-            	        
-            			repaint(); 
-            		}
-            		
-            		first = false;
-        	        
-        		} catch (Exception e) {
-        			// TODO Auto-generated catch block
-        			e.printStackTrace();
-        		}
-            }
-        }, 0, 30000);
-		
-		//焊机webservice
-		try {
-			String obj2 = "{\"CLASSNAME\":\"weldingMachineWebServiceImpl\",\"METHOD\":\"getWeldingMachineAll\"}";
-			Object[] objects = client.invoke(new QName("http://webservice.ssmcxf.sshome.com/", "enterNoParamWs"),
-					new Object[] { obj2 });
-		    String restr = objects[0].toString();
-	        JSONArray ary = JSONArray.parseArray(restr);
-	        for(int i=0;i<ary.size();i++){
-		        String str = ary.getString(i);
-		        JSONObject js = JSONObject.fromObject(str);
-		        listarray22.add(js.getString("MACHINENO"));
-		        listarray22.add(js.getString("MANUFACTURERNAME"));
-		        listarray22.add(js.getString("INSFRAMEWORKNAME"));
-		        listarray22.add(js.getString("POSITION"));
-		        listarraywe.add(js.getString("MACHINENO"));
-		        listarraywe.add(js.getString("ID"));
-	        }
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		//班组统计
-		int count = 0;
-		for(int i=0;i<listarray22.size();i+=4){
-			if(listarray21.size() == 0){
-				listarray21.add(listarray22.get(i+2));
-			}else{
-				for(int j=0;j<listarray21.size();j++){
-					if(!listarray22.get(i+2).equals(listarray21.get(j))){
-						count++;
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	        
+			Timer tExit = null; 
+			tExit = new Timer();  
+	        tExit.schedule(new TimerTask() {  
+	            @Override  
+	            public void run() {
+	            	try {
+	            		if(!first){
+	            			context.t4.removeAll();
+	            			context.s4.remove(t4);
+	            			context.remove(s4);
+	            			context.repaint();
+	            			
+	                		s4 = new JScrollPane(t4);
+	            			s4.setBounds(0, 510, screensize.width, screensize.height-530);
+	            			s4.setBackground(Color.white);
+	            			add(s4);
+	                		
+	                		listarray3.clear();
+	                		listarray4.clear();
+	                		listarrayta.clear();
+	                		
+	                		String obj1 = "{\"CLASSNAME\":\"junctionWebServiceImpl\",\"METHOD\":\"getWeldedJunctionAll\"}";
+	            			Object[] objects = client.invoke(new QName("http://webservice.ssmcxf.sshome.com/", "enterNoParamWs"),
+	            					new Object[] { obj1 });
+	            			String restr = objects[0].toString();
+	            	        JSONArray ary = JSONArray.parseArray(restr);
+	            	        for(int i=0;i<ary.size();i++){
+	            		        String str = ary.getString(i);
+	            		        JSONObject js = JSONObject.fromObject(str);
+	            		        
+	            		        if(js.getString("OPERATESTATUS").equals("")){
+	            		        	listarray3.add(js.getString("TASKNO"));
+	            		        	listarray3.add(js.getString("ITEMNAME"));
+	            		        	listarray3.add(js.getString("WELDERNAME"));
+	            		        	listarray3.add(js.getString("TASKDES"));
+	            		        	listarrayta.add(js.getString("TASKNO"));
+	            		        	listarrayta.add(js.getString("ID"));
+	            		        }else if(js.getString("OPERATESTATUS").equals("0")){
+	            		        	listarray4.add(js.getString("ITEMNAME"));
+	            	        		listarray4.add(js.getString("REWELDERNO"));
+	            	        		listarray4.add(js.getString("REWELDERNAME"));
+	            		        	listarray4.add(js.getString("MACHINENO"));
+	            		        	listarray4.add(js.getString("TASKNO"));
+	            		        	listarray4.add("焊接");
+	            		        	listarray4.add(js.getString("STARTTIME"));
+	            		        	listarray4.add(js.getString("TASKDES"));
+	            		        }
+	            		        
+	            		        String a = js.getString("MACHINENO");
+	            	        }
+	            	        
+	            	      //table列名以及值
+	            			String[] cn = {"班组","焊工编号", "焊工", "焊机", "任务号","当前状态","开始时间","任务描述"};  
+	            			Object[][] obj = new Object[listarray4.size()/8][8];  
+	            			for(int i=0;i<listarray4.size()/8;i++){
+	            				for(int j=0;j<8;j++){
+	            					obj[i][j] = listarray4.get(i*8+j);
+	            				}
+	            			}
+	            			//绘图
+	            			t4 = new JTable(obj,cn){
+	            				public boolean isCellEditable(int row, int column)
+	            	            {
+	            	                   return false;//表格不允许被编辑
+	            	            }
+	            			};
+	            			t4.setFont(new Font("Dialog",1,15));
+	            			
+	            			//设置table宽高
+	            			TableColumn column = null;  
+	            	        int colunms = t4.getColumnCount();  
+	            	        for(int i = 0; i < colunms; i++)  
+	            	        {  
+	            	            column = t4.getColumnModel().getColumn(i);
+	            	            if(i == 0 || i == 1 || i == 2 || i == 3 || i == 4 || i == 5){
+	            	            	column.setPreferredWidth(85);
+	            	            }else if(i == 6){
+	            	            	column.setPreferredWidth(180);
+	            	            }else if(i == 7){
+	            	            	column.setPreferredWidth(1200);
+	            	            }
+	            	        }  
+	            	        
+	            	        //居中显示，关闭自动编辑
+	            	        DefaultTableCellRenderer r = new DefaultTableCellRenderer();   
+	            	        r.setHorizontalAlignment(JLabel.CENTER);   
+	            	        t4.setDefaultRenderer(Object.class, r);
+	            	        t4.setRowHeight(50);
+	            	        t4.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+	            	        
+	            			context.repaint(); 
+	            		}
+	            		
+	            		first = false;
+	        	        
+	        		} catch (Exception e) {
+	        			// TODO Auto-generated catch block
+	        			e.printStackTrace();
+	        		}
+	            }
+	        }, 0, 60000);
+			
+			//焊机webservice
+			try {
+				String obj2 = "{\"CLASSNAME\":\"weldingMachineWebServiceImpl\",\"METHOD\":\"getWeldingMachineAll\"}";
+				Object[] objects = client.invoke(new QName("http://webservice.ssmcxf.sshome.com/", "enterNoParamWs"),
+						new Object[] { obj2 });
+			    String restr = objects[0].toString();
+		        JSONArray ary = JSONArray.parseArray(restr);
+		        for(int i=0;i<ary.size();i++){
+			        String str = ary.getString(i);
+			        JSONObject js = JSONObject.fromObject(str);
+			        listarray22.add(js.getString("MACHINENO"));
+			        listarray22.add(js.getString("MANUFACTURERNAME"));
+			        listarray22.add(js.getString("INSFRAMEWORKNAME"));
+			        listarray22.add(js.getString("POSITION"));
+			        listarraywe.add(js.getString("MACHINENO"));
+			        listarraywe.add(js.getString("ID"));
+		        }
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			//班组统计
+			int count = 0;
+			for(int i=0;i<listarray22.size();i+=4){
+				if(listarray21.size() == 0){
+					listarray21.add(listarray22.get(i+2));
+				}else{
+					for(int j=0;j<listarray21.size();j++){
+						if(!listarray22.get(i+2).equals(listarray21.get(j))){
+							count++;
+						}
+					}
+					if(count == listarray21.size()){
+						listarray21.add(listarray22.get(i+2));
+						count = 0;
+					}else{
+						count = 0;
 					}
 				}
-				if(count == listarray21.size()){
-					listarray21.add(listarray22.get(i+2));
-					count = 0;
-				}else{
-					count = 0;
+			}
+			
+			//table列名以及值
+			String[] cn = {"班组", "焊工编号", "焊工", "焊机", "任务号","当前状态","开始时间","任务描述"};  
+			Object[][] obj = new Object[listarray4.size()/8][8];  
+			for(int i=0;i<listarray4.size()/8;i++){
+				for(int j=0;j<8;j++){
+					obj[i][j] = listarray4.get(i*8+j);
 				}
 			}
+			//绘图
+			t4 = new JTable(obj,cn){
+				public boolean isCellEditable(int row, int column)
+	            {
+	                   return false;//表格不允许被编辑
+	            }
+			};
+			t4.setFont(new Font("Dialog",1,15));
+			
+			//设置table宽高
+			TableColumn column = null;  
+	        int colunms = t4.getColumnCount();  
+	        for(int i = 0; i < colunms; i++)  
+	        {  
+	        	column = t4.getColumnModel().getColumn(i);
+	            if(i == 0 || i == 1 || i == 2 || i == 3 || i == 4 || i == 5){
+	            	column.setPreferredWidth(85);
+	            }else if(i == 6){
+	            	column.setPreferredWidth(180);
+	            }else if(i == 7){
+	            	column.setPreferredWidth(1200);
+	            }
+	        }  
+	        
+	        //居中显示，关闭自动编辑
+	        DefaultTableCellRenderer r = new DefaultTableCellRenderer();   
+	        r.setHorizontalAlignment(JLabel.CENTER);   
+	        t4.setDefaultRenderer(Object.class, r);
+	        t4.setRowHeight(50);
+	        t4.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+	        s4 = new JScrollPane(t4);
+			s4.setBounds(0, 510, screensize.width, screensize.height-530);
+			s4.setBackground(Color.white);
+			context.add(s4);
+	        
+			repaint(); 
+			
 		}
 		
+
 		//查数据库缓存数据
         /*Class.forName("com.mysql.jdbc.Driver");  
         conn = DriverManager.getConnection(connet);
@@ -350,7 +400,9 @@ public class Firstpage extends JFrame{
          	listarray4.add(fstart_time);
          	listarray4.add(fserial_no);
         }*/
-	}
+		
+	};
+		
 
 	private void time() {
 		// TODO Auto-generated method stub
@@ -486,8 +538,9 @@ public class Firstpage extends JFrame{
 							String welderid = js.getString("ID");
 							
 							boolean exiet = false;
-							for(int i=0;i<listarray4.size();i+=7){
-								if(welder.equals(listarray4.get(i+1))){
+							
+							for(int i=0;i<listarray4.size();i+=8){
+								if(weldernum.equals(listarray4.get(i+1))){
 									exiet = true;
 									break;
 								}
@@ -511,6 +564,7 @@ public class Firstpage extends JFrame{
 				        }
 					} catch (Exception e1) {
 						// TODO Auto-generated catch block
+						JOptionPane.showMessageDialog(null, "服务器未开启,请稍候再试.", "  错误",JOptionPane.ERROR_MESSAGE);
 						e1.printStackTrace();
 					}
 					
@@ -569,12 +623,14 @@ public class Firstpage extends JFrame{
 		l4.setFont(new Font("Dialog",1,13));
 		add(l4);
 		
-		//table列名以及值
-		String[] cn = {"班组","焊工", "焊机", "任务号","当前状态","开始时间","任务描述"};  
-		Object[][] obj = new Object[listarray4.size()/7][7];  
-		for(int i=0;i<listarray4.size()/7;i++){
-			for(int j=0;j<7;j++){
-				obj[i][j] = listarray4.get(i*7+j);
+		repaint();
+		
+		/*//table列名以及值
+		String[] cn = {"班组", "焊工编号", "焊工", "焊机", "任务号","当前状态","开始时间","任务描述"};  
+		Object[][] obj = new Object[listarray4.size()/8][8];  
+		for(int i=0;i<listarray4.size()/8;i++){
+			for(int j=0;j<8;j++){
+				obj[i][j] = listarray4.get(i*8+j);
 			}
 		}
 		//绘图
@@ -591,13 +647,13 @@ public class Firstpage extends JFrame{
         int colunms = t4.getColumnCount();  
         for(int i = 0; i < colunms; i++)  
         {  
-            column = t4.getColumnModel().getColumn(i);
-            if(i == 0 || i == 1 || i == 2 || i == 3 || i == 4){
-            	column.setPreferredWidth(90);
-            }else if(i == 5){
-            	column.setPreferredWidth(200);
+        	column = t4.getColumnModel().getColumn(i);
+            if(i == 0 || i == 1 || i == 2 || i == 3 || i == 4 || i == 5){
+            	column.setPreferredWidth(85);
             }else if(i == 6){
-            	column.setPreferredWidth(1250);
+            	column.setPreferredWidth(180);
+            }else if(i == 7){
+            	column.setPreferredWidth(1200);
             }
         }  
         
@@ -612,7 +668,7 @@ public class Firstpage extends JFrame{
 		s4.setBackground(Color.white);
 		add(s4);
         
-		repaint(); 
+		repaint(); */
 		        
 		
 		//确认按钮
