@@ -5,6 +5,11 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -87,6 +92,8 @@ public class JProcessBarDemo extends JFrame{
 		
 		// 创建线程显示进度
 		new Thread(){
+			private String settime;
+
 			public void run(){
 				
 				try {
@@ -95,9 +102,34 @@ public class JProcessBarDemo extends JFrame{
 				    Object[] objects = client.invoke(new QName("http://webservice.ssmcxf.sshome.com/", "enterTheWS"),
 				          new Object[] { obj1,obj2 });
 				    
+				    try {
+						  FileInputStream in = new FileInputStream("IPconfig.txt");  
+				          InputStreamReader inReader = new InputStreamReader(in, "UTF-8");  
+				          BufferedReader bufReader = new BufferedReader(inReader);  
+				          String line = null; 
+				          int writetime=0;
+							
+						    while((line = bufReader.readLine()) != null){ 
+						    	if(writetime==0){
+					                writetime++;
+						    	}
+						    	else{
+						    		settime=line;
+						    		writetime=0;
+						    	}
+				          }  
+
+						} catch (FileNotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+				    
 				    for (int i = 0; i < 101; i++) {
 						try {
-							Thread.sleep(100);  //   让当前线程休眠0.1ms
+							Thread.sleep(Integer.valueOf(settime)*10);  //   让当前线程休眠
 						} catch (InterruptedException e) {
 							// TODO: handle exception
 							e.printStackTrace();

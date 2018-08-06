@@ -2,6 +2,7 @@ package com.JN.task;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -252,7 +253,7 @@ public class Secondpage extends JFrame{
 				screensize.setSize(screensize.width, screensize.height);
 				
 				sp2 = new JScrollPane(p2);
-				sp2.setBounds(0, 100, screensize.width+100, screensize.height-300);
+				sp2.setBounds(20, 100, screensize.width+80, screensize.height-300);
 				sp2.setBackground(Color.white);
 				add(sp2);
 				
@@ -369,10 +370,11 @@ public class Secondpage extends JFrame{
 		add(jcb);
 		
 		//加载焊机列表
+		p2.setLayout(new FlowLayout(FlowLayout.LEFT));
 		p2.setBorder(BorderFactory.createTitledBorder("可选焊机"));
 		p2.setFont(new Font("Dialog",1,20));
 		p2.setBackground(Color.white);
-		screensize.setSize(screensize.width-400, screensize.height);
+		screensize.setSize(screensize.width-440, screensize.height);
 		p2.setPreferredSize(screensize);
 		//add(p2);
 		
@@ -507,7 +509,7 @@ public class Secondpage extends JFrame{
 			}
 			
 			sp2 = new JScrollPane(p2);
-			sp2.setBounds(0, 100, screensize.width+100, screensize.height-300);
+			sp2.setBounds(20, 100, screensize.width+80, screensize.height-300);
 			sp2.setBackground(Color.white);
 			add(sp2);
 			
@@ -599,7 +601,7 @@ public class Secondpage extends JFrame{
         t3.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); 
 		
 		sp3 = new JScrollPane(t3);
-		sp3.setBounds(1630, 150, 280, screensize.height-350);
+		sp3.setBounds(1610, 150, 280, screensize.height-350);
 		sp3.setBackground(Color.white);
 		add(sp3);
 		

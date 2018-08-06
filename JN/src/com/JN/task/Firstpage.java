@@ -8,6 +8,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -39,7 +44,7 @@ import com.alibaba.fastjson.JSONArray;
 import net.sf.json.JSONObject;
 
 public class Firstpage extends JFrame{
-	private String connet = "jdbc:mysql://121.196.222.216:3306/CIWJN?user=db_admin&password=PIJXmcLRa0QgOw2c&useUnicode=true&autoReconnect=true&characterEncoding=UTF8";
+	private String connet = "jdbc:mysql://192.168.3.231:3306/CIWJN?user=db_admin&password=PIJXmcLRa0QgOw2c&useUnicode=true&autoReconnect=true&characterEncoding=UTF8";
 	private java.sql.Connection conn = null;
 	private java.sql.Statement stmt =null;
     
@@ -61,7 +66,7 @@ public class Firstpage extends JFrame{
 	private JLabel l21 = new JLabel("XXXX-XX-XX XX:XX:XX");
 	private JPanel p3 = new JPanel();
 	private JLabel l31 = new JLabel("焊工编号：");
-	private JLabel l4 = new JLabel("正在进行的任务：   ");
+	private JLabel l4 = new JLabel("正在与服务器通讯...   ");
 	private JTextField t32 = new JTextField(8);
 	private JScrollPane s4;
 	private JTable t4 = new JTable();
@@ -92,14 +97,38 @@ public class Firstpage extends JFrame{
 	}
 	
 	Runnable initdate = new Runnable(){
+		private String ip;
+
 		public void run(){
-			iutil  =  new  IsnullUtil();
-			dcf = JaxWsDynamicClientFactory.newInstance();
-			client = dcf.createClient("http://192.168.3.231:8080/CIWJN_Service/cIWJNWebService?wsdl");
-			iutil.Authority(client);
 			
+			try {
+				  FileInputStream in = new FileInputStream("IPconfig.txt");  
+		          InputStreamReader inReader = new InputStreamReader(in, "UTF-8");  
+		          BufferedReader bufReader = new BufferedReader(inReader);  
+		          String line = null; 
+		          int writetime=0;
+					
+				    while((line = bufReader.readLine()) != null){ 
+				    	if(writetime==0){
+			                ip=line;
+			                writetime++;
+				    	}
+		          }  
+
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			//任务webservice
 			try {
+				iutil  =  new  IsnullUtil();
+				dcf = JaxWsDynamicClientFactory.newInstance();
+				client = dcf.createClient("http://" + ip + ":8080/CIWJN_Service/cIWJNWebService?wsdl");
+				iutil.Authority(client);
+			
 				String obj1 = "{\"CLASSNAME\":\"junctionWebServiceImpl\",\"METHOD\":\"getWeldedJunctionAll\"}";
 				Object[] objects = client.invoke(new QName("http://webservice.ssmcxf.sshome.com/", "enterNoParamWs"),
 						new Object[] { obj1 });
@@ -116,7 +145,7 @@ public class Firstpage extends JFrame{
 			        	listarray3.add(js.getString("TASKDES"));
 			        	listarrayta.add(js.getString("TASKNO"));
 			        	listarrayta.add(js.getString("ID"));
-			        }else if(js.getString("OPERATESTATUS").equals("0")){
+			        }else if(js.getString("OPERATESTATUS").equals("0") || js.getString("OPERATESTATUS").equals("2")){
 			        	listarray4.add(js.getString("ITEMNAME"));
 		        		listarray4.add(js.getString("REWELDERNO"));
 		        		listarray4.add(js.getString("REWELDERNAME"));
@@ -131,6 +160,7 @@ public class Firstpage extends JFrame{
 		        }
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
+				JOptionPane.showMessageDialog(null, "服务器未开启.", "  错误",JOptionPane.ERROR_MESSAGE);
 				e.printStackTrace();
 			}
 	        
@@ -140,7 +170,7 @@ public class Firstpage extends JFrame{
 	            @Override  
 	            public void run() {
 	            	try {
-	            		if(!first){
+	            		if(!first && (client != null)){
 	            			context.t4.removeAll();
 	            			context.s4.remove(t4);
 	            			context.remove(s4);
@@ -171,7 +201,7 @@ public class Firstpage extends JFrame{
 	            		        	listarray3.add(js.getString("TASKDES"));
 	            		        	listarrayta.add(js.getString("TASKNO"));
 	            		        	listarrayta.add(js.getString("ID"));
-	            		        }else if(js.getString("OPERATESTATUS").equals("0")){
+	            		        }else if(js.getString("OPERATESTATUS").equals("0") || js.getString("OPERATESTATUS").equals("2")){
 	            		        	listarray4.add(js.getString("ITEMNAME"));
 	            	        		listarray4.add(js.getString("REWELDERNO"));
 	            	        		listarray4.add(js.getString("REWELDERNAME"));
@@ -321,6 +351,10 @@ public class Firstpage extends JFrame{
 			s4.setBackground(Color.white);
 			context.add(s4);
 	        
+			if(client != null){
+				l4.setText("正在执行的任务：");
+			}
+			
 			repaint(); 
 			
 		}
@@ -565,6 +599,7 @@ public class Firstpage extends JFrame{
 					} catch (Exception e1) {
 						// TODO Auto-generated catch block
 						JOptionPane.showMessageDialog(null, "服务器未开启,请稍候再试.", "  错误",JOptionPane.ERROR_MESSAGE);
+						t32.setCaretPosition(4);
 						e1.printStackTrace();
 					}
 					
