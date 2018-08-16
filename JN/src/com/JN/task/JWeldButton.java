@@ -54,10 +54,11 @@ public class JWeldButton extends JFrame{
 		Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
 		
 		setTitle("确认焊机");
-		setBounds((screensize.width-270)/2, (screensize.height-380)/2-100, 270, 380);// 设置窗体的位置和大小
+		setBounds((screensize.width-270)/2, (screensize.height-380)/2-100, 270, 400);// 设置窗体的位置和大小
 		setUndecorated(true);
 		this.getRootPane().setWindowDecorationStyle(JRootPane.INFORMATION_DIALOG);
 		this.setBackground(Color.white);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		
 		JPanel contentPane = new JPanel();   // 创建内容面板
 		contentPane.setBorder(new EmptyBorder(25, 25, 25, 25));// 设置内容面板边框
@@ -87,7 +88,7 @@ public class JWeldButton extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				//开启选择任务视窗
-				new Thirdpage(sd.worktime,sd.welder,sd.weldernum,sd.weldowner,weld,screensize,sd.listarray21,sd.listarray22,sd.listarray3,sd.listarray4,img,sd.client,listarraywe,listarrayta,weldid,welderid);
+				new Thirdpage(sd.worktime,sd.welder,sd.weldernum,sd.weldowner,weld,screensize,sd.listarray21,sd.listarray22,sd.listarray3,sd.listarray4,img,sd.client,listarraywe,listarrayta,weldid,welderid,weldtype);
 				
 				jb.setVisible(false);
 				sd.setVisible(false);

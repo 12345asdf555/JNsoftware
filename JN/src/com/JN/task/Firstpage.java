@@ -1,13 +1,18 @@
 package com.JN.task;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyVetoException;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -32,7 +37,9 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.xml.namespace.QName;
 
@@ -42,6 +49,16 @@ import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
 import com.alibaba.fastjson.JSONArray;
 
 import net.sf.json.JSONObject;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.ImageIcon;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.BoxLayout;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import javax.swing.JInternalFrame;
+import java.awt.BorderLayout;
+import javax.swing.SwingConstants;
 
 public class Firstpage extends JFrame{
 	private String connet = "jdbc:mysql://192.168.3.231:3306/CIWJN?user=db_admin&password=PIJXmcLRa0QgOw2c&useUnicode=true&autoReconnect=true&characterEncoding=UTF8";
@@ -57,17 +74,9 @@ public class Firstpage extends JFrame{
     public ArrayList<String> listarrayta = new ArrayList<String>();
 	
 	private JPanel p1 = new JPanel();
-	private JLabel l11 = new JLabel("焊工姓名：   ");
-	private JLabel l12 = new JLabel("焊工编号：   ");
-	private JLabel l15 = new JLabel("所在班组：   ");
-	private JLabel l13 = new JLabel("焊机编号：   ");
-	private JLabel l14 = new JLabel("任务编号：   ");
 	private JPanel p2 = new JPanel();
 	private JLabel l21 = new JLabel("XXXX-XX-XX XX:XX:XX");
-	private JPanel p3 = new JPanel();
-	private JLabel l31 = new JLabel("焊工编号：");
-	private JLabel l4 = new JLabel("正在与服务器通讯...   ");
-	private JTextField t32 = new JTextField(8);
+	private JLabel l4 = new JLabel("正在与服务器通讯...");
 	private JScrollPane s4;
 	private JTable t4 = new JTable();
 	
@@ -86,7 +95,17 @@ public class Firstpage extends JFrame{
 	
 	public Firstpage(){
 		super("江南派工");
-		setFont(new Font("Dialog",1,20)); //标题字体
+		
+		label_7.setForeground(Color.WHITE);
+		label_7.setFont(new Font("微软雅黑 Light", Font.BOLD, 17));
+		label_6.setForeground(Color.WHITE);
+		label_6.setFont(new Font("微软雅黑 Light", Font.BOLD, 17));
+		label_5.setForeground(Color.WHITE);
+		label_5.setFont(new Font("微软雅黑 Light", Font.BOLD, 17));
+		label_4.setForeground(Color.WHITE);
+		label_4.setFont(new Font("微软雅黑 Light", Font.BOLD, 17));
+		getContentPane().setBackground(new Color(20,51,105));
+		
 		
 		new Thread(initdate).start();  //获取数据
 		//initdate(); //获取数据
@@ -122,13 +141,14 @@ public class Firstpage extends JFrame{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+			
 			//任务webservice
 			try {
-				iutil  =  new  IsnullUtil();
-				dcf = JaxWsDynamicClientFactory.newInstance();
+				IsnullUtil iutil  =  new  IsnullUtil();
+				JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
 				client = dcf.createClient("http://" + ip + ":8080/CIWJN_Service/cIWJNWebService?wsdl");
 				iutil.Authority(client);
-			
+				
 				String obj1 = "{\"CLASSNAME\":\"junctionWebServiceImpl\",\"METHOD\":\"getWeldedJunctionAll\"}";
 				Object[] objects = client.invoke(new QName("http://webservice.ssmcxf.sshome.com/", "enterNoParamWs"),
 						new Object[] { obj1 });
@@ -177,9 +197,9 @@ public class Firstpage extends JFrame{
 	            			context.repaint();
 	            			
 	                		s4 = new JScrollPane(t4);
-	            			s4.setBounds(0, 510, screensize.width, screensize.height-530);
-	            			s4.setBackground(Color.white);
-	            			add(s4);
+	                		s4.setBounds(10, (int)p2.getLocation().getY()+p2.getHeight()+3, screensize.width-20, screensize.height-((int)p2.getLocation().getY()+p2.getHeight())-10);
+	            			s4.getViewport().setBackground(Color.white);
+	            			getContentPane().add(s4);
 	                		
 	                		listarray3.clear();
 	                		listarray4.clear();
@@ -230,7 +250,13 @@ public class Firstpage extends JFrame{
 	            	                   return false;//表格不允许被编辑
 	            	            }
 	            			};
-	            			t4.setFont(new Font("Dialog",1,15));
+	            			t4.setFont(new Font("宋体",1,14));
+	            			JTableHeader head = t4.getTableHeader(); // 创建表格标题对象
+	            			head.setFont(new Font("宋体", 1, 16));
+	            			Dimension size = head.getPreferredSize();
+	            			size.height = 35;
+	            			head.setPreferredSize(size);
+	            			t4.setBackground(Color.white);
 	            			
 	            			//设置table宽高
 	            			TableColumn column = null;  
@@ -239,11 +265,11 @@ public class Firstpage extends JFrame{
 	            	        {  
 	            	            column = t4.getColumnModel().getColumn(i);
 	            	            if(i == 0 || i == 1 || i == 2 || i == 3 || i == 4 || i == 5){
-	            	            	column.setPreferredWidth(85);
+	            	            	column.setPreferredWidth(100);
 	            	            }else if(i == 6){
-	            	            	column.setPreferredWidth(180);
+	            	            	column.setPreferredWidth(200);
 	            	            }else if(i == 7){
-	            	            	column.setPreferredWidth(1200);
+	            	            	column.setPreferredWidth(screensize.width-823);
 	            	            }
 	            	        }  
 	            	        
@@ -323,7 +349,13 @@ public class Firstpage extends JFrame{
 	                   return false;//表格不允许被编辑
 	            }
 			};
-			t4.setFont(new Font("Dialog",1,15));
+			t4.setFont(new Font("宋体",1,14));
+			JTableHeader head = t4.getTableHeader(); // 创建表格标题对象
+			head.setFont(new Font("宋体", 1, 16));
+			Dimension size = head.getPreferredSize();
+			size.height = 35;
+			head.setPreferredSize(size);
+			t4.setBackground(Color.white);
 			
 			//设置table宽高
 			TableColumn column = null;  
@@ -332,11 +364,11 @@ public class Firstpage extends JFrame{
 	        {  
 	        	column = t4.getColumnModel().getColumn(i);
 	            if(i == 0 || i == 1 || i == 2 || i == 3 || i == 4 || i == 5){
-	            	column.setPreferredWidth(85);
+	            	column.setPreferredWidth(110);
 	            }else if(i == 6){
-	            	column.setPreferredWidth(180);
+	            	column.setPreferredWidth(200);
 	            }else if(i == 7){
-	            	column.setPreferredWidth(1200);
+	            	column.setPreferredWidth(screensize.width-883);
 	            }
 	        }  
 	        
@@ -347,96 +379,28 @@ public class Firstpage extends JFrame{
 	        t4.setRowHeight(50);
 	        t4.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 	        s4 = new JScrollPane(t4);
-			s4.setBounds(0, 510, screensize.width, screensize.height-530);
-			s4.setBackground(Color.white);
-			context.add(s4);
+	        s4.setBounds(10, (int)p2.getLocation().getY()+p2.getHeight()+3, screensize.width-20, screensize.height-((int)p2.getLocation().getY()+p2.getHeight())-15);
+			s4.getViewport().setBackground(Color.white);
+			context.getContentPane().add(s4);
 	        
 			if(client != null){
-				l4.setText("正在执行的任务：");
+				l4.setText("     执行中的任务 ");
 			}
 			
 			repaint(); 
 			
 		}
-		
-
-		//查数据库缓存数据
-        /*Class.forName("com.mysql.jdbc.Driver");  
-        conn = DriverManager.getConnection(connet);
-        stmt= conn.createStatement();*/
-
-        //String sql1 = "SELECT fwelder_no,fname,Fowner FROM tb_welder";
-        //String sql21 = "SELECT finsframework_id FROM tb_welding_machine GROUP BY finsframework_id";
-        //String sql22 = "SELECT fequipment_no,fmanufacturer_id,finsframework_id,fposition FROM tb_welding_machine";
-        //String sql3 = "SELECT fwelded_junction_no,fserial_no,fitemId,tb_welder.fname FROM tb_welded_junction INNER JOIN tb_welder ON tb_welder.fid = tb_welded_junction.fdyne";
-        //String sql4 = "SELECT tb_welder.fname,tb_welding_machine.fequipment_no,tb_welded_junction.fwelded_junction_no,tb_taskresult.foperatetype,tb_welded_junction.fstart_time,tb_welded_junction.fserial_no,tb_welder.Fowner FROM tb_taskresult INNER JOIN tb_welder ON tb_taskresult.fwelderid = tb_welder.fid INNER JOIN tb_welding_machine ON tb_taskresult.fmachineid = tb_welding_machine.fid INNER JOIN tb_welded_junction ON tb_taskresult.ftaskid = tb_welded_junction.fid WHERE tb_taskresult.foperatetype = 1";
-        
-        //焊工
-        /*ResultSet rs1 =stmt.executeQuery(sql1);
-        while(rs1.next()){
-        	String fwelder_no = rs1.getString("fwelder_no");
-        	String fname = rs1.getString("fname");
-         	String Fowner = rs1.getString("Fowner");
-         	listarray1.add(fwelder_no);
-         	listarray1.add(fname);
-         	listarray1.add(Fowner);
-        }*/
-        
-        //班组
-        /*ResultSet rs21 =stmt.executeQuery(sql21);
-        while(rs21.next()){
-        	String finsframework_id = rs21.getString("finsframework_id");
-        	finsframework_id = finsframework_id;
-         	listarray21.add(finsframework_id);
-        }*/
-        
-        //焊机
-        /*ResultSet rs22 =stmt.executeQuery(sql22);
-        while(rs22.next()){
-        	String fequipment_no = rs22.getString("fequipment_no");
-        	String fmanufacturer_id = rs22.getString("fmanufacturer_id");
-        	String finsframework_id = rs22.getString("finsframework_id");
-        	String fposition = rs22.getString("fposition");
-        	listarray22.add(fequipment_no);
-         	listarray22.add(fmanufacturer_id);
-         	listarray22.add(finsframework_id);
-         	listarray22.add(fposition);
-        }*/
-        
-        //任务表
-        /*ResultSet rs3 =stmt.executeQuery(sql3);
-        while(rs3.next()){
-        	String fwelded_junction_no = rs3.getString("fwelded_junction_no");
-        	String fitemId = rs3.getString("fitemId");
-        	String fname = rs3.getString("fname");
-        	String fserial_no = rs3.getString("fserial_no");
-         	listarray3.add(fwelded_junction_no);
-         	listarray3.add(fitemId);
-         	listarray3.add(fname);
-         	listarray3.add(fserial_no);
-        }*/
-        
-        //任务执行表
-        /*ResultSet rs4 =stmt.executeQuery(sql4);
-        while(rs4.next()){
-        	String fname = rs4.getString("fname");
-        	String fequipment_no = rs4.getString("fequipment_no");
-        	String fwelded_junction_no = rs4.getString("fwelded_junction_no");
-        	String foperatetype = rs4.getString("foperatetype");
-        	String fstart_time = rs4.getString("fstart_time");
-        	String fserial_no = rs4.getString("fserial_no");
-        	String Fowner = rs4.getString("Fowner");
-        	listarray4.add(Fowner);
-         	listarray4.add(fname);
-         	listarray4.add(fequipment_no);
-         	listarray4.add(fwelded_junction_no);
-         	listarray4.add(foperatetype);
-         	listarray4.add(fstart_time);
-         	listarray4.add(fserial_no);
-        }*/
-		
 	};
-		
+	
+	private final JLabel label_2 = new JLabel("");
+	private final JInternalFrame internalFrame_1 = new JInternalFrame("New JInternalFrame");
+	private final JLabel label = new JLabel("焊工 ：   ");
+	private final JLabel label_1 = new JLabel("焊工编号：");
+	private final JTextField textField = new JTextField(8);
+	private final JLabel label_4 = new JLabel("编号：   ");
+	private final JLabel label_5 = new JLabel("焊机 ：   ");
+	private final JLabel label_6 = new JLabel("类型：   ");
+	private final JLabel label_7 = new JLabel("任务：   ");
 
 	private void time() {
 		// TODO Auto-generated method stub
@@ -463,90 +427,124 @@ public class Firstpage extends JFrame{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		screensize = Toolkit.getDefaultToolkit().getScreenSize();
-		setLayout(null);
+		setBounds(0,0,screensize.width,screensize.height);
 		setVisible(true);
 		
 		//信息列表
-		p1.setBorder(BorderFactory.createTitledBorder("焊工信息"));
-		p1.setBounds(0, 20, screensize.width, 60);
+		p1 = new JPanel(){
+		  @Override  
+	        protected void paintComponent(Graphics g) {  
+	            ImageIcon icon = new ImageIcon(getClass().getResource("/images/firstmid.png"));  
+	            Image img = icon.getImage();  
+	            g.drawImage(img, 0, 0, getWidth(), getHeight(), this);  
+	        }  
+		};
 		p1.setFont(new Font("Dialog",1,17));
-		p1.setBackground(Color.white);
 		p1.setLayout(null);
-		add(p1);
-		
-		//焊工姓名
-		l11.setFont(new Font("Dialog",1,17));
-		l11.setForeground(Color.black);
-		l11.setBounds(50, 22, 200, 22);
-		p1.add(l11);
-		
-		//焊工编号
-		l12.setFont(new Font("Dialog",1,17));
-		l12.setForeground(Color.black);
-		l12.setBounds(300, 22, 200, 22);
-		p1.add(l12);
-		
-		//所在班组
-		l15.setFont(new Font("Dialog",1,17));
-		l15.setForeground(Color.black);
-		l15.setBounds(600, 22, 200, 22);
-		p1.add(l15);
-		
-		//焊机编号
-		l13.setFont(new Font("Dialog",1,17));
-		l13.setForeground(Color.black);
-		l13.setBounds(900, 22, 200, 22);
-		p1.add(l13);
-		
-		//任务编号
-		l14.setFont(new Font("Dialog",1,17));
-		l14.setForeground(Color.black);
-		l14.setBounds(1200, 22, 200, 22);
-		p1.add(l14);
 		
 		//时钟
-		p2.setBorder(BorderFactory.createTitledBorder("当前时间"));
-		p2.setBounds(0, 100, screensize.width, 150);
 		p2.setFont(new Font("Dialog",1,17));
-		p2.setBackground(Color.white);
+		p2.setBackground(new Color(20,51,105));
 		p2.setLayout(null);
-		add(p2);
+		
+		Dimension screensize1 = Toolkit.getDefaultToolkit().getScreenSize();
 		
 		//显示时钟
-		l21.setFont(new Font("Dialog",1,30));
-		l21.setForeground(Color.black);
-		l21.setBounds((screensize.width-340)/2, 50, 340, 50);
-		l21.setText("2018-10-10 10:10:10");
+		l21.setFont(new Font("微软雅黑", Font.PLAIN, 22));
+		l21.setForeground(Color.white);
+		l21.setBounds((int)screensize1.getWidth()-280, 4, 261, 23);
+		//l21.setText("2018-10-10 10:10:10");
 		p2.add(l21);
 		
-		//焊工号
-		p3.setBorder(BorderFactory.createTitledBorder("焊工信息录入"));
-		p3.setBounds(0, 270, screensize.width, 200);
-		p3.setFont(new Font("Dialog",1,17));
-		p3.setBackground(Color.white);
-		p3.setLayout(null);
-		add(p3);
+		JPanel panel = new JPanel(){
+		  @Override  
+	        protected void paintComponent(Graphics g) { 
+			  	Dimension screensize1 = Toolkit.getDefaultToolkit().getScreenSize();
+	            ImageIcon icon = new ImageIcon(getClass().getResource("/images/firsttop1.png"));  
+	            Image img = icon.getImage();  
+	            g.drawImage(img, 50, 23, 530, 41, this);  
+	            
+	            ImageIcon icon1 = new ImageIcon(getClass().getResource("/images/firsttop2.png"));  
+	            Image img1 = icon1.getImage();  
+	            g.drawImage(img1, screensize1.width-550, 20, 490, 50, this); 
+	        }  
+		};
 		
-		//焊工编号
-		l31.setFont(new Font("Dialog",1,25));
-		l31.setForeground(Color.black);
-		l31.setBounds((screensize.width-700)/2, 70, 200, 50);
-		p3.add(l31);
+		GroupLayout groupLayout = new GroupLayout(getContentPane());
+		groupLayout.setHorizontalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addComponent(panel, GroupLayout.DEFAULT_SIZE, 1920, Short.MAX_VALUE)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addGap(10)
+					.addComponent(p1, GroupLayout.DEFAULT_SIZE, 1896, Short.MAX_VALUE)
+					.addContainerGap())
+				.addGroup(groupLayout.createSequentialGroup()
+					.addComponent(p2, GroupLayout.DEFAULT_SIZE, 1906, Short.MAX_VALUE)
+					.addContainerGap())
+		);
+		groupLayout.setVerticalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 81, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(p1, GroupLayout.PREFERRED_SIZE, 379, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(p2, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
+					.addGap(574))
+		);
 		
-		//焊工号输入框
-		t32.setFont(new Font("Dialog",1,30));
-		t32.setHorizontalAlignment(JTextField.CENTER);
-		t32.setBounds((screensize.width-400)/2, 70, 400, 60);
-		t32.getDocument().addDocumentListener(new DocumentListener(){
+		int width2 = ((int)screensize1.getWidth()-216)/2;
+		
+		l4.setForeground(Color.WHITE);
+		l4.setBounds(width2, 0, 216, 29);
+		p2.add(l4);
+		l4.setFont(new Font("微软雅黑 Light", Font.BOLD, 23));
+		
+		JInternalFrame internalFrame = new JInternalFrame(){
+			protected void paintComponent(Graphics g) {
+		        // TODO Auto-generated method stub
+				AlphaComposite cmp = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1);
+		        Graphics2D g2d = (Graphics2D)g;
+		        g2d.setComposite(cmp.derive(0.7f));
+		        super.paintComponent(g2d);
+			}
+	    };
+		int width1 = ((int)screensize1.getWidth()-590)/2;
+		internalFrame.setBounds(width1, 37, 590, 298);
+		internalFrame.setBackground(Color.black);
+		internalFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		internalFrame.setOpaque(false);
+		internalFrame.setVisible(true);
+		
+		BasicInternalFrameUI ui = (BasicInternalFrameUI)internalFrame.getUI();
+		ui.setNorthPane(null);
+		
+		internalFrame_1.setBounds(width1, 37, 590, 298);
+		p1.add(internalFrame_1);
+		internalFrame_1.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		internalFrame_1.setBackground(new Color(0,0,0,0));
+		internalFrame_1.setOpaque(false);
+		internalFrame_1.setVisible(true);
+		
+		BasicInternalFrameUI ui1 = (BasicInternalFrameUI)internalFrame_1.getUI();
+		ui1.setNorthPane(null);
+		
+		label.setForeground(Color.WHITE);
+		label.setFont(new Font("微软雅黑 Light", Font.BOLD, 17));
+		label_1.setForeground(Color.WHITE);
+		label_1.setFont(new Font("微软雅黑 Light", Font.BOLD, 25));
+		textField.setHorizontalAlignment(SwingConstants.CENTER);
+		textField.setFont(new Font("微软雅黑", Font.BOLD, 25));
+		textField.getDocument().addDocumentListener(new DocumentListener(){
 
 			@Override
 			public void insertUpdate(DocumentEvent e) {
 				// TODO Auto-generated method stub
 				
-				weldernum = t32.getText();
+				weldernum = textField.getText();
 				if(weldernum.length() == 4){
 					
-					t32.updateUI();
+					textField.updateUI();
 					
 					worktime = time;
 					boolean exist = false;
@@ -563,7 +561,7 @@ public class Firstpage extends JFrame{
 				        JSONArray ary = JSONArray.parseArray(restr);
 				        if(ary.size() == 0){
 				        	JOptionPane.showMessageDialog(null, "焊工编号错误.", "  错误",JOptionPane.ERROR_MESSAGE);
-							t32.setCaretPosition(4);
+				        	textField.setCaretPosition(4);
 				        }else{
 					        String str = ary.getString(0);
 					        JSONObject js = JSONObject.fromObject(str);
@@ -581,9 +579,6 @@ public class Firstpage extends JFrame{
 							}
 							
 							if(!exiet){
-								l11.setText("焊工姓名:  " + welder);
-								l12.setText("焊工编号:  " + weldernum);
-								l15.setText("所在班组:  " + weldowner);
 								
 								//开启新视窗选择焊机
 								new Secondpage(worktime,welder,weldernum,weldowner,screensize,listarray21,listarray22,listarray3,listarray4,client,listarraywe,listarrayta,welderid);
@@ -592,14 +587,14 @@ public class Firstpage extends JFrame{
 								setVisible(false);
 							}else{
 								JOptionPane.showMessageDialog(null, "正在执行任务.", "  错误",JOptionPane.ERROR_MESSAGE);
-								t32.setCaretPosition(4);
+								textField.setCaretPosition(4);
 							}
 							
 				        }
 					} catch (Exception e1) {
 						// TODO Auto-generated catch block
 						JOptionPane.showMessageDialog(null, "服务器未开启,请稍候再试.", "  错误",JOptionPane.ERROR_MESSAGE);
-						t32.setCaretPosition(4);
+						textField.setCaretPosition(4);
 						e1.printStackTrace();
 					}
 					
@@ -620,7 +615,6 @@ public class Firstpage extends JFrame{
 							setVisible(false);
 							
 							break;
-
 							//焊工确认
 							int j = JOptionPane.showConfirmDialog(null, "焊工姓名:" + welder + " 焊工编号:" + weldernum, "确认",JOptionPane.YES_NO_OPTION);
 							JOptionPane.showMessageDialog(null, "确认选择" + weld + "号焊机" + "执行" + task + "任务?", "  确认",JOptionPane.INFORMATION_MESSAGE);
@@ -643,7 +637,7 @@ public class Firstpage extends JFrame{
 			@Override
 			public void removeUpdate(DocumentEvent e) {
 				// TODO Auto-generated method stub
-				weldernum = t32.getText();
+				weldernum = textField.getText();
 			}
 
 			@Override
@@ -652,11 +646,62 @@ public class Firstpage extends JFrame{
 			}
 			
 		});
-		p3.add(t32);
 		
-		l4.setBounds(10, 480, 200, 20);
-		l4.setFont(new Font("Dialog",1,13));
-		add(l4);
+		JLabel label_3 = new JLabel("班组 ：   ");
+		label_3.setForeground(Color.WHITE);
+		label_3.setFont(new Font("微软雅黑 Light", Font.BOLD, 17));
+		GroupLayout groupLayout_1 = new GroupLayout(internalFrame_1.getContentPane());
+		groupLayout_1.setHorizontalGroup(
+			groupLayout_1.createParallelGroup(Alignment.TRAILING)
+				.addGroup(groupLayout_1.createSequentialGroup()
+					.addGap(117)
+					.addGroup(groupLayout_1.createParallelGroup(Alignment.LEADING)
+						.addGroup(Alignment.TRAILING, groupLayout_1.createSequentialGroup()
+							.addGroup(groupLayout_1.createParallelGroup(Alignment.LEADING)
+								.addComponent(label_3, GroupLayout.PREFERRED_SIZE, 128, GroupLayout.PREFERRED_SIZE)
+								.addComponent(label, GroupLayout.PREFERRED_SIZE, 128, GroupLayout.PREFERRED_SIZE)
+								.addComponent(label_4, GroupLayout.PREFERRED_SIZE, 128, GroupLayout.PREFERRED_SIZE))
+							.addGap(54)
+							.addGroup(groupLayout_1.createParallelGroup(Alignment.LEADING)
+								.addComponent(label_6, GroupLayout.PREFERRED_SIZE, 128, GroupLayout.PREFERRED_SIZE)
+								.addComponent(label_5, GroupLayout.PREFERRED_SIZE, 128, GroupLayout.PREFERRED_SIZE)
+								.addComponent(label_7, GroupLayout.PREFERRED_SIZE, 128, GroupLayout.PREFERRED_SIZE)))
+						.addGroup(Alignment.TRAILING, groupLayout_1.createSequentialGroup()
+							.addComponent(label_1)
+							.addGap(36)
+							.addComponent(textField, GroupLayout.PREFERRED_SIZE, 188, GroupLayout.PREFERRED_SIZE)
+							.addGap(10)))
+					.addGap(93))
+		);
+		groupLayout_1.setVerticalGroup(
+			groupLayout_1.createParallelGroup(Alignment.TRAILING)
+				.addGroup(groupLayout_1.createSequentialGroup()
+					.addContainerGap(35, Short.MAX_VALUE)
+					.addGroup(groupLayout_1.createParallelGroup(Alignment.BASELINE)
+						.addComponent(label_1)
+						.addComponent(textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(31)
+					.addGroup(groupLayout_1.createParallelGroup(Alignment.LEADING)
+						.addGroup(groupLayout_1.createSequentialGroup()
+							.addComponent(label_5, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+							.addGap(18)
+							.addGroup(groupLayout_1.createParallelGroup(Alignment.LEADING)
+								.addGroup(groupLayout_1.createSequentialGroup()
+									.addGap(42)
+									.addComponent(label_7, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE))
+								.addComponent(label_6, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)))
+						.addGroup(groupLayout_1.createSequentialGroup()
+							.addComponent(label)
+							.addGap(18)
+							.addComponent(label_3, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+							.addGap(18)
+							.addComponent(label_4, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)))
+					.addGap(48))
+		);
+		internalFrame_1.getContentPane().setLayout(groupLayout_1);
+		
+		p1.add(internalFrame);
+		getContentPane().setLayout(groupLayout);
 		
 		repaint();
 		
@@ -746,6 +791,8 @@ public class Firstpage extends JFrame{
 	}
 	
 	public static void main(String[] args){
+		//new Secondpage("","","",weldowner,screensize,listarray21,listarray22,listarray3,listarray4,client,listarraywe,listarrayta,welderid);
+		
 		new Firstpage();
 	}
 }

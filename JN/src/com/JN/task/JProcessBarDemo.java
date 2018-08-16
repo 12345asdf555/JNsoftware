@@ -10,6 +10,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -51,9 +52,9 @@ public class JProcessBarDemo extends JFrame{
 		
 		screensize = screensize1;
 		td = td1;
-		l11 = td1.l11;
-		l13 = td1.l13;
-		l14 = td1.l14;
+		l11 = td1.l1111;
+		l13 = td1.label_311;
+		l14 = td1.label_9;
 		weldernum = td1.weldernum;
 		task = td1.task;
 		weld = td1.weld;
@@ -64,9 +65,10 @@ public class JProcessBarDemo extends JFrame{
 		
 		setTitle("确认中");		//设置窗体标题
 		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 设置窗体退出的操作
-		setBounds((screensize.width-250)/2, (screensize.height-200)/2, 250, 200);// 设置窗体的位置和大小
-		setUndecorated(true);
+		setBounds((screensize.width-250)/2, (screensize.height-200)/2, 250, 180);// 设置窗体的位置和大小
 		this.getRootPane().setWindowDecorationStyle(JRootPane.INFORMATION_DIALOG);
+		setUndecorated(true);	
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		
 		JPanel contentPane = new JPanel();   // 创建内容面板
 		contentPane.setBorder(new EmptyBorder(25, 25, 25, 25));// 设置内容面板边框
@@ -97,8 +99,11 @@ public class JProcessBarDemo extends JFrame{
 			public void run(){
 				
 				try {
+					Date date = new Date();
+	                String time = DateTools.format("yyyy-MM-dd HH:mm:ss",date);
+	                
 					String obj1 = "{\"CLASSNAME\":\"junctionWebServiceImpl\",\"METHOD\":\"giveToServer\"}";
-					String obj2 = "{\"TASKNO\":\"" + task + "\",\"WELDERNO\":\"" + weldernum +"\",\"MACHINENO\":\"" + weld +"\",\"STATUS\":\"0\",\"TASKID\":\"" + taskid +"\",\"WELDERID\":\"" + welderid +"\",\"MACHINEID\":\"" + weldid +"\"}";
+					String obj2 = "{\"TASKNO\":\"" + task + "\",\"WELDERNO\":\"" + weldernum +"\",\"MACHINENO\":\"" + weld +"\",\"STATUS\":\"0\",\"TASKID\":\"" + taskid +"\",\"WELDERID\":\"" + welderid +"\",\"MACHINEID\":\"" + weldid +"\",\"STARTTIME\":\"" + time +"\"}";
 				    Object[] objects = client.invoke(new QName("http://webservice.ssmcxf.sshome.com/", "enterTheWS"),
 				          new Object[] { obj1,obj2 });
 				    
