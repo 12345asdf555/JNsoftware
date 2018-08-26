@@ -166,14 +166,14 @@ public class Firstpage extends JFrame{
 			        	listarrayta.add(js.getString("TASKNO"));
 			        	listarrayta.add(js.getString("ID"));
 			        }else if(js.getString("OPERATESTATUS").equals("0") || js.getString("OPERATESTATUS").equals("2")){
+			        	listarray4.add(js.getString("TASKNO"));
 			        	listarray4.add(js.getString("ITEMNAME"));
 		        		listarray4.add(js.getString("REWELDERNO"));
 		        		listarray4.add(js.getString("REWELDERNAME"));
 			        	listarray4.add(js.getString("MACHINENO"));
-			        	listarray4.add(js.getString("TASKNO"));
 			        	listarray4.add("焊接");
 			        	listarray4.add(js.getString("STARTTIME"));
-			        	listarray4.add(js.getString("TASKDES"));
+			        	//listarray4.add(js.getString("TASKDES"));
 			        }
 			        
 			        String a = js.getString("MACHINENO");
@@ -222,25 +222,25 @@ public class Firstpage extends JFrame{
 	            		        	listarrayta.add(js.getString("TASKNO"));
 	            		        	listarrayta.add(js.getString("ID"));
 	            		        }else if(js.getString("OPERATESTATUS").equals("0") || js.getString("OPERATESTATUS").equals("2")){
+	            		        	listarray4.add(js.getString("TASKNO"));
 	            		        	listarray4.add(js.getString("ITEMNAME"));
 	            	        		listarray4.add(js.getString("REWELDERNO"));
 	            	        		listarray4.add(js.getString("REWELDERNAME"));
 	            		        	listarray4.add(js.getString("MACHINENO"));
-	            		        	listarray4.add(js.getString("TASKNO"));
 	            		        	listarray4.add("焊接");
 	            		        	listarray4.add(js.getString("STARTTIME"));
-	            		        	listarray4.add(js.getString("TASKDES"));
+	            		        	//listarray4.add(js.getString("TASKDES"));
 	            		        }
 	            		        
 	            		        String a = js.getString("MACHINENO");
 	            	        }
 	            	        
-	            	      //table列名以及值
-	            			String[] cn = {"班组","焊工编号", "焊工", "焊机", "任务号","当前状态","开始时间","任务描述"};  
-	            			Object[][] obj = new Object[listarray4.size()/8][8];  
-	            			for(int i=0;i<listarray4.size()/8;i++){
-	            				for(int j=0;j<8;j++){
-	            					obj[i][j] = listarray4.get(i*8+j);
+	            	        //table列名以及值
+	            	        String[] cn = {"任务编号", "班组", "焊工编号", "焊工姓名", "焊机编号", "当前状态", "开始时间"};
+	            			Object[][] obj = new Object[listarray4.size()/7][7];  
+	            			for(int i=0;i<listarray4.size()/7;i++){
+	            				for(int j=0;j<7;j++){
+	            					obj[i][j] = listarray4.get(i*7+j);
 	            				}
 	            			}
 	            			//绘图
@@ -263,13 +263,9 @@ public class Firstpage extends JFrame{
 	            	        int colunms = t4.getColumnCount();  
 	            	        for(int i = 0; i < colunms; i++)  
 	            	        {  
-	            	            column = t4.getColumnModel().getColumn(i);
-	            	            if(i == 0 || i == 1 || i == 2 || i == 3 || i == 4 || i == 5){
-	            	            	column.setPreferredWidth(100);
-	            	            }else if(i == 6){
-	            	            	column.setPreferredWidth(200);
-	            	            }else if(i == 7){
-	            	            	column.setPreferredWidth(screensize.width-823);
+	            	        	column = t4.getColumnModel().getColumn(i);
+	            	            if(i == 0 || i == 1 || i == 2 || i == 3 || i == 4 || i == 5 || i == 6){
+	            	            	column.setPreferredWidth(screensize.width/7-3);
 	            	            }
 	            	        }  
 	            	        
@@ -335,11 +331,11 @@ public class Firstpage extends JFrame{
 			}
 			
 			//table列名以及值
-			String[] cn = {"班组", "焊工编号", "焊工", "焊机", "任务号","当前状态","开始时间","任务描述"};  
-			Object[][] obj = new Object[listarray4.size()/8][8];  
-			for(int i=0;i<listarray4.size()/8;i++){
-				for(int j=0;j<8;j++){
-					obj[i][j] = listarray4.get(i*8+j);
+			String[] cn = {"任务编号", "班组", "焊工编号", "焊工姓名", "焊机编号", "当前状态", "开始时间"};  
+			Object[][] obj = new Object[listarray4.size()/7][7];  
+			for(int i=0;i<listarray4.size()/7;i++){
+				for(int j=0;j<7;j++){
+					obj[i][j] = listarray4.get(i*7+j);
 				}
 			}
 			//绘图
@@ -363,12 +359,8 @@ public class Firstpage extends JFrame{
 	        for(int i = 0; i < colunms; i++)  
 	        {  
 	        	column = t4.getColumnModel().getColumn(i);
-	            if(i == 0 || i == 1 || i == 2 || i == 3 || i == 4 || i == 5){
-	            	column.setPreferredWidth(110);
-	            }else if(i == 6){
-	            	column.setPreferredWidth(200);
-	            }else if(i == 7){
-	            	column.setPreferredWidth(screensize.width-883);
+	            if(i == 0 || i == 1 || i == 2 || i == 3 || i == 4 || i == 5 || i == 6){
+	            	column.setPreferredWidth(screensize.width/7-3);
 	            }
 	        }  
 	        
@@ -542,7 +534,7 @@ public class Firstpage extends JFrame{
 				// TODO Auto-generated method stub
 				
 				weldernum = textField.getText();
-				if(weldernum.length() == 4){
+				if(weldernum.length() == 8){
 					
 					textField.updateUI();
 					
@@ -561,7 +553,7 @@ public class Firstpage extends JFrame{
 				        JSONArray ary = JSONArray.parseArray(restr);
 				        if(ary.size() == 0){
 				        	JOptionPane.showMessageDialog(null, "焊工编号错误.", "  错误",JOptionPane.ERROR_MESSAGE);
-				        	textField.setCaretPosition(4);
+				        	textField.setCaretPosition(8);
 				        }else{
 					        String str = ary.getString(0);
 					        JSONObject js = JSONObject.fromObject(str);
@@ -594,7 +586,7 @@ public class Firstpage extends JFrame{
 					} catch (Exception e1) {
 						// TODO Auto-generated catch block
 						JOptionPane.showMessageDialog(null, "服务器未开启,请稍候再试.", "  错误",JOptionPane.ERROR_MESSAGE);
-						textField.setCaretPosition(4);
+						textField.setCaretPosition(8);
 						e1.printStackTrace();
 					}
 					

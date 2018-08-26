@@ -175,8 +175,8 @@ public class Thirdpage extends JFrame{
 		
 		//table列名以及值
 		int count = 0;
-		String[] cn = {"任务号", "指定班组", "指定焊工","任务描述"};  
-		Object[][] obj = new Object[listarray3.size()/4][4];  
+		String[] cn = {"任务编号", "指定班组", "指定焊工"};  
+		Object[][] obj = new Object[listarray3.size()/3][3];  
 		/*for(int i=0;i<listarray3.size();i+=4){
 			if(listarray3.get(i+1).equals(weldowner)){
 				for(int j=0;j<4;j++){
@@ -194,12 +194,10 @@ public class Thirdpage extends JFrame{
 					listarraybuf1.add(" * " + listarray3.get(i));
 					listarraybuf1.add(" * " + listarray3.get(i+1));
 					listarraybuf1.add(" * " + listarray3.get(i+2));
-					listarraybuf1.add(" * " + listarray3.get(i+3));
 				}else{
 					listarraybuf2.add(listarray3.get(i));
 					listarraybuf2.add(listarray3.get(i+1));
 					listarraybuf2.add(listarray3.get(i+2));
-					listarraybuf2.add(listarray3.get(i+3));
 				}
 			}
 		}
@@ -208,11 +206,10 @@ public class Thirdpage extends JFrame{
 			listarraybuf1.add(listarraybuf2.get(i));
 			listarraybuf1.add(listarraybuf2.get(i+1));
 			listarraybuf1.add(listarraybuf2.get(i+2));
-			listarraybuf1.add(listarraybuf2.get(i+3));
 		}
 		
-		for(int i=0;i<listarraybuf1.size();i+=4){
-			for(int j=0;j<4;j++){
+		for(int i=0;i<listarraybuf1.size();i+=3){
+			for(int j=0;j<3;j++){
 				obj[count][j] = listarraybuf1.get(i+j);
 			}
 			count++;
@@ -409,9 +406,10 @@ public class Thirdpage extends JFrame{
 					JOptionPane.showMessageDialog(null, "焊工：" + welder + "\n焊机：" + weld + "\n任务：" + task, "确认",JOptionPane.INFORMATION_MESSAGE);*/
 					
 					String taskid = "";
-					if(task.length()!=8){
-						task = task.substring(3,11);
-					}
+
+					String[] taskbuf = task.split(" ");
+					task = taskbuf[2];
+					
 					for(int i=0;i<listarrayta.size();i+=2){
 						if(task.equals(listarrayta.get(i))){
 							taskid = listarrayta.get(i+1);
@@ -458,10 +456,10 @@ public class Thirdpage extends JFrame{
         {  
             column = t2.getColumnModel().getColumn(i);  
             /*将每一列的默认宽度设置为100*/ 
-            if(i != 3){
-            	column.setPreferredWidth(120);
+            if(i == 0){
+            	column.setPreferredWidth(panel_1.getWidth()/2-50);
             }else{
-            	column.setPreferredWidth(panel_1.getWidth()-364);
+            	column.setPreferredWidth(panel_1.getWidth()/4+23);
             }
         }  
         
