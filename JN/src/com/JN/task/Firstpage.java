@@ -456,9 +456,9 @@ public class Firstpage extends JFrame{
 	            Image img = icon.getImage();  
 	            g.drawImage(img, 50, 23, 530, 41, this);  
 	            
-	            ImageIcon icon1 = new ImageIcon(getClass().getResource("/images/firsttop2.png"));  
-	            Image img1 = icon1.getImage();  
-	            g.drawImage(img1, screensize1.width-550, 20, 490, 50, this); 
+	            //ImageIcon icon1 = new ImageIcon(getClass().getResource("/images/firsttop2.png"));  
+	            //Image img1 = icon1.getImage();  
+	            //g.drawImage(img1, screensize1.width-550, 20, 490, 50, this); 
 	        }  
 		};
 		
@@ -564,7 +564,7 @@ public class Firstpage extends JFrame{
 							boolean exiet = false;
 							
 							for(int i=0;i<listarray4.size();i+=8){
-								if(weldernum.equals(listarray4.get(i+1))){
+								if(weldernum.equals(listarray4.get(i+2))){
 									exiet = true;
 									break;
 								}
@@ -579,7 +579,7 @@ public class Firstpage extends JFrame{
 								setVisible(false);
 							}else{
 								JOptionPane.showMessageDialog(null, "正在执行任务.", "  错误",JOptionPane.ERROR_MESSAGE);
-								textField.setCaretPosition(4);
+								textField.setCaretPosition(8);
 							}
 							
 				        }

@@ -160,7 +160,11 @@ public class JProcessBarDemo extends JFrame{
 							td.setVisible(false);
 						}
 				    }else if(restr.equals("false")){
-				    	jpb.setString("失败，请取消重试");// 设置提示信息
+				    	jpb.setString("失败，请重试");// 设置提示信息
+				    	
+				    	Thread.sleep(1000);
+				    	
+				    	setVisible(false);
 				    }
 				} catch (Exception e) {
 					// TODO Auto-generated catch block

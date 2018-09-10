@@ -176,7 +176,7 @@ public class Thirdpage extends JFrame{
 		//table列名以及值
 		int count = 0;
 		String[] cn = {"任务编号", "指定班组", "指定焊工"};  
-		Object[][] obj = new Object[listarray3.size()/3][3];  
+		Object[][] obj = new Object[listarray3.size()/4][3];  
 		/*for(int i=0;i<listarray3.size();i+=4){
 			if(listarray3.get(i+1).equals(weldowner)){
 				for(int j=0;j<4;j++){
@@ -202,7 +202,7 @@ public class Thirdpage extends JFrame{
 			}
 		}
 		
-		for(int i=0;i<listarraybuf2.size();i+=4){
+		for(int i=0;i<listarraybuf2.size();i+=3){
 			listarraybuf1.add(listarraybuf2.get(i));
 			listarraybuf1.add(listarraybuf2.get(i+1));
 			listarraybuf1.add(listarraybuf2.get(i+2));
@@ -408,7 +408,11 @@ public class Thirdpage extends JFrame{
 					String taskid = "";
 
 					String[] taskbuf = task.split(" ");
-					task = taskbuf[2];
+					if(taskbuf.length == 1){
+						task = task;
+					}else{
+						task = taskbuf[2];
+					}
 					
 					for(int i=0;i<listarrayta.size();i+=2){
 						if(task.equals(listarrayta.get(i))){
