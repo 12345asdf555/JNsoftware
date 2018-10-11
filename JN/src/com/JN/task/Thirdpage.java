@@ -1,6 +1,7 @@
 package com.JN.task;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -9,6 +10,11 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Timer;
@@ -111,6 +117,8 @@ public class Thirdpage extends JFrame{
 	private final JLabel label_4 = new JLabel("焊机信息");
 	private final JPanel panel_5 = new JPanel();
 	private final JPanel panel_6 = new JPanel();
+	private String limit;
+	private Object[][] obj;
 	
 	public Thirdpage(String worktime1, String welder1, String weldernum1, String weldowner1, String weld1, Dimension screensize1, ArrayList<String> listarray221, ArrayList<String> listarray222, ArrayList<String> listarray31, ArrayList<String> listarray41, ImageIcon img1, Client client1, ArrayList<String> listarraywe1, ArrayList<String> listarrayta1, String weldid1, String welderid1,String weldtype1){
 		super("江南派工");
@@ -173,10 +181,41 @@ public class Thirdpage extends JFrame{
 		getContentPane().setBackground(new Color(20,51,105));
 		getContentPane().setLayout(null);
 		
+		try {
+			  FileInputStream in = new FileInputStream("IPconfig.txt");  
+	          InputStreamReader inReader = new InputStreamReader(in, "UTF-8");  
+	          BufferedReader bufReader = new BufferedReader(inReader);  
+	          String line = null; 
+	          int writetime=0;
+				
+			    while((line = bufReader.readLine()) != null){ 
+			    	if(writetime==0){
+		                writetime++;
+			    	}else if(writetime==1){
+			    		writetime++;
+			    	}else if(writetime==2){
+			    		limit = line;
+			    	}
+	          }  
+
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		//table列名以及值
-		int count = 0;
-		String[] cn = {"任务编号", "指定班组", "指定焊工"};  
-		Object[][] obj = new Object[listarray3.size()/4][3];  
+		/*if(limit.equals("false")){
+			String[] cn = {"任务编号", "指定班组", "指定焊工"};  
+			obj = new Object[listarray3.size()/4][3];
+		}else if(limit.equals("true")){
+			String[] cn = {"任务编号", "指定班组", "任务状态"};  
+			obj = new Object[listarray3.size()/4][3];
+		}*/
+		obj = new Object[listarray3.size()/4][3];
+		int count = 0;  
 		/*for(int i=0;i<listarray3.size();i+=4){
 			if(listarray3.get(i+1).equals(weldowner)){
 				for(int j=0;j<4;j++){
@@ -188,16 +227,53 @@ public class Thirdpage extends JFrame{
 		
 		ArrayList<String> listarraybuf1 = new ArrayList<String>();
 		ArrayList<String> listarraybuf2 = new ArrayList<String>();
+		int counttime = 0;
 		for(int i=0;i<listarray3.size();i+=4){
 			if(listarray3.get(i+1).equals(weldowner) && ( listarray3.get(i+2).equals(welder) || listarray3.get(i+2).equals(""))){
-				if(listarray3.get(i+2).equals(welder)){
-					listarraybuf1.add(" * " + listarray3.get(i));
-					listarraybuf1.add(" * " + listarray3.get(i+1));
-					listarraybuf1.add(" * " + listarray3.get(i+2));
-				}else{
-					listarraybuf2.add(listarray3.get(i));
-					listarraybuf2.add(listarray3.get(i+1));
-					listarraybuf2.add(listarray3.get(i+2));
+				if(limit.equals("false")){
+					if(listarray3.get(i+2).equals(welder)){
+						listarraybuf1.add(" * " + listarray3.get(i));
+						listarraybuf1.add(" * " + listarray3.get(i+1));
+						listarraybuf1.add(" * " + listarray3.get(i+2));
+					}else{
+						listarraybuf2.add(listarray3.get(i));
+						listarraybuf2.add(listarray3.get(i+1));
+						listarraybuf2.add(listarray3.get(i+2));
+					}
+				}else if(limit.equals("true")){
+					
+					for(int j=0;j<listarray4.size();j+=8){
+						if(listarray4.get(j+4).equals(listarray3.get(i))){
+							if(listarray3.get(i+2).equals(welder)){
+								listarraybuf1.add(" * " + listarray3.get(i));
+								listarraybuf1.add(" * " + listarray3.get(i+1));
+								listarraybuf1.add("已领取");
+								break;
+							}else{
+								listarraybuf2.add(listarray3.get(i));
+								listarraybuf2.add(listarray3.get(i+1));
+								listarraybuf2.add("已领取");
+								break;
+							}
+						}else{
+							counttime++;
+							continue;
+						}
+					}
+					
+					if(counttime==listarray4.size()/8){
+						if(listarray3.get(i+2).equals(welder)){
+							listarraybuf1.add(" * " + listarray3.get(i));
+							listarraybuf1.add(" * " + listarray3.get(i+1));
+							listarraybuf1.add("未领取");
+						}else{
+							listarraybuf2.add(listarray3.get(i));
+							listarraybuf2.add(listarray3.get(i+1));
+							listarraybuf2.add("未领取");
+						}
+					}
+					counttime = 0;
+					
 				}
 			}
 		}
@@ -423,16 +499,22 @@ public class Thirdpage extends JFrame{
 					
 					label_9.setText("任务编号:" + task);
 					label_9.setFont(new Font("宋体",1,15));
-					int i = JOptionPane.showConfirmDialog(null, "焊工：" + welder + "\n焊机：" + weld + "\n任务：" + task, "确认",JOptionPane.YES_NO_OPTION);
-					if(i!=0){
-						label_7.setText("任务编号:  ");
+					
+					if(limit.equals("false")){
+						int i = JOptionPane.showConfirmDialog(null, "焊工：" + welder + "\n焊机：" + weld + "\n任务：" + task, "确认",JOptionPane.YES_NO_OPTION);
+						if(i!=0){
+							label_7.setText("任务编号:  ");
+						}else{
+							
+							JProcessBarDemo jpd = new JProcessBarDemo(screensize,td,weldid,welderid,taskid);
+							jpd.setVisible(true);
+							
+							//JOptionPane.showMessageDialog(null, "领取成功,请尽快完成任务", "确认",JOptionPane.INFORMATION_MESSAGE);
+							//new Firstpage();
+						}
 					}else{
-						
 						JProcessBarDemo jpd = new JProcessBarDemo(screensize,td,weldid,welderid,taskid);
 						jpd.setVisible(true);
-						
-						//JOptionPane.showMessageDialog(null, "领取成功,请尽快完成任务", "确认",JOptionPane.INFORMATION_MESSAGE);
-						//new Firstpage();
 					}
 					
 					//JOptionPane.showMessageDialog(null, "请稍候...", "",JOptionPane.INFORMATION_MESSAGE);
@@ -443,15 +525,56 @@ public class Thirdpage extends JFrame{
 			}
 		});
 		
+		if(limit.equals("false")){
+			String[] cn = {"任务编号", "指定班组", "指定焊工"};  
+
+			//绘图
+			t2 = new JTable(obj,cn){
+				public boolean isCellEditable(int row, int column)
+	            {
+	                   return false;//表格不允许被编辑
+	            }
+			};
+			t2.setFont(new Font("Dialog",1,15));
+			
+		}else if(limit.equals("true")){
+			String[] cn = {"任务编号", "指定班组", "任务状态"};  
+
+			//绘图
+			t2 = new JTable(obj,cn){
+				public boolean isCellEditable(int row, int column)
+	            {
+	                   return false;//表格不允许被编辑
+	            }
+			};
+			t2.setFont(new Font("Dialog",1,15));
+			
+		}
 		
-		//绘图
-		t2 = new JTable(obj,cn){
-			public boolean isCellEditable(int row, int column)
-            {
-                   return false;//表格不允许被编辑
+		
+		/*try {
+            DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer() {
+            //重写getTableCellRendererComponent 方法
+            @Override
+            public Component getTableCellRendererComponent(JTable table,Object value, boolean isSelected, boolean hasFocus,int row, int column) {
+            //##################### 这里是你需要看需求修改的部分
+            if(row==1){
+                setBackground(Color.GREEN);
+                setForeground(Color.WHITE);
             }
-		};
-		t2.setFont(new Font("Dialog",1,15));
+            //######################
+            return super.getTableCellRendererComponent(table, value,isSelected, hasFocus, row, column);
+            }
+            };
+            //对每行的每一个单元格
+            int columnCount = t2.getColumnCount();
+            for (int i = 0; i < columnCount; i++) {
+                t2.getColumn(t2.getColumnName(i)).setCellRenderer(dtcr);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
 		
 		//设置table宽高
 		TableColumn column = null;  

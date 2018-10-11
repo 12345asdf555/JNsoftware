@@ -6,6 +6,11 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -36,6 +41,7 @@ public class JWeldButton extends JFrame{
 	private ArrayList<String> listarrayta;
 	private String weldid;
 	private String welderid;
+	private String limit;
 
 	public JWeldButton(String weldposition1,String weldtype1,String weld1,ImageIcon img1, Secondpage sd1, ArrayList<String> listarraywe1, ArrayList<String> listarrayta1, String weldid1, String welderid1){
 		
@@ -50,6 +56,31 @@ public class JWeldButton extends JFrame{
 		listarrayta = listarrayta1;
 		weldid = weldid1;
 		welderid = welderid1;
+		
+		try {
+			  FileInputStream in = new FileInputStream("IPconfig.txt");  
+	          InputStreamReader inReader = new InputStreamReader(in, "UTF-8");  
+	          BufferedReader bufReader = new BufferedReader(inReader);  
+	          String line = null; 
+	          int writetime=0;
+				
+			    while((line = bufReader.readLine()) != null){ 
+			    	if(writetime==0){
+		                writetime++;
+			    	}else if(writetime==1){
+			    		writetime++;
+			    	}else if(writetime==2){
+			    		limit = line;
+			    	}
+	          }  
+
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		
 		Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
 		
@@ -105,6 +136,13 @@ public class JWeldButton extends JFrame{
 			}
 		});
 		contentPane.add(b5);
+		
+		if(limit.equals("false")){
+			jb.setVisible(true);
+		}else{
+			new Thirdpage(sd.worktime,sd.welder,sd.weldernum,sd.weldowner,weld,screensize,sd.listarray21,sd.listarray22,sd.listarray3,sd.listarray4,img,sd.client,listarraywe,listarrayta,weldid,welderid,weldtype);
+			sd.setVisible(false);
+		}
 		
 	}
 }

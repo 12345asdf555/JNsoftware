@@ -88,6 +88,8 @@ public class Firstpage extends JFrame{
 	public Firstpage context;
 	public Dimension screensize;
 	
+	public String limit;
+	
 	private IsnullUtil iutil;
 	private JaxWsDynamicClientFactory dcf;
 	private Client client;
@@ -131,6 +133,10 @@ public class Firstpage extends JFrame{
 				    	if(writetime==0){
 			                ip=line;
 			                writetime++;
+				    	}else if(writetime==1){
+				    		writetime++;
+				    	}else if(writetime==2){
+				    		limit = line;
 				    	}
 		          }  
 
@@ -154,27 +160,164 @@ public class Firstpage extends JFrame{
 						new Object[] { obj1 });
 				String restr = objects[0].toString();
 		        JSONArray ary = JSONArray.parseArray(restr);
+	        	ArrayList<String> listarraybuf = new ArrayList<String>();
+	        	
 		        for(int i=0;i<ary.size();i++){
 			        String str = ary.getString(i);
 			        JSONObject js = JSONObject.fromObject(str);
 			        
-			        if(js.getString("OPERATESTATUS").equals("")){
-			        	listarray3.add(js.getString("TASKNO"));
-			        	listarray3.add(js.getString("ITEMNAME"));
-			        	listarray3.add(js.getString("WELDERNAME"));
-			        	listarray3.add(js.getString("TASKDES"));
-			        	listarrayta.add(js.getString("TASKNO"));
-			        	listarrayta.add(js.getString("ID"));
-			        }else if(js.getString("OPERATESTATUS").equals("0") || js.getString("OPERATESTATUS").equals("2")){
-			        	listarray4.add(js.getString("TASKNO"));
-			        	listarray4.add(js.getString("ITEMNAME"));
-		        		listarray4.add(js.getString("REWELDERNO"));
-		        		listarray4.add(js.getString("REWELDERNAME"));
-			        	listarray4.add(js.getString("MACHINENO"));
-			        	listarray4.add("焊接");
-			        	listarray4.add(js.getString("STARTTIME"));
-			        	//listarray4.add(js.getString("TASKDES"));
-			        }
+			        if(limit.equals("false")){
+    		        	if(js.getString("OPERATESTATUS").equals("")){
+        		        	listarray3.add(js.getString("TASKNO"));
+        		        	listarray3.add(js.getString("ITEMNAME"));
+        		        	listarray3.add(js.getString("WELDERNAME"));
+        		        	listarray3.add(js.getString("TASKDES"));
+        		        	listarrayta.add(js.getString("TASKNO"));
+        		        	listarrayta.add(js.getString("ID"));
+        		        }else if(js.getString("OPERATESTATUS").equals("0") || js.getString("OPERATESTATUS").equals("2")){
+        		        	listarray4.add(js.getString("TASKNO"));
+        		        	listarray4.add(js.getString("ITEMNAME"));
+        	        		listarray4.add(js.getString("REWELDERNO"));
+        	        		listarray4.add(js.getString("REWELDERNAME"));
+        		        	listarray4.add(js.getString("MACHINENO"));
+        		        	listarray4.add("焊接");
+        		        	listarray4.add(js.getString("STARTTIME"));
+        		        	//listarray4.add(js.getString("TASKDES"));
+        		        }
+    		        }else if(limit.equals("true")){
+    		        	
+    		        	if(js.getString("OPERATESTATUS").equals("1")){
+    		        		listarraybuf.add(js.getString("ID"));
+    		        	}else{
+    		        		
+    		        		if(listarraybuf.size()==0){
+    		        			int count1 = 0;
+								count1++;
+		        				if(count1==listarraybuf.size() || listarraybuf.size()==0){
+		        					int count=0;
+		        		        	if(listarray3.size()==0){
+		        		        		listarray3.add(js.getString("TASKNO"));
+		    	    		        	listarray3.add(js.getString("ITEMNAME"));
+		    	    		        	listarray3.add(js.getString("WELDERNAME"));
+		    	    		        	listarray3.add(js.getString("TASKDES"));
+		    	    		        	listarrayta.add(js.getString("TASKNO"));
+		    	    		        	listarrayta.add(js.getString("ID"));
+		        		        	}else{
+		        		        		for(int k=0;k<listarray3.size();k+=4){
+		                		        	if(js.getString("TASKNO").equals(listarray3.get(k))){
+		                		        		break;
+		                		        	}else{
+		                		        		count++;
+		                		        		if(count == listarray3.size()/4){
+		                	    		        	listarray3.add(js.getString("TASKNO"));
+		                	    		        	listarray3.add(js.getString("ITEMNAME"));
+		                	    		        	listarray3.add(js.getString("WELDERNAME"));
+		                	    		        	listarray3.add(js.getString("TASKDES"));
+		                	    		        	listarrayta.add(js.getString("TASKNO"));
+		                	    		        	listarrayta.add(js.getString("ID"));
+		                		        		}
+		                		        	}
+		            		        	}
+		        		        	}
+		        		        	
+		            		        if(js.getString("OPERATESTATUS").equals("0") || js.getString("OPERATESTATUS").equals("2")){
+		            		        	listarray4.add(js.getString("TASKNO"));
+		            		        	listarray4.add(js.getString("ITEMNAME"));
+		            	        		listarray4.add(js.getString("REWELDERNO"));
+		            	        		listarray4.add(js.getString("REWELDERNAME"));
+		            		        	listarray4.add(js.getString("MACHINENO"));
+		            		        	listarray4.add("焊接");
+		            		        	listarray4.add(js.getString("STARTTIME"));
+		            		        	//listarray4.add(js.getString("TASKDES"));
+		            		        }
+		        				}
+    		        		}else{
+    		        			int count1=0;
+        		        		for(int l=0;l<listarraybuf.size();l++){
+        		        			if(listarraybuf.get(l).equals(js.getString("ID"))){
+        		        				break;
+        		        			}else{
+        		        				count1++;
+        		        				if(count1==listarraybuf.size() || listarraybuf.size()==0){
+        		        					int count=0;
+        		        		        	if(listarray3.size()==0){
+        		        		        		listarray3.add(js.getString("TASKNO"));
+        		    	    		        	listarray3.add(js.getString("ITEMNAME"));
+        		    	    		        	listarray3.add(js.getString("WELDERNAME"));
+        		    	    		        	listarray3.add(js.getString("TASKDES"));
+        		    	    		        	listarrayta.add(js.getString("TASKNO"));
+        		    	    		        	listarrayta.add(js.getString("ID"));
+        		        		        	}else{
+        		        		        		for(int k=0;k<listarray3.size();k+=4){
+        		                		        	if(js.getString("TASKNO").equals(listarray3.get(k))){
+        		                		        		break;
+        		                		        	}else{
+        		                		        		count++;
+        		                		        		if(count == listarray3.size()/4){
+        		                	    		        	listarray3.add(js.getString("TASKNO"));
+        		                	    		        	listarray3.add(js.getString("ITEMNAME"));
+        		                	    		        	listarray3.add(js.getString("WELDERNAME"));
+        		                	    		        	listarray3.add(js.getString("TASKDES"));
+        		                	    		        	listarrayta.add(js.getString("TASKNO"));
+        		                	    		        	listarrayta.add(js.getString("ID"));
+        		                		        		}
+        		                		        	}
+        		            		        	}
+        		        		        	}
+        		        		        	
+        		            		        if(js.getString("OPERATESTATUS").equals("0") || js.getString("OPERATESTATUS").equals("2")){
+        		            		        	listarray4.add(js.getString("TASKNO"));
+        		            		        	listarray4.add(js.getString("ITEMNAME"));
+        		            	        		listarray4.add(js.getString("REWELDERNO"));
+        		            	        		listarray4.add(js.getString("REWELDERNAME"));
+        		            		        	listarray4.add(js.getString("MACHINENO"));
+        		            		        	listarray4.add("焊接");
+        		            		        	listarray4.add(js.getString("STARTTIME"));
+        		            		        	//listarray4.add(js.getString("TASKDES"));
+        		            		        }
+        		        				}
+        		        			}
+        		        		}
+    		        		}
+    		        	}
+    		        	
+    		        	/*int count=0;
+    		        	if(listarray3.size()==0){
+    		        		listarray3.add(js.getString("TASKNO"));
+	    		        	listarray3.add(js.getString("ITEMNAME"));
+	    		        	listarray3.add(js.getString("WELDERNAME"));
+	    		        	listarray3.add(js.getString("TASKDES"));
+	    		        	listarrayta.add(js.getString("TASKNO"));
+	    		        	listarrayta.add(js.getString("ID"));
+    		        	}else{
+    		        		for(int k=0;k<listarray3.size();k+=4){
+            		        	if(js.getString("TASKNO").equals(listarray3.get(k))){
+            		        		break;
+            		        	}else{
+            		        		count++;
+            		        		if(count == listarray3.size()/4){
+            	    		        	listarray3.add(js.getString("TASKNO"));
+            	    		        	listarray3.add(js.getString("ITEMNAME"));
+            	    		        	listarray3.add(js.getString("WELDERNAME"));
+            	    		        	listarray3.add(js.getString("TASKDES"));
+            	    		        	listarrayta.add(js.getString("TASKNO"));
+            	    		        	listarrayta.add(js.getString("ID"));
+            		        		}
+            		        	}
+        		        	}
+    		        	}
+    		        	
+        		        if(js.getString("OPERATESTATUS").equals("0") || js.getString("OPERATESTATUS").equals("2")){
+        		        	listarray4.add(js.getString("TASKNO"));
+        		        	listarray4.add(js.getString("ITEMNAME"));
+        	        		listarray4.add(js.getString("REWELDERNO"));
+        	        		listarray4.add(js.getString("REWELDERNAME"));
+        		        	listarray4.add(js.getString("MACHINENO"));
+        		        	listarray4.add("焊接");
+        		        	listarray4.add(js.getString("STARTTIME"));
+        		        	//listarray4.add(js.getString("TASKDES"));
+        		        }*/
+    		        }
 			        
 			        String a = js.getString("MACHINENO");
 		        }
@@ -210,27 +353,124 @@ public class Firstpage extends JFrame{
 	            					new Object[] { obj1 });
 	            			String restr = objects[0].toString();
 	            	        JSONArray ary = JSONArray.parseArray(restr);
+	            	        
+	            	        ArrayList<String> listarraybuf = new ArrayList<String>();
+	            	        
 	            	        for(int i=0;i<ary.size();i++){
 	            		        String str = ary.getString(i);
 	            		        JSONObject js = JSONObject.fromObject(str);
 	            		        
-	            		        if(js.getString("OPERATESTATUS").equals("")){
-	            		        	listarray3.add(js.getString("TASKNO"));
-	            		        	listarray3.add(js.getString("ITEMNAME"));
-	            		        	listarray3.add(js.getString("WELDERNAME"));
-	            		        	listarray3.add(js.getString("TASKDES"));
-	            		        	listarrayta.add(js.getString("TASKNO"));
-	            		        	listarrayta.add(js.getString("ID"));
-	            		        }else if(js.getString("OPERATESTATUS").equals("0") || js.getString("OPERATESTATUS").equals("2")){
-	            		        	listarray4.add(js.getString("TASKNO"));
-	            		        	listarray4.add(js.getString("ITEMNAME"));
-	            	        		listarray4.add(js.getString("REWELDERNO"));
-	            	        		listarray4.add(js.getString("REWELDERNAME"));
-	            		        	listarray4.add(js.getString("MACHINENO"));
-	            		        	listarray4.add("焊接");
-	            		        	listarray4.add(js.getString("STARTTIME"));
-	            		        	//listarray4.add(js.getString("TASKDES"));
+	            		        if(limit.equals("false")){
+	            		        	if(js.getString("OPERATESTATUS").equals("")){
+		            		        	listarray3.add(js.getString("TASKNO"));
+		            		        	listarray3.add(js.getString("ITEMNAME"));
+		            		        	listarray3.add(js.getString("WELDERNAME"));
+		            		        	listarray3.add(js.getString("TASKDES"));
+		            		        	listarrayta.add(js.getString("TASKNO"));
+		            		        	listarrayta.add(js.getString("ID"));
+		            		        }else if(js.getString("OPERATESTATUS").equals("0") || js.getString("OPERATESTATUS").equals("2")){
+		            		        	listarray4.add(js.getString("TASKNO"));
+		            		        	listarray4.add(js.getString("ITEMNAME"));
+		            	        		listarray4.add(js.getString("REWELDERNO"));
+		            	        		listarray4.add(js.getString("REWELDERNAME"));
+		            		        	listarray4.add(js.getString("MACHINENO"));
+		            		        	listarray4.add("焊接");
+		            		        	listarray4.add(js.getString("STARTTIME"));
+		            		        	//listarray4.add(js.getString("TASKDES"));
+		            		        }
+	            		        }else if(limit.equals("true")){
+	            		        	
+	            		        	if(js.getString("OPERATESTATUS").equals("1")){
+	            		        		listarraybuf.add(js.getString("ID"));
+	            		        	}else{
+	            		        		
+	            		        		int count1=0;
+	            		        		for(int l=0;l<listarraybuf.size();l++){
+	            		        			if(listarraybuf.get(l).equals(js.getString("ID"))){
+	            		        				break;
+	            		        			}else{
+	            		        				count1++;
+	            		        				if(count1==listarraybuf.size()){
+	            		        					int count=0;
+	            		        		        	if(listarray3.size()==0){
+	            		        		        		listarray3.add(js.getString("TASKNO"));
+	            		    	    		        	listarray3.add(js.getString("ITEMNAME"));
+	            		    	    		        	listarray3.add(js.getString("WELDERNAME"));
+	            		    	    		        	listarray3.add(js.getString("TASKDES"));
+	            		    	    		        	listarrayta.add(js.getString("TASKNO"));
+	            		    	    		        	listarrayta.add(js.getString("ID"));
+	            		        		        	}else{
+	            		        		        		for(int k=0;k<listarray3.size();k+=4){
+	            		                		        	if(js.getString("TASKNO").equals(listarray3.get(k))){
+	            		                		        		break;
+	            		                		        	}else{
+	            		                		        		count++;
+	            		                		        		if(count == listarray3.size()/4){
+	            		                	    		        	listarray3.add(js.getString("TASKNO"));
+	            		                	    		        	listarray3.add(js.getString("ITEMNAME"));
+	            		                	    		        	listarray3.add(js.getString("WELDERNAME"));
+	            		                	    		        	listarray3.add(js.getString("TASKDES"));
+	            		                	    		        	listarrayta.add(js.getString("TASKNO"));
+	            		                	    		        	listarrayta.add(js.getString("ID"));
+	            		                		        		}
+	            		                		        	}
+	            		            		        	}
+	            		        		        	}
+	            		        		        	
+	            		            		        if(js.getString("OPERATESTATUS").equals("0") || js.getString("OPERATESTATUS").equals("2")){
+	            		            		        	listarray4.add(js.getString("TASKNO"));
+	            		            		        	listarray4.add(js.getString("ITEMNAME"));
+	            		            	        		listarray4.add(js.getString("REWELDERNO"));
+	            		            	        		listarray4.add(js.getString("REWELDERNAME"));
+	            		            		        	listarray4.add(js.getString("MACHINENO"));
+	            		            		        	listarray4.add("焊接");
+	            		            		        	listarray4.add(js.getString("STARTTIME"));
+	            		            		        	//listarray4.add(js.getString("TASKDES"));
+	            		            		        }
+	            		        				}
+	            		        			}
+	            		        		}
+	            		        		
+	            		        	}
+	            		        	
+	            		        	/*int count=0;
+	            		        	if(listarray3.size()==0){
+	            		        		listarray3.add(js.getString("TASKNO"));
+	        	    		        	listarray3.add(js.getString("ITEMNAME"));
+	        	    		        	listarray3.add(js.getString("WELDERNAME"));
+	        	    		        	listarray3.add(js.getString("TASKDES"));
+	        	    		        	listarrayta.add(js.getString("TASKNO"));
+	        	    		        	listarrayta.add(js.getString("ID"));
+	            		        	}else{
+	            		        		for(int k=0;k<listarray3.size();k+=4){
+	                    		        	if(js.getString("TASKNO").equals(listarray3.get(k))){
+	                    		        		break;
+	                    		        	}else{
+	                    		        		count++;
+	                    		        		if(count == listarray3.size()/4){
+	                    	    		        	listarray3.add(js.getString("TASKNO"));
+	                    	    		        	listarray3.add(js.getString("ITEMNAME"));
+	                    	    		        	listarray3.add(js.getString("WELDERNAME"));
+	                    	    		        	listarray3.add(js.getString("TASKDES"));
+	                    	    		        	listarrayta.add(js.getString("TASKNO"));
+	                    	    		        	listarrayta.add(js.getString("ID"));
+	                    		        		}
+	                    		        	}
+	                		        	}
+	            		        	}
+	            		        	
+	                		        if(js.getString("OPERATESTATUS").equals("0") || js.getString("OPERATESTATUS").equals("2")){
+	                		        	listarray4.add(js.getString("TASKNO"));
+	                		        	listarray4.add(js.getString("ITEMNAME"));
+	                	        		listarray4.add(js.getString("REWELDERNO"));
+	                	        		listarray4.add(js.getString("REWELDERNAME"));
+	                		        	listarray4.add(js.getString("MACHINENO"));
+	                		        	listarray4.add("焊接");
+	                		        	listarray4.add(js.getString("STARTTIME"));
+	                		        	//listarray4.add(js.getString("TASKDES"));
+	                		        }*/
 	            		        }
+	            		        
 	            		        
 	            		        String a = js.getString("MACHINENO");
 	            	        }
@@ -456,9 +696,9 @@ public class Firstpage extends JFrame{
 	            Image img = icon.getImage();  
 	            g.drawImage(img, 50, 23, 530, 41, this);  
 	            
-	            //ImageIcon icon1 = new ImageIcon(getClass().getResource("/images/firsttop2.png"));  
-	            //Image img1 = icon1.getImage();  
-	            //g.drawImage(img1, screensize1.width-550, 20, 490, 50, this); 
+	            ImageIcon icon1 = new ImageIcon(getClass().getResource("/images/firsttop2.png"));  
+	            Image img1 = icon1.getImage();  
+	            g.drawImage(img1, screensize1.width-550, 20, 490, 50, this); 
 	        }  
 		};
 		
@@ -563,10 +803,12 @@ public class Firstpage extends JFrame{
 							
 							boolean exiet = false;
 							
-							for(int i=0;i<listarray4.size();i+=8){
-								if(weldernum.equals(listarray4.get(i+2))){
-									exiet = true;
-									break;
+							if(limit.equals("false")){
+								for(int i=0;i<listarray4.size();i+=8){
+									if(weldernum.equals(listarray4.get(i+2))){
+										exiet = true;
+										break;
+									}
 								}
 							}
 							
