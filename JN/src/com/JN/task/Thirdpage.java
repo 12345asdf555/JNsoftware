@@ -479,7 +479,7 @@ public class Thirdpage extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				//开启新视窗选择焊机
-				new Secondpage(worktime,welder,weldernum,weldowner,screensize,listarray21,listarray22,listarray3,listarray4, client,listarraywe,listarrayta,welderid);
+				//new Secondpage(worktime,welder,weldernum,weldowner,screensize,listarray21,listarray22,listarray3,listarray4, client,listarraywe,listarrayta,welderid);
 				
 				setVisible(false);
 			}
@@ -519,15 +519,15 @@ public class Thirdpage extends JFrame{
 							label_7.setText("任务编号:  ");
 						}else{
 							
-							JProcessBarDemo jpd = new JProcessBarDemo(screensize,td,weldid,welderid,taskid);
-							jpd.setVisible(true);
+							//JProcessBarDemo jpd = new JProcessBarDemo(screensize,td,weldid,welderid,taskid);
+							//jpd.setVisible(true);
 							
 							//JOptionPane.showMessageDialog(null, "领取成功,请尽快完成任务", "确认",JOptionPane.INFORMATION_MESSAGE);
 							//new Firstpage();
 						}
 					}else{
-						JProcessBarDemo jpd = new JProcessBarDemo(screensize,td,weldid,welderid,taskid);
-						jpd.setVisible(true);
+						//JProcessBarDemo jpd = new JProcessBarDemo(screensize,td,weldid,welderid,taskid);
+						//jpd.setVisible(true);
 					}
 					
 					//JOptionPane.showMessageDialog(null, "请稍候...", "",JOptionPane.INFORMATION_MESSAGE);

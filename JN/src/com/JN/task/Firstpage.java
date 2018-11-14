@@ -52,6 +52,7 @@ import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
 import com.alibaba.fastjson.JSONArray;
 import com.jacob.activeX.ActiveXComponent;
 import com.jacob.com.Dispatch;
+import com.jacob.com.Variant;
 
 import net.sf.json.JSONObject;
 import javax.swing.GroupLayout;
@@ -127,7 +128,7 @@ public class Firstpage extends JFrame{
 		
 		
 		new Thread(initdate).start();  //获取数据
-//		new Thread(card).start();  //获取数据
+		//new Thread(card).start();  //获取数据
 		//initdate(); //获取数据
 		initframe(); //绘制界面
 		time(); //电子时钟
@@ -144,17 +145,17 @@ public class Firstpage extends JFrame{
 		context = this;
 	}
 	
-	Runnable card = new Runnable(){
+	/*Runnable card = new Runnable(){
 		public void run(){
-/*			ActiveXComponent card = new ActiveXComponent("C3CardRead.Card");
+			ActiveXComponent card = new ActiveXComponent("C3CardRead.Card");
 			Dispatch disp = card.getObject();
-			textField.setText(Dispatch.call(disp, "EmpNo").getString());*/
+			textField.setText(Dispatch.call(disp, "EmpNo").getString());
 			ActiveXComponent card = new ActiveXComponent("axReadCard1");
 			Dispatch disp = card.getObject();
 			Dispatch.call(disp, "ReadCard").getString();
 			System.out.println(Dispatch.call(disp, "ReadCard").getString());
 		}
-	};
+	};*/
 	
 	Runnable websocket = new Runnable(){
 		public void run(){
@@ -817,7 +818,7 @@ public class Firstpage extends JFrame{
 	        			e.printStackTrace();
 	        		}
 	            }
-	        }, 0, 30000);
+	        }, 0, 10000);
 	        machineList();
 		}
 	};
@@ -971,13 +972,19 @@ public class Firstpage extends JFrame{
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				// TODO Auto-generated method stub
-/*				ActiveXComponent card = new ActiveXComponent("C3CardRead.Card");
+				/*				ActiveXComponent card = new ActiveXComponent("C3CardRead.Card");
 				Dispatch disp = card.getObject();
 				textField.setText(Dispatch.call(disp, "EmpNo").getString());*/
+				String empNO = null;
+				String empName = null;
+				String cardId = null;
 				ActiveXComponent card = new ActiveXComponent("ReadCardInfo.ReadCard");//{336C1808-AA0C-4081-A93A-D85335540C06}
 				Dispatch disp = card.getObject();
-				Dispatch.call(disp, "ReadCard").getString();
-				System.out.println(Dispatch.call(disp, "ReadCard").getString());
+				Dispatch.call(disp,"ReadCard",new Variant(empNO),new Variant(empName),new Variant(cardId));
+				if ((!empNO.equals(null))&&empNO.length() == 13){
+					textField.setText(empNO.substring(0, 8));
+				}
+				System.out.println(Dispatch.call(disp,"ReadCard",new Variant(empNO),new Variant(empName),new Variant(cardId)));
 			}
 
 			@Override
@@ -1053,7 +1060,7 @@ public class Firstpage extends JFrame{
 							if(!exiet){
 								
 								//开启新视窗选择焊机
-								new Secondpage(worktime,welder,weldernum,weldowner,screensize,listarray21,listarray22,listarray3,listarray4,client,listarraywe,listarrayta,welderid);
+								new Secondpage(worktime,welder,weldernum,weldowner,screensize,listarray21,listarray22,listarray3,listarray4,client,listarraywe,listarrayta,welderid,firstpageMachine);
 								
 								//关闭当前视窗
 								setVisible(false);
@@ -1449,7 +1456,7 @@ public class Firstpage extends JFrame{
 		p2.repaint();
 		
 		p2.remove(l4);
-		int width2 = ((int)screensize11.getWidth())/2;
+		int width2 = ((int)screensize11.getWidth())/2-50;
 		l4 = new JLabel("设备运行");
 		l4.setForeground(Color.WHITE);
 		l4.setBounds(width2, 0, 216, 29);

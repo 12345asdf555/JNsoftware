@@ -1,6 +1,7 @@
  	package com.JN.task;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -25,6 +26,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -52,14 +54,14 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 
 public class Secondpage extends JFrame{
 	
-	private Clientconnect2 cc = new Clientconnect2(this,2);
+	//private Clientconnect2 cc = new Clientconnect2(this,2);
 	private JPanel p1 = new JPanel();
 	private JPanel panel_1;
-	private JLabel l11 = new JLabel("焊工姓名：   ");
-	private JLabel l12 = new JLabel("焊工编号：   ");
-	private JLabel l15 = new JLabel("所在班组：   ");
-	private JLabel l13 = new JLabel("焊机编号：   ");
-	private JLabel l14 = new JLabel("任务编号：   ");
+	public JLabel l11 = new JLabel("焊工姓名:   ");
+	public JLabel l12 = new JLabel("焊工编号:   ");
+	public JLabel l15 = new JLabel("所在班组:   ");
+	public JLabel l13 = new JLabel("焊机编号:   ");
+	public JLabel l14 = new JLabel("任务编号:");
 	private JLabel l21;
 	private JLabel l22;
 	private JLabel l32 = new JLabel();
@@ -77,11 +79,20 @@ public class Secondpage extends JFrame{
             g.drawImage(img, 0, 0, getWidth(), getHeight(), this);  
         }  
 	};
+	private JButton b5 = new JButton("确认"){
+		@Override  
+        protected void paintComponent(Graphics g) { 
+		  	Dimension screensize1 = Toolkit.getDefaultToolkit().getScreenSize();
+            ImageIcon icon = new ImageIcon(getClass().getResource("/images/butsur.png"));  
+            Image img = icon.getImage();  
+            g.drawImage(img, 0, 0, getWidth(), getHeight(), this);  
+        }  
+	};
 	
 	private Firstpage firstpage;
 	public String worktime;
 	public String welder;
-	public String weld;
+	public String weld = "";
 	private Dimension screensize;
 	public ArrayList<String> listarray21;
 	public ArrayList<String> listarray22 = new ArrayList<String>();
@@ -97,7 +108,8 @@ public class Secondpage extends JFrame{
 	private String welderid;
     public ArrayList<String> websocketMachine = new ArrayList<String>();
     public ArrayList<String> secondpageMachine = new ArrayList<String>();
-	
+
+	public String taskidnew;
 	private final JPanel panel_2 = new JPanel();
 	private final JPanel panel = new JPanel(){
 		@Override  
@@ -117,16 +129,17 @@ public class Secondpage extends JFrame{
 	private String limit;
 	private Firstpage fp;
 	
-	public Secondpage(String worktime1,String welder1,String weldernum1,String weldowner1, Dimension screensize1,ArrayList<String> listarray221, ArrayList<String> listarray222,ArrayList<String> listarray31, ArrayList<String> listarray41, Client client1, ArrayList<String> listarraywe1, ArrayList<String> listarrayta1, String welderid1){
+	public Secondpage(String worktime1,String welder1,String weldernum1,String weldowner1, Dimension screensize1,ArrayList<String> listarray221, ArrayList<String> listarray222,ArrayList<String> listarray31, ArrayList<String> listarray41, Client client1, ArrayList<String> listarraywe1, ArrayList<String> listarrayta1, String welderid1, ArrayList<String> firstpageMachine){
 		super("江南派工");
 
 		sd = this;
+		secondpageMachine = firstpageMachine;
 		
 		lblRenwu.setFont(new Font("宋体", Font.BOLD, 20));
 		
 		Dimension screensize11 = Toolkit.getDefaultToolkit().getScreenSize();
 		
-		panel_3.setBounds((int)screensize11.getWidth()-400, 333, 390, 53);
+		panel_3.setBounds((int)screensize11.getWidth()-400, 360, 390, 53);
 		panel_3.setBackground(new Color(251, 129, 54));
 		GroupLayout gl_panel_3 = new GroupLayout(panel_3);
 		gl_panel_3.setHorizontalGroup(
@@ -176,7 +189,7 @@ public class Secondpage extends JFrame{
 		listarrayta = listarrayta1;
 		welderid = welderid1;
 		
-		new Thread(websocket).start();
+		//new Thread(websocket).start();
 		initframe(); //绘制界面
 		time(); //电子时钟
 		
@@ -186,11 +199,11 @@ public class Secondpage extends JFrame{
 		// TODO Auto-generated constructor stub
 	}
 
-	Runnable websocket = new Runnable(){
+	/*Runnable websocket = new Runnable(){
 		public void run(){
 			cc.run();
 		}
-	};
+	};*/
 	
 	private void time() {
 		// TODO Auto-generated method stub
@@ -431,16 +444,9 @@ public class Secondpage extends JFrame{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		/*try {
-			Thread.sleep(3000);
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}*/
-		
+	
 		Dimension screensize1 = Toolkit.getDefaultToolkit().getScreenSize();
-		p1.setBounds((int)screensize1.getWidth()-400, 148, 390, 178);
+		p1.setBounds((int)screensize1.getWidth()-400, 148, 390, 205);
 		
 		//加载状态信息栏
 		p1.setFont(new Font("Dialog",1,17));
@@ -458,7 +464,7 @@ public class Secondpage extends JFrame{
 		l12.setText("焊工编号:" + weldernum);
 		l12.setFont(new Font("宋体", Font.BOLD, 17));
 		l12.setForeground(Color.WHITE);
-		l12.setBounds(14, 126, 200, 22);
+		l12.setBounds(14, 121, 400, 22);
 		p1.add(l12);
 		
 		//所在班组
@@ -477,7 +483,7 @@ public class Secondpage extends JFrame{
 		//任务编号
 		l14.setFont(new Font("宋体", Font.BOLD, 17));
 		l14.setForeground(Color.WHITE);
-		l14.setBounds(213, 126, 177, 22);
+		l14.setBounds(14, 167, 400, 22);
 		p1.add(l14);
 		
 		Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -518,7 +524,7 @@ public class Secondpage extends JFrame{
 		}
 		
 		//把listarray3提取为只有任务号、焊工两个属性
-		ArrayList<String> listarraybuf1 = new ArrayList<String>();
+		/*ArrayList<String> listarraybuf1 = new ArrayList<String>();
 		for(int i=0;i<listarray3.size();i+=4){
 			if(listarray3.get(i+1).equals(weldowner) && ( listarray3.get(i+2).equals(welder) || listarray3.get(i+2).equals(""))){
 				listarraybuf1.add(listarray3.get(i));
@@ -542,14 +548,77 @@ public class Secondpage extends JFrame{
 		for(int i=0;i<listarraybuf3.size();i+=2){
 			listarraybuf2.add(listarraybuf3.get(i));
 			listarraybuf2.add(listarraybuf3.get(i+1));
+		}*/
+		
+		ArrayList<String> listarraybuf1 = new ArrayList<String>();
+		ArrayList<String> listarraybuf2 = new ArrayList<String>();
+		int counttime = 0;
+		for(int i=0;i<listarray3.size();i+=4){
+			if(listarray3.get(i+1).equals(weldowner) && ( listarray3.get(i+2).equals(welder) || listarray3.get(i+2).equals(""))){
+				if(limit.equals("false")){
+					if(listarray3.get(i+2).equals(welder)){
+						listarraybuf1.add(" * " + listarray3.get(i));
+						listarraybuf1.add(" * " + listarray3.get(i+1));
+						listarraybuf1.add(" * " + listarray3.get(i+2));
+					}else{
+						listarraybuf2.add(listarray3.get(i));
+						listarraybuf2.add(listarray3.get(i+1));
+						listarraybuf2.add(listarray3.get(i+2));
+					}
+				}else if(limit.equals("true")){
+					
+					for(int j=0;j<listarray4.size();j+=8){
+						if(listarray4.get(j+4).equals(listarray3.get(i))){
+							if(listarray3.get(i+2).equals(welder)){
+								listarraybuf1.add(" * " + listarray3.get(i));
+								listarraybuf1.add(" * " + listarray3.get(i+1));
+								listarraybuf1.add("已领取");
+								break;
+							}else{
+								listarraybuf2.add(listarray3.get(i));
+								listarraybuf2.add(listarray3.get(i+1));
+								listarraybuf2.add("已领取");
+								break;
+							}
+						}else{
+							counttime++;
+							continue;
+						}
+					}
+					
+					if(counttime==listarray4.size()/8){
+						if(listarray3.get(i+2).equals(welder)){
+							listarraybuf1.add(" * " + listarray3.get(i));
+							listarraybuf1.add(" * " + listarray3.get(i+1));
+							listarraybuf1.add("未领取");
+						}else{
+							listarraybuf2.add(listarray3.get(i));
+							listarraybuf2.add(listarray3.get(i+1));
+							listarraybuf2.add("未领取");
+						}
+					}
+					counttime = 0;
+					
+				}
+			}
+		}
+		
+		for(int i=0;i<listarraybuf2.size();i+=3){
+			listarraybuf1.add(listarraybuf2.get(i));
+			listarraybuf1.add(listarraybuf2.get(i+1));
+			listarraybuf1.add(listarraybuf2.get(i+2));
 		}
 		
 		//table列名以及值
-		String[] cn = {"任务号", "指定焊工"};  
-		Object[][] obj = new Object[listarraybuf2.size()/2][2];  
-		for(int i=0;i<listarraybuf2.size()/2;i++){
+		String[] cn = {"任务号", "任务状态"};  
+		Object[][] obj = new Object[listarraybuf1.size()/3][2];  
+		for(int i=0;i<listarraybuf1.size()/3;i++){
 			for(int j=0;j<2;j++){
-				obj[i][j] = listarraybuf2.get(i*2+j);
+				if(j==0){
+					obj[i][j] = listarraybuf1.get(i*3+j);
+				}else if(j==1){
+					obj[i][j] = listarraybuf1.get(i*3+j+1);
+				}
 			}
 		}
 		//绘图
@@ -561,6 +630,13 @@ public class Secondpage extends JFrame{
 		};
 		t3.setFont(new Font("Dialog",1,15));
 		
+		//设置已领取任务背景颜色
+		for(int i=0;i<listarraybuf1.size();i+=3){
+			if(listarraybuf1.get(i+2).equals("已领取")){
+		        setOneRowBackgroundColor(t3,(i+3)/3-1,Color.GREEN);
+			}
+		}
+		
 		//设置table宽高
 		TableColumn column = null;  
         int colunms = t3.getColumnCount();  
@@ -568,10 +644,10 @@ public class Secondpage extends JFrame{
         {  
             column = t3.getColumnModel().getColumn(i);  
             /*将每一列的默认宽度设置为100*/ 
-            if(i != 3){
-            	column.setPreferredWidth((((int)panel_3.getWidth())-6)/2);
-            }else{
-            	column.setPreferredWidth(1630);
+            if(i == 0){
+            	column.setPreferredWidth((((int)panel_3.getWidth())-6)/3*2-13);
+            }else if(i == 1){
+            	column.setPreferredWidth((((int)panel_3.getWidth())-6)/3);
             }
         }  
         
@@ -582,10 +658,43 @@ public class Secondpage extends JFrame{
         t3.setRowHeight(50);
         t3.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); 
 		
+        t3.addMouseListener(new MouseListener(){
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+				String taskid = t3.getValueAt(t3.getSelectedRow(), 0).toString();
+				l14.setText("任务编号:" + taskid);
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+        });
+        
         Dimension screensize11 = Toolkit.getDefaultToolkit().getScreenSize();
         
 		sp3 = new JScrollPane(t3);
-		sp3.setBounds((int)screensize11.getWidth()-400, 393, 390, (int)screensize11.getHeight()-393-90);
+		sp3.setBounds((int)screensize11.getWidth()-400, 420, 390, (int)screensize11.getHeight()-420-90);
 		sp3.setBackground(Color.white);
 		repaint();
 		
@@ -793,8 +902,7 @@ public class Secondpage extends JFrame{
 									// TODO Auto-generated method stub
 									
 									if(e.getClickCount()==2){
-
-										String weldid = "";
+										/*String weldid = "";
 										weld = labelname;
 										for(int i=0;i<listarraywe.size();i+=2){
 											if(weld.equals(listarraywe.get(i))){
@@ -813,10 +921,17 @@ public class Secondpage extends JFrame{
 											l21.setIcon(img);
 										}
 										
-										JWeldButton jb = new JWeldButton(weldposition,weldtype,weld,img,sd,listarraywe,listarrayta,weldid,welderid,cc);
+										JWeldButton jb = new JWeldButton(weldposition,weldtype,weld,img,sd,listarraywe,listarrayta,weldid,welderid,cc);*/
 										//jb.setVisible(true);
 										
 									}else if(e.getClickCount()==1){
+										for(int i=0;i<p2.getComponentCount();i++){
+											int afre = p2.getComponentCount();
+											Component asdf = p2.getComponent(i);
+											((JComponent) asdf).setBorder(null);
+											System.out.println(asdf);
+										}
+										l21.setBorder(BorderFactory.createLineBorder(Color.RED,4));
 										weld = labelname;
 										if(listarray4.size()==0){
 											l13.setText("焊机编号:" + weld);
@@ -903,9 +1018,12 @@ public class Secondpage extends JFrame{
 		panel_4.setBounds(0, (int)screensize11.getHeight()-80, (int)screensize11.getWidth(), 80);
 		panel_4.setLayout(null);
 		b4.setFont(new Font("宋体", Font.BOLD, 17));
-		b4.setBounds(((int)screensize11.getWidth()-120)/2, 18, 125, 40);
+		b4.setBounds(((int)screensize11.getWidth()+200)/2, 18, 125, 40);
+		b5.setFont(new Font("宋体", Font.BOLD, 17));
+		b5.setBounds(((int)screensize11.getWidth()-300)/2, 18, 125, 40);
 		panel_4.setBackground(new Color(20,51,105));
 		panel_4.add(b4);
+		panel_4.add(b5);
 		b4.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -913,6 +1031,80 @@ public class Secondpage extends JFrame{
 				new Firstpage();
 				
 				setVisible(false);
+			}
+		});
+		b5.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if(l14.getText().toString().length() != 5){
+					
+					try{
+						if(weld.length() != 0){
+							/*l14.setText("任务编号:  " + task);
+							JOptionPane.showMessageDialog(null, "焊工：" + welder + "\n焊机：" + weld + "\n任务：" + task, "确认",JOptionPane.INFORMATION_MESSAGE);*/
+							
+							//String task = l14.getText().toString();
+							
+							String task = t3.getValueAt(t3.getSelectedRow(), 0).toString();
+
+							/*String[] taskbuf = task.split(":");
+							task = taskbuf[1];*/
+							
+							for(int i=0;i<listarrayta.size();i+=2){
+								if(task.equals(listarrayta.get(i))){
+									taskidnew = listarrayta.get(i+1);
+									break;
+								}
+							}
+							
+							/*label_9.setText("任务编号:" + task);
+							label_9.setFont(new Font("宋体",1,15));*/
+							
+							String weldid = null;
+							if(limit.equals("false")){
+								int i = JOptionPane.showConfirmDialog(null, "焊工：" + welder + "\n焊机：" + weld + "\n任务：" + task, "确认",JOptionPane.YES_NO_OPTION);
+								if(i!=0){
+									//label_7.setText("任务编号:  ");
+								}else{
+									
+									for(int i1=0;i1<listarraywe.size();i1+=2){
+										if(weld.equals(listarraywe.get(i1))){
+											weldid = listarraywe.get(i1+1);
+										}
+									}
+									
+									JProcessBarDemo jpd = new JProcessBarDemo(screensize,sd,weldid,welderid,taskidnew);
+									jpd.setVisible(true);
+									
+									//JOptionPane.showMessageDialog(null, "领取成功,请尽快完成任务", "确认",JOptionPane.INFORMATION_MESSAGE);
+									//new Firstpage();
+								}
+							}else{
+								for(int i1=0;i1<listarraywe.size();i1+=2){
+									if(weld.equals(listarraywe.get(i1))){
+										weldid = listarraywe.get(i1+1);
+									}
+								}
+								
+								JProcessBarDemo jpd = new JProcessBarDemo(screensize,sd,weldid,welderid,taskidnew);
+								jpd.setVisible(true);
+							}
+							
+							//JOptionPane.showMessageDialog(null, "请稍候...", "",JOptionPane.INFORMATION_MESSAGE);
+							
+						}else{
+							JOptionPane.showMessageDialog(null, "无选择焊机.", "  错误",JOptionPane.ERROR_MESSAGE);
+						}
+						
+					}catch(Exception e1){
+						JOptionPane.showMessageDialog(null, "无选择任务.", "  错误",JOptionPane.ERROR_MESSAGE);
+					}
+					
+				}else{
+					JOptionPane.showMessageDialog(null, "无选择任务.", "  错误",JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 		label.setFont(new Font("宋体", Font.BOLD, 20));
@@ -1122,7 +1314,7 @@ public class Secondpage extends JFrame{
 								
 								if(e.getClickCount()==2){
 
-									String weldid = "";
+									/*String weldid = "";
 									weld = labelname;
 									for(int i=0;i<listarraywe.size();i+=2){
 										if(weld.equals(listarraywe.get(i))){
@@ -1141,10 +1333,17 @@ public class Secondpage extends JFrame{
 										l21.setIcon(img);
 									}
 									
-									JWeldButton jb = new JWeldButton(weldposition,weldtype,weld,img,sd,listarraywe,listarrayta,weldid,welderid,cc);
+									JWeldButton jb = new JWeldButton(weldposition,weldtype,weld,img,sd,listarraywe,listarrayta,weldid,welderid,cc);*/
 									//jb.setVisible(true);
 									
 								}else if(e.getClickCount()==1){
+									for(int i=0;i<p2.getComponentCount();i++){
+										int afre = p2.getComponentCount();
+										Component asdf = p2.getComponent(i);
+										((JComponent) asdf).setBorder(null);
+										System.out.println(asdf);
+									}
+									l21.setBorder(BorderFactory.createLineBorder(Color.RED,4));
 									weld = labelname;
 									if(listarray4.size()==0){
 										l13.setText("焊机编号:" + weld);
@@ -1233,6 +1432,36 @@ public class Secondpage extends JFrame{
 		}
 		
 		
+	}
+
+	public static void setOneRowBackgroundColor(JTable table, final int rowIndex,
+		      final Color color) {
+	    try {
+	       DefaultTableCellRenderer tcr = new DefaultTableCellRenderer() {
+	 
+	        public Component getTableCellRendererComponent(JTable table,
+	            Object value, boolean isSelected, boolean hasFocus,
+	            int row, int column) {
+	          if (row == rowIndex) {
+	            setBackground(color);
+	            setForeground(Color.BLACK);
+	          }else{
+	        	setBackground(Color.WHITE);
+	            setForeground(Color.BLACK);
+	          }
+	          
+	          return super.getTableCellRendererComponent(table, value,
+	              isSelected, hasFocus, row, column);
+	        }
+	      };
+	      int columnCount = table.getColumnCount();
+	      tcr.setHorizontalAlignment(JLabel.CENTER);
+	      for (int i = 0; i < columnCount; i++) {
+	        table.getColumn(table.getColumnName(i)).setCellRenderer(tcr);
+	      }
+	    } catch (Exception ex) {
+	      ex.printStackTrace();
+	    }
 	}
 
 	public void websocketdata(String arg0) {
