@@ -91,11 +91,10 @@ public void run() {
 		        @Override
 		        public void onMessage(String arg0) {
  		        	if(page == 1){
-			        	fp.websocdata(arg0);
+			        	//fp.websocdata(arg0);
 		        	}else if(page == 2){
 			        	sp.websocketdata(arg0);
 		        	}
-		            System.out.println("page2:"+arg0);
 		        }
 
 		        @Override
