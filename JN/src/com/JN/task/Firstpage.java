@@ -20,6 +20,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -53,6 +54,10 @@ import com.alibaba.fastjson.JSONArray;
 import com.jacob.activeX.ActiveXComponent;
 import com.jacob.com.Dispatch;
 import com.jacob.com.Variant;
+import com.srplab.www.starcore.StarCoreFactory;
+import com.srplab.www.starcore.StarObjectClass;
+import com.srplab.www.starcore.StarServiceClass;
+import com.srplab.www.starcore.StarSrvGroupClass;
 
 import net.sf.json.JSONObject;
 import javax.swing.GroupLayout;
@@ -71,6 +76,7 @@ public class Firstpage extends JFrame{
 	private String connet = "jdbc:mysql://192.168.3.231:3306/CIWJN?user=db_admin&password=PIJXmcLRa0QgOw2c&useUnicode=true&autoReconnect=true&characterEncoding=UTF8";
 	public Secondpage sp = new Secondpage();
 	public Clientconnect1 cc = new Clientconnect1(this,1);
+	public MyTask mt = new MyTask(this);
 	public String webdata;
 	private java.sql.Connection conn = null;
 	private java.sql.Statement stmt =null;
@@ -113,6 +119,10 @@ public class Firstpage extends JFrame{
 	private Client client;
 	public boolean first = true;
 	
+	public StarCoreFactory starcore;
+	public StarServiceClass Service;
+	public StarSrvGroupClass SrvGroup;
+	
 	public Firstpage(){
 		super("江南派工");
 		
@@ -132,6 +142,7 @@ public class Firstpage extends JFrame{
 		//initdate(); //获取数据
 		initframe(); //绘制界面
 		time(); //电子时钟
+		time1(); //读卡
 		
 /*		try {
 			Thread.sleep(1000);
@@ -827,11 +838,12 @@ public class Firstpage extends JFrame{
 	private final JInternalFrame internalFrame_1 = new JInternalFrame("New JInternalFrame");
 	private final JLabel label = new JLabel("焊工 ：   ");
 	private final JLabel label_1 = new JLabel("焊工编号：");
-	private final JTextField textField = new JTextField(8);
+	public final JTextField textField = new JTextField(8);
 	private final JLabel label_4 = new JLabel("编号：   ");
 	private final JLabel label_5 = new JLabel("焊机 ：   ");
 	private final JLabel label_6 = new JLabel("类型：   ");
 	private final JLabel label_7 = new JLabel("任务：   ");
+	private Timer t;
 
 	private void time() {
 		// TODO Auto-generated method stub
@@ -852,13 +864,32 @@ public class Firstpage extends JFrame{
         }, 0 , 1000);
 	}
 
+	private void time1() {
+		// TODO Auto-generated method stub
+		t=new Timer();
+        //在3秒后执行MyTask类中的run方法
+		//t.scheduleAtFixedRate(mt(context), 3000, 10000);
+		t.schedule(new TimerTask(){
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				mt.run();
+			}
+		}, 3000,10000);
+        //t.schedule(new MyTask(), 3000);
+       
+       System.out.print("Game over");
+	}
+	
 	private void initframe() {
 		// TODO Auto-generated method stub
-		setUndecorated(true);
+		//setUndecorated(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setExtendedState(JFrame.MAXIMIZED_BOTH);
+		//setExtendedState(JFrame.MAXIMIZED_BOTH);
 		screensize = Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds(0,0,screensize.width,screensize.height);
+		//setSize(screensize.width,screensize.height-10);
+		setResizable(false);
 		setVisible(true);
 		
 		//信息列表
@@ -972,19 +1003,44 @@ public class Firstpage extends JFrame{
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				// TODO Auto-generated method stub
-				/*				ActiveXComponent card = new ActiveXComponent("C3CardRead.Card");
+/*				ActiveXComponent card = new ActiveXComponent("C3CardRead.Card");
 				Dispatch disp = card.getObject();
-				textField.setText(Dispatch.call(disp, "EmpNo").getString());*/
-				String empNO = null;
-				String empName = null;
-				String cardId = null;
-				ActiveXComponent card = new ActiveXComponent("ReadCardInfo.ReadCard");//{336C1808-AA0C-4081-A93A-D85335540C06}
-				Dispatch disp = card.getObject();
-				Dispatch.call(disp,"ReadCard",new Variant(empNO),new Variant(empName),new Variant(cardId));
-				if ((!empNO.equals(null))&&empNO.length() == 13){
-					textField.setText(empNO.substring(0, 8));
-				}
-				System.out.println(Dispatch.call(disp,"ReadCard",new Variant(empNO),new Variant(empName),new Variant(cardId)));
+				card.setProperty("ComSet", new Variant("1"));
+//				Dispatch.put(disp,"ComSet",new Variant("1"));
+				String Cardid = Dispatch.call(disp, "ReadCard").getString();
+//				String welderNumber = Dispatch.call(disp, "EmpNo").getString();
+				String welderNumber = Dispatch.get(disp, "EmpNo").toString();
+				if(welderNumber==null||("").equals(welderNumber)){
+					JOptionPane.showMessageDialog(null, "打开串口错误，未能识别读卡器!.", "  错误",JOptionPane.ERROR_MESSAGE);
+				}else{
+					textField.setText(welderNumber);
+				}*/
+//				StarCoreFactory starcore= StarCoreFactory.GetFactory();  
+//		        StarServiceClass Service=starcore._InitSimple("test","123",0,0);  
+//		        StarSrvGroupClass SrvGroup = (StarSrvGroupClass)Service._Get("_ServiceGroup");
+//				SrvGroup._InitRaw("csharp4",Service);
+//				//--load csharp module ---*/
+//				SrvGroup._LoadRawModule("csharp4","testcs","Test.dll",false);
+//				StarObjectClass Class1 = Service._ImportRawContext("csharp4","testcs.Class1",true,"");
+//				StarObjectClass inst = Class1._New("","","cle value",44);
+//				String empno1=(String)inst._Call("testfun"); 
+//				System.out.println(empno1);
+//				SrvGroup._ClearService();
+//				starcore._ModuleExit();
+//				textField.setText(empno1);
+				
+/*				SrvGroup._InitRaw("csharp4",Service);
+				//--load csharp module ---
+				SrvGroup._LoadRawModule("csharp4","testcs","Test.dll",false);
+				StarObjectClass Class1 = Service._ImportRawContext("csharp4","testcs.Class1",true,"");
+				StarObjectClass inst = Class1._New("","","cle value",44);
+				String empno1=(String)inst._Call("testfun"); 
+				System.out.println(empno1);
+				//SrvGroup._ClearService();
+				//starcore._ModuleExit();
+				if(empno1!=null && !empno1.equals("NULL")){
+					textField.setText(empno1);
+				}*/
 			}
 
 			@Override
@@ -1060,7 +1116,7 @@ public class Firstpage extends JFrame{
 							if(!exiet){
 								
 								//开启新视窗选择焊机
-								new Secondpage(worktime,welder,weldernum,weldowner,screensize,listarray21,listarray22,listarray3,listarray4,client,listarraywe,listarrayta,welderid,firstpageMachine);
+								new Secondpage(worktime,welder,weldernum,weldowner,screensize,listarray21,listarray22,listarray3,listarray4,client,listarraywe,listarrayta,welderid,firstpageMachine,context);
 								
 								//关闭当前视窗
 								setVisible(false);

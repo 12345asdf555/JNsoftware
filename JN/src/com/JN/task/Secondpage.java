@@ -129,9 +129,9 @@ public class Secondpage extends JFrame{
 	private String limit;
 	private Firstpage fp;
 	
-	public Secondpage(String worktime1,String welder1,String weldernum1,String weldowner1, Dimension screensize1,ArrayList<String> listarray221, ArrayList<String> listarray222,ArrayList<String> listarray31, ArrayList<String> listarray41, Client client1, ArrayList<String> listarraywe1, ArrayList<String> listarrayta1, String welderid1, ArrayList<String> firstpageMachine){
+	public Secondpage(String worktime1,String welder1,String weldernum1,String weldowner1, Dimension screensize1,ArrayList<String> listarray221, ArrayList<String> listarray222,ArrayList<String> listarray31, ArrayList<String> listarray41, Client client1, ArrayList<String> listarraywe1, ArrayList<String> listarrayta1, String welderid1, ArrayList<String> firstpageMachine, Firstpage context1){
 		super("江南派工");
-
+		fp = context1;
 		sd = this;
 		secondpageMachine = firstpageMachine;
 		
@@ -227,11 +227,12 @@ public class Secondpage extends JFrame{
 	
 	private void initframe() {
 		// TODO Auto-generated method stub
-		setUndecorated(true);
+		//setUndecorated(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setExtendedState(JFrame.MAXIMIZED_BOTH);
+		//setExtendedState(JFrame.MAXIMIZED_BOTH);
 		screensize = Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds(0,0,screensize.width,screensize.height);
+		setResizable(false);
 		getContentPane().setBackground(new Color(20,51,105));
 		setVisible(true);
 		
@@ -645,9 +646,9 @@ public class Secondpage extends JFrame{
             column = t3.getColumnModel().getColumn(i);  
             /*将每一列的默认宽度设置为100*/ 
             if(i == 0){
-            	column.setPreferredWidth((((int)panel_3.getWidth())-6)/3*2-13);
+            	column.setPreferredWidth((((int)panel_3.getWidth()))/9*7);
             }else if(i == 1){
-            	column.setPreferredWidth((((int)panel_3.getWidth())-6)/3);
+            	column.setPreferredWidth((((int)panel_3.getWidth())-6)/9*2);
             }
         }  
         
@@ -1018,9 +1019,9 @@ public class Secondpage extends JFrame{
 		panel_4.setBounds(0, (int)screensize11.getHeight()-80, (int)screensize11.getWidth(), 80);
 		panel_4.setLayout(null);
 		b4.setFont(new Font("宋体", Font.BOLD, 17));
-		b4.setBounds(((int)screensize11.getWidth()+200)/2, 18, 125, 40);
+		b4.setBounds(((int)screensize11.getWidth()+200)/2, 5, 125, 40);
 		b5.setFont(new Font("宋体", Font.BOLD, 17));
-		b5.setBounds(((int)screensize11.getWidth()-300)/2, 18, 125, 40);
+		b5.setBounds(((int)screensize11.getWidth()-300)/2, 5, 125, 40);
 		panel_4.setBackground(new Color(20,51,105));
 		panel_4.add(b4);
 		panel_4.add(b5);
@@ -1028,7 +1029,8 @@ public class Secondpage extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				new Firstpage();
+				fp.textField.setText("");
+				fp.setVisible(true);;
 				
 				setVisible(false);
 			}
