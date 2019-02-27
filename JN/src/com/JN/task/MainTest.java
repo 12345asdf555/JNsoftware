@@ -16,7 +16,7 @@ public class MainTest {
 		IsnullUtil iutil = new IsnullUtil();
 		
 		JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
-		Client client = dcf.createClient("http://localhost:8080/CIWJN_Service/cIWJNWebService?wsdl");
+		Client client = dcf.createClient("http://192.168.3.207:8080/CIWJN_Service/cIWJNWebService?wsdl");
 		iutil.Authority(client);
 		String obj1 = "{\"CLASSNAME\":\"junctionWebServiceImpl\",\"METHOD\":\"getWeldedJunctionAll\"}";
 		

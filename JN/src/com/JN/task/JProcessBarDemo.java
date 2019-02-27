@@ -49,11 +49,13 @@ public class JProcessBarDemo extends JFrame{
 	private String weldid;
 	private String welderid;
 	private String taskid;
+	private Firstpage fp;
 	
-	public JProcessBarDemo(Dimension screensize1, Secondpage sd1, String weldid1, String welderid1, String taskid1){
+	public JProcessBarDemo(Dimension screensize1, Secondpage sd1, String weldid1, String welderid1, String taskid1, Firstpage fp1){
 		
 		screensize = screensize1;
 		sd = sd1;
+		fp = fp1;
 		
 		l11.setText(sd.l11.getText().toString());
 		l11.setFont(new Font("宋体", Font.BOLD, 17));
@@ -174,8 +176,14 @@ public class JProcessBarDemo extends JFrame{
 						
 						if(!cancel){
 							new Firstpage();
-							
 							sd.setVisible(false);
+							sd.tExit1.cancel();
+							sd=null;
+							fp.tExit.cancel();
+							fp.tExit1.cancel();
+							fp.t.cancel();
+							fp=null;
+							System.gc();
 						}
 				    }else if(restr.equals("false")){
 				    	jpb.setString("失败，请重试");// 设置提示信息

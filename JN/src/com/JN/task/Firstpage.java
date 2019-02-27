@@ -102,6 +102,8 @@ public class Firstpage extends JFrame{
 	private JScrollPane s4;
 	private JTable t4 = new JTable();
 	private JLabel l22;
+	public Timer tExit = null; 
+	public Timer tExit1 = null; 
 	
 	public String time;
 	public String worktime;
@@ -384,7 +386,6 @@ public class Firstpage extends JFrame{
 				e.printStackTrace();
 			}
 	        
-			Timer tExit = null; 
 			tExit = new Timer();  
 	        tExit.schedule(new TimerTask() {  
 	            @Override  
@@ -829,7 +830,7 @@ public class Firstpage extends JFrame{
 	        			e.printStackTrace();
 	        		}
 	            }
-	        }, 0, 10000);
+	        }, 0, 60000);
 	        machineList();
 		}
 	};
@@ -843,11 +844,10 @@ public class Firstpage extends JFrame{
 	private final JLabel label_5 = new JLabel("焊机 ：   ");
 	private final JLabel label_6 = new JLabel("类型：   ");
 	private final JLabel label_7 = new JLabel("任务：   ");
-	private Timer t;
+	public Timer t;
 
 	private void time() {
 		// TODO Auto-generated method stub
-		Timer tExit1 = null; 
 		tExit1 = new Timer();  
         tExit1.schedule(new TimerTask() {
 			
