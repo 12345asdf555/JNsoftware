@@ -84,6 +84,9 @@ public class Firstpage extends JFrame{
 	private JComboBox jcb;
 	private JScrollPane sp2;
 	private final JPanel panel_4 = new JPanel();
+	public Timer tExit;
+	public Timer t;
+	public Timer tExit1;
     
 	public ArrayList<String> listarray1 = new ArrayList<String>();
     public ArrayList<String> listarray21 = new ArrayList<String>();
@@ -384,7 +387,7 @@ public class Firstpage extends JFrame{
 				e.printStackTrace();
 			}
 	        
-			Timer tExit = null; 
+			tExit = null; 
 			tExit = new Timer();  
 	        tExit.schedule(new TimerTask() {  
 	            @Override  
@@ -843,11 +846,10 @@ public class Firstpage extends JFrame{
 	private final JLabel label_5 = new JLabel("焊机 ：   ");
 	private final JLabel label_6 = new JLabel("类型：   ");
 	private final JLabel label_7 = new JLabel("任务：   ");
-	private Timer t;
 
 	private void time() {
 		// TODO Auto-generated method stub
-		Timer tExit1 = null; 
+		tExit1 = null; 
 		tExit1 = new Timer();  
         tExit1.schedule(new TimerTask() {
 			
@@ -1114,7 +1116,6 @@ public class Firstpage extends JFrame{
 							}
 							
 							if(!exiet){
-								
 								//开启新视窗选择焊机
 								new Secondpage(worktime,welder,weldernum,weldowner,screensize,listarray21,listarray22,listarray3,listarray4,client,listarraywe,listarrayta,welderid,firstpageMachine,context);
 								

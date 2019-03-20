@@ -108,7 +108,7 @@ public class Secondpage extends JFrame{
 	private String welderid;
     public ArrayList<String> websocketMachine = new ArrayList<String>();
     public ArrayList<String> secondpageMachine = new ArrayList<String>();
-
+    public Timer tExit1;
 	public String taskidnew;
 	private final JPanel panel_2 = new JPanel();
 	private final JPanel panel = new JPanel(){
@@ -207,7 +207,7 @@ public class Secondpage extends JFrame{
 	
 	private void time() {
 		// TODO Auto-generated method stub
-		Timer tExit1 = null; 
+		tExit1 = null; 
 		tExit1 = new Timer();  
         tExit1.schedule(new TimerTask() {
 			
@@ -631,6 +631,9 @@ public class Secondpage extends JFrame{
 		};
 		t3.setFont(new Font("Dialog",1,15));
 		
+		TableCellTextAreaRenderer r = new TableCellTextAreaRenderer();
+		t3.getColumnModel().getColumn(0).setCellRenderer(r);
+		
 		//设置已领取任务背景颜色
 		for(int i=0;i<listarraybuf1.size();i+=3){
 			if(listarraybuf1.get(i+2).equals("已领取")){
@@ -653,11 +656,11 @@ public class Secondpage extends JFrame{
         }  
         
         //居中显示，关闭自动编辑
-        DefaultTableCellRenderer r = new DefaultTableCellRenderer();   
-        r.setHorizontalAlignment(JLabel.CENTER);   
-        t3.setDefaultRenderer(Object.class, r);
-        t3.setRowHeight(50);
-        t3.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); 
+        /*DefaultTableCellRenderer r = new DefaultTableCellRenderer();   
+        r.setHorizontalAlignment(JLabel.CENTER);*/   
+        //t3.setDefaultRenderer(Object.class, new TableCellTextAreaRenderer());
+        t3.setRowHeight(150);
+        //t3.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); 
 		
         t3.addMouseListener(new MouseListener(){
 			@Override
@@ -1077,7 +1080,7 @@ public class Secondpage extends JFrame{
 										}
 									}
 									
-									JProcessBarDemo jpd = new JProcessBarDemo(screensize,sd,weldid,welderid,taskidnew);
+									JProcessBarDemo jpd = new JProcessBarDemo(screensize,sd,weldid,welderid,taskidnew,fp);
 									jpd.setVisible(true);
 									
 									//JOptionPane.showMessageDialog(null, "领取成功,请尽快完成任务", "确认",JOptionPane.INFORMATION_MESSAGE);
@@ -1090,7 +1093,7 @@ public class Secondpage extends JFrame{
 									}
 								}
 								
-								JProcessBarDemo jpd = new JProcessBarDemo(screensize,sd,weldid,welderid,taskidnew);
+								JProcessBarDemo jpd = new JProcessBarDemo(screensize,sd,weldid,welderid,taskidnew,fp);
 								jpd.setVisible(true);
 							}
 							
@@ -1439,7 +1442,7 @@ public class Secondpage extends JFrame{
 	public static void setOneRowBackgroundColor(JTable table, final int rowIndex,
 		      final Color color) {
 	    try {
-	       DefaultTableCellRenderer tcr = new DefaultTableCellRenderer() {
+	    	TableCellTextAreaRenderer tcr = new TableCellTextAreaRenderer() {
 	 
 	        public Component getTableCellRendererComponent(JTable table,
 	            Object value, boolean isSelected, boolean hasFocus,
@@ -1456,11 +1459,6 @@ public class Secondpage extends JFrame{
 	              isSelected, hasFocus, row, column);
 	        }
 	      };
-	      int columnCount = table.getColumnCount();
-	      tcr.setHorizontalAlignment(JLabel.CENTER);
-	      for (int i = 0; i < columnCount; i++) {
-	        table.getColumn(table.getColumnName(i)).setCellRenderer(tcr);
-	      }
 	    } catch (Exception ex) {
 	      ex.printStackTrace();
 	    }
