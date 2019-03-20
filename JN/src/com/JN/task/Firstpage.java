@@ -875,7 +875,7 @@ public class Firstpage extends JFrame{
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				mt.run();
+				//mt.run();
 			}
 		}, 3000,10000);
         //t.schedule(new MyTask(), 3000);

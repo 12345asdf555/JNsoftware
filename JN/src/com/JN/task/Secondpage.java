@@ -34,11 +34,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.xml.namespace.QName;
 
@@ -206,8 +209,6 @@ public class Secondpage extends JFrame{
 	};*/
 	
 	private void time() {
-		// TODO Auto-generated method stub
-		tExit1 = null; 
 		tExit1 = new Timer();  
         tExit1.schedule(new TimerTask() {
 			
@@ -622,6 +623,10 @@ public class Secondpage extends JFrame{
 				}
 			}
 		}
+		
+		JTableHeader tableHeader = t3.getTableHeader();  
+    	tableHeader.setReorderingAllowed(false);
+		
 		//绘图
 		t3 = new JTable(obj,cn){
 			public boolean isCellEditable(int row, int column)
@@ -629,10 +634,17 @@ public class Secondpage extends JFrame{
                return false;//表格不允许被编辑
             }
 		};
-		t3.setFont(new Font("Dialog",1,15));
-		
+
+        //居中显示，关闭自动编辑
+        /*DefaultTableCellRenderer r = new DefaultTableCellRenderer();   
+        r.setHorizontalAlignment(JLabel.CENTER);   
+        t3.setDefaultRenderer(Object.class, r);
+        t3.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); */
 		TableCellTextAreaRenderer r = new TableCellTextAreaRenderer();
 		t3.getColumnModel().getColumn(0).setCellRenderer(r);
+        
+		t3.setFont(new Font("Dialog",1,15));
+		
 		
 		//设置已领取任务背景颜色
 		for(int i=0;i<listarraybuf1.size();i+=3){
@@ -654,14 +666,10 @@ public class Secondpage extends JFrame{
             	column.setPreferredWidth((((int)panel_3.getWidth())-6)/9*2);
             }
         }  
-        
-        //居中显示，关闭自动编辑
-        /*DefaultTableCellRenderer r = new DefaultTableCellRenderer();   
-        r.setHorizontalAlignment(JLabel.CENTER);*/   
-        //t3.setDefaultRenderer(Object.class, new TableCellTextAreaRenderer());
+
+		//设置table行高
         t3.setRowHeight(150);
-        //t3.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); 
-		
+        
         t3.addMouseListener(new MouseListener(){
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -1022,9 +1030,9 @@ public class Secondpage extends JFrame{
 		panel_4.setBounds(0, (int)screensize11.getHeight()-80, (int)screensize11.getWidth(), 80);
 		panel_4.setLayout(null);
 		b4.setFont(new Font("宋体", Font.BOLD, 17));
-		b4.setBounds(((int)screensize11.getWidth()+200)/2, 5, 125, 40);
+		b4.setBounds(((int)screensize11.getWidth()+200)/2, 3, 116, 35);
 		b5.setFont(new Font("宋体", Font.BOLD, 17));
-		b5.setBounds(((int)screensize11.getWidth()-300)/2, 5, 125, 40);
+		b5.setBounds(((int)screensize11.getWidth()-300)/2, 3, 116, 35);
 		panel_4.setBackground(new Color(20,51,105));
 		panel_4.add(b4);
 		panel_4.add(b5);
@@ -1092,7 +1100,6 @@ public class Secondpage extends JFrame{
 										weldid = listarraywe.get(i1+1);
 									}
 								}
-								
 								JProcessBarDemo jpd = new JProcessBarDemo(screensize,sd,weldid,welderid,taskidnew,fp);
 								jpd.setVisible(true);
 							}
@@ -1447,6 +1454,8 @@ public class Secondpage extends JFrame{
 	        public Component getTableCellRendererComponent(JTable table,
 	            Object value, boolean isSelected, boolean hasFocus,
 	            int row, int column) {
+	        	
+	          //改颜色	
 	          if (row == rowIndex) {
 	            setBackground(color);
 	            setForeground(Color.BLACK);
