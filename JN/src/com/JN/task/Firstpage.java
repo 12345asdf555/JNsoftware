@@ -26,6 +26,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -65,6 +67,8 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultComboBoxModel;
+
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import javax.swing.JInternalFrame;
@@ -82,8 +86,14 @@ public class Firstpage extends JFrame{
 	private java.sql.Statement stmt =null;
 	private JPanel panel_1;
 	private JComboBox jcb;
+	private JComboBox jcbsup;
+	private String[] itemArray;
+	private String[] itemArraysup;
 	private JScrollPane sp2;
 	private final JPanel panel_4 = new JPanel();
+	public Timer tExit;
+	public Timer t;
+	public Timer tExit1;
     
 	public ArrayList<String> listarray1 = new ArrayList<String>();
     public ArrayList<String> listarray21 = new ArrayList<String>();
@@ -94,16 +104,18 @@ public class Firstpage extends JFrame{
     public ArrayList<String> listarrayta = new ArrayList<String>();
     public ArrayList<String> websocketMachine = new ArrayList<String>();
     public ArrayList<String> firstpageMachine = new ArrayList<String>();
+    public ArrayList<String> listarrayins = new ArrayList<String>();
+    public ArrayList<String> listarraysupins = new ArrayList<String>();
+    public HashMap<String, String> insmap = new HashMap<String, String>();
 	
 	private JPanel p1 = new JPanel();
 	private JPanel p2 = new JPanel();
+	private JPanel p3 = new JPanel();
 	private JLabel l21 = new JLabel("XXXX-XX-XX XX:XX:XX");
 	private JLabel l4 = new JLabel("正在与服务器通讯...");
 	private JScrollPane s4;
 	private JTable t4 = new JTable();
 	private JLabel l22;
-	public Timer tExit = null; 
-	public Timer tExit1 = null; 
 	
 	public String time;
 	public String worktime;
@@ -386,6 +398,7 @@ public class Firstpage extends JFrame{
 				e.printStackTrace();
 			}
 	        
+			tExit = null; 
 			tExit = new Timer();  
 	        tExit.schedule(new TimerTask() {  
 	            @Override  
@@ -412,6 +425,35 @@ public class Firstpage extends JFrame{
 	            		        websocketMachine.add(js.getString("MACHINENO"));
 	            		        websocketMachine.add(js.getString("STATUS"));
 	            	        }
+	            	        
+	            	        //组织机构二级联动
+	            	        for(int i=0;i<ary.size();i++){
+	            		        String str = ary.getString(i);
+	            		        JSONObject js = JSONObject.fromObject(str);
+            		        	listarrayins.add(js.getString("SUPINS"));
+            		        	listarrayins.add(js.getString("INSFRAMEWORKNAME"));
+	            	        }
+	            	        for(int i=0;i<listarrayins.size();i+=2){
+	            	        	if(listarraysupins.size()==0){
+	            	        		listarraysupins.add(listarrayins.get(i));
+	            	        	}else{
+	            	        		if(listarraysupins.indexOf(listarrayins.get(i))==-1){
+	            	        			listarraysupins.add(listarrayins.get(i));
+	            	        		}
+	            	        	}
+	            	        }
+	            	        for(int i=0;i<listarraysupins.size();i++){
+	            	        	String ins = "";
+	            	            ArrayList<String> listarraybuf = new ArrayList<String>();
+	            	        	for(int i1=0;i1<listarrayins.size();i1+=2){
+	            	        		if(listarraysupins.get(i).equals(listarrayins.get(i1)) && listarraybuf.indexOf(listarrayins.get(i1+1))==-1){
+	            	        			ins = ins + listarrayins.get(i1+1)+",";
+	            	        			listarraybuf.add(listarrayins.get(i1+1));
+	            	        		}
+	            	        	}
+	            	        	insmap.put(listarraysupins.get(i), ins.substring(0,ins.length()-1));
+	            	        }
+	            	        
 	            	        //筛选去除正在工作的焊机、故障焊机
 	            	        if(limit.equals("false")){
 	            	        	for(int i=0;i<listarray4.size();i+=7){
@@ -444,383 +486,383 @@ public class Firstpage extends JFrame{
 	                    		}
 	                    	}
 	            			Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
-	            			p2 = new JPanel();
+	            			p3 = new JPanel();
 //	            			machineList();
 	        				//响应按钮重绘界面
-	        				context.remove(p2);
+	        				context.remove(p3);
 	        				context.remove(sp2);
-	        				context.repaint();
+	        				if(s4 != null){
+		        				context.remove(s4);
+	        				}
 	        				
 	        				//加载焊机列表
-	        				p2.removeAll();// = new JPanel();
-	        				p2.setBounds(20,400,400,400);
-	        				p2.setFont(new Font("Dialog",1,20));
-	        				p2.setBackground(Color.white);
-	        				p2.setLayout(new FlowLayout(FlowLayout.LEFT));
-	        				screensize.setSize(screensize.width, screensize.height);
-	        				
-	                		s4 = new JScrollPane(p2);
-	                		s4.setBounds(10, 510,screensize.width-20, screensize.height-530);
-	            			s4.getViewport().setBackground(Color.white);
-	            			getContentPane().add(s4);
-	        				
-	        				String[] a = jcb.getSelectedItem().toString().split(":");
-	        				
-	        				for(int i=0;i<listarray22.size();i+=5){
-	        					String labelname = listarray22.get(i);
-	        					String weldtype = listarray22.get(i+1);
-	        					String weldposition = listarray22.get(i+3);
-	        					
-	        					//不为被清除的焊机列表
-	        					if(!labelname.equals("")){
-	        						JLabel l21 = new JLabel();
-	        						l21.setVerticalTextPosition(JLabel.BOTTOM); 
-	        						l21.setHorizontalTextPosition(JLabel.CENTER);
-	        						JLabel l22 = new JLabel();
-	        						l21.setBounds(50, 100, 200, 200);
-	        						l22.setBounds(70, 400, 200, 200);
-	        						
-	        						if(a[1].equals("全部")){
+							p3.removeAll();// = new JPanel();
+							p3.setBounds(20,400,400,400);
+							p3.setFont(new Font("Dialog",1,20));
+							p3.setBackground(Color.white);
+							p3.setLayout(new FlowLayout(FlowLayout.LEFT));
+							screensize.setSize(screensize.width, screensize.height);
+							
+			        		s4 = new JScrollPane(p3);
+//				        		s4.setBounds(10, (int)p2.getLocation().getY()+p2.getHeight()+3, screensize.width-20, screensize.height-((int)p2.getLocation().getY()+p2.getHeight())-10);
+			        		s4.setBounds(10, 510,screensize.width-20, screensize.height-530);
+			        		s4.getViewport().setBackground(Color.white);
+			        		context.add(s4);
+							
+							String a = jcb.getSelectedItem().toString();
+							
+							for(int i=0;i<listarray22.size();i+=5){
+								String labelname = listarray22.get(i);
+								String weldtype = listarray22.get(i+1);
+								String weldposition = listarray22.get(i+3);
+								
+								//不为被清除的焊机列表
+								if(!labelname.equals("")){
+									JLabel l21 = new JLabel();
+									l21.setVerticalTextPosition(JLabel.BOTTOM); 
+									l21.setHorizontalTextPosition(JLabel.CENTER);
+									JLabel l22 = new JLabel();
+									l21.setBounds(50, 100, 200, 200);
+									l22.setBounds(70, 400, 200, 200);
+									if(a.equals("全部班组")){
 
-	        							if(limit.equals("true")){
-/*	        								if(listarray4.size()!=0){
-	        									for(int i1=0;i1<listarray4.size();i1+=7){
-	        										if(labelname.equals(listarray4.get(i1+4))){
-	        											if(listarray22.get(i+1).equals("41")){
-	        												img = new ImageIcon(getClass().getResource("/images/GLW.png"));
-	        												l21.setIcon(img);
-	        												break;
-	        											}else if(listarray22.get(i+1).equals("42")){
-	        												img = new ImageIcon(getClass().getResource("/images/ATW.png"));
-	        												l21.setIcon(img);
-	        												break;
-	        											}else if(listarray22.get(i+1).equals("43")){
-	        												img = new ImageIcon(getClass().getResource("/images/FRW.png"));
-	        												l21.setIcon(img);
-	        												break;
-	        											}
-	        										}else{
-	        											if(listarray22.get(i+1).equals("41")){
-	        												img = new ImageIcon(getClass().getResource("/images/GL.png"));
-	        												l21.setIcon(img);
-	        											}else if(listarray22.get(i+1).equals("42")){
-	        												img = new ImageIcon(getClass().getResource("/images/AT.png"));
-	        												l21.setIcon(img);
-	        											}else if(listarray22.get(i+1).equals("43")){
-	        												img = new ImageIcon(getClass().getResource("/images/FR.png"));
-	        												l21.setIcon(img);
-	        											}
-	        										}
-	        									}
-	        								}else{
-	        									if(listarray22.get(i+1).equals("41")){
-	        										img = new ImageIcon(getClass().getResource("/images/GL.png"));
-	        										l21.setIcon(img);
-	        									}else if(listarray22.get(i+1).equals("42")){
-	        										img = new ImageIcon(getClass().getResource("/images/AT.png"));
-	        										l21.setIcon(img);
-	        									}else if(listarray22.get(i+1).equals("43")){
-	        										img = new ImageIcon(getClass().getResource("/images/FR.png"));
-	        										l21.setIcon(img);
-	        									}
-	        								}*/
-	        								if(firstpageMachine.size()!=0){
-	        									for(int f=0;f<firstpageMachine.size();f+=2){
-	        										if(labelname.equals(firstpageMachine.get(f))){
-	        											if(listarray22.get(i+1).equals("41")){
-		        											if(firstpageMachine.get(f+1).equals("00")){
-		        												img = new ImageIcon(getClass().getResource("/images/GLS.png"));
-		        												l21.setIcon(img);
-		        												break;
-		        											}else if((firstpageMachine.get(f+1).equals("03"))||(firstpageMachine.get(f+1).equals("05"))||(firstpageMachine.get(f+1).equals("07"))){
-		        												img = new ImageIcon(getClass().getResource("/images/GLW.png"));
-		        												l21.setIcon(img);
-		        												break;
-		        											}else{
-		        												img = new ImageIcon(getClass().getResource("/images/GLO.png"));
-		        												l21.setIcon(img);
-		        												break;
-		        											}
-	        											}else if(listarray22.get(i+1).equals("42")){
-	        												if(firstpageMachine.get(f+1).equals("00")){
-	        													img = new ImageIcon(getClass().getResource("/images/ATS.png"));
-		        												l21.setIcon(img);
-		        												break;
-		        											}else if((firstpageMachine.get(f+1).equals("03"))||(firstpageMachine.get(f+1).equals("05"))||(firstpageMachine.get(f+1).equals("07"))){
-		        												img = new ImageIcon(getClass().getResource("/images/ATW.png"));
-		        												l21.setIcon(img);
-		        												break;
-		        											}else{
-		        												img = new ImageIcon(getClass().getResource("/images/ATO.png"));
-		        												l21.setIcon(img);
-		        												break;
-		        											}
-	        											}else if(listarray22.get(i+1).equals("43")){
-	        												if(firstpageMachine.get(f+1).equals("00")){
-	        													img = new ImageIcon(getClass().getResource("/images/FRS.png"));
-		        												l21.setIcon(img);
-		        												break;
-		        											}else if((firstpageMachine.get(f+1).equals("03"))||(firstpageMachine.get(f+1).equals("05"))||(firstpageMachine.get(f+1).equals("07"))){
-		        												img = new ImageIcon(getClass().getResource("/images/FRW.png"));
-		        												l21.setIcon(img);
-		        												break;
-		        											}else{
-		        												img = new ImageIcon(getClass().getResource("/images/FRO.png"));
-		        												l21.setIcon(img);
-		        												break;
-		        											}
-	        											}
-	        										}else{
-	    	        									if(listarray22.get(i+1).equals("41")){
-	    	        										img = new ImageIcon(getClass().getResource("/images/GL.png"));
-	    	        										l21.setIcon(img);
-	    	        									}else if(listarray22.get(i+1).equals("42")){
-	    	        										img = new ImageIcon(getClass().getResource("/images/AT.png"));
-	    	        										l21.setIcon(img);
-	    	        									}else if(listarray22.get(i+1).equals("43")){
-	    	        										img = new ImageIcon(getClass().getResource("/images/FR.png"));
-	    	        										l21.setIcon(img);
-	    	        									}
-	        										}
-	        									}
-	        								}else{
-	        									if(listarray22.get(i+1).equals("41")){
-	        										img = new ImageIcon(getClass().getResource("/images/GL.png"));
-	        										l21.setIcon(img);
-	        									}else if(listarray22.get(i+1).equals("42")){
-	        										img = new ImageIcon(getClass().getResource("/images/AT.png"));
-	        										l21.setIcon(img);
-	        									}else if(listarray22.get(i+1).equals("43")){
-	        										img = new ImageIcon(getClass().getResource("/images/FR.png"));
-	        										l21.setIcon(img);
-	        									}
-	        								}
-	        							}else if(limit.equals("false")){
-	        								if(listarray22.get(i+1).equals("41")){
-	        									img = new ImageIcon(getClass().getResource("/images/GL.png"));
-	        									l21.setIcon(img);
-	        								}else if(listarray22.get(i+1).equals("42")){
-	        									img = new ImageIcon(getClass().getResource("/images/AT.png"));
-	        									l21.setIcon(img);
-	        								}else if(listarray22.get(i+1).equals("43")){
-	        									img = new ImageIcon(getClass().getResource("/images/FR.png"));
-	        									l21.setIcon(img);
-	        								}
-	        							}
-	        							context.repaint();
-	        							l21.addMouseListener(new MouseListener(){
-	        	
-	        								//图片点击监听
-	        								@Override
-	        								public void mouseClicked(MouseEvent e) {}
-	        								@Override
-	        								public void mousePressed(MouseEvent e) {
-	        									// TODO Auto-generated method stub
-	        									
-	        								}
-	        								@Override
-	        								public void mouseReleased(MouseEvent e) {
-	        									// TODO Auto-generated method stub
-	        									
-	        								}
-	        								@Override
-	        								public void mouseEntered(MouseEvent e) {
-	        									// TODO Auto-generated method stub
-	        									
-	        								}
-	        								@Override
-	        								public void mouseExited(MouseEvent e) {
-	        									// TODO Auto-generated method stub
-	        									
-	        								}
-	        							});
-	        							
-	        							if(limit.equals("true")){
-	        								for(int i1=0;i1<listarray4.size();i1+=7){
-	        									if(labelname.equals(listarray4.get(i1+4))){
-	        									}
-	        								}
-	        							}
-	        							
-	        							l21.setText(labelname);
-	        							l22.setText("                 ");
-	        							
-	        							p2.add(l21);
-	        							p2.add(l22);
-	        						
-	        						}else{
-	        							if(listarray22.get(i+2).equals(a[1])){
-	        							if(limit.equals("true")){
-/*	        								if(listarray4.size()!=0){
-	        									for(int i1=0;i1<listarray4.size();i1+=7){
-	        										if(labelname.equals(listarray4.get(i1+4))){
-	        											if(listarray22.get(i+1).equals("41")){
-	        												img = new ImageIcon(getClass().getResource("/images/GLW.png"));
-	        												l21.setIcon(img);
-	        												break;
-	        											}else if(listarray22.get(i+1).equals("42")){
-	        												img = new ImageIcon(getClass().getResource("/images/ATW.png"));
-	        												l21.setIcon(img);
-	        												break;
-	        											}else if(listarray22.get(i+1).equals("43")){
-	        												img = new ImageIcon(getClass().getResource("/images/FRW.png"));
-	        												l21.setIcon(img);
-	        												break;
-	        											}
-	        										}else{
-	        											if(listarray22.get(i+1).equals("41")){
-	        												img = new ImageIcon(getClass().getResource("/images/GL.png"));
-	        												l21.setIcon(img);
-	        											}else if(listarray22.get(i+1).equals("42")){
-	        												img = new ImageIcon(getClass().getResource("/images/AT.png"));
-	        												l21.setIcon(img);
-	        											}else if(listarray22.get(i+1).equals("43")){
-	        												img = new ImageIcon(getClass().getResource("/images/FR.png"));
-	        												l21.setIcon(img);
-	        											}
-	        										}
-	        									}
-	        								}else{
-	        									if(listarray22.get(i+1).equals("41")){
-	        										img = new ImageIcon(getClass().getResource("/images/GL.png"));
-	        										l21.setIcon(img);
-	        									}else if(listarray22.get(i+1).equals("42")){
-	        										img = new ImageIcon(getClass().getResource("/images/AT.png"));
-	        										l21.setIcon(img);
-	        									}else if(listarray22.get(i+1).equals("43")){
-	        										img = new ImageIcon(getClass().getResource("/images/FR.png"));
-	        										l21.setIcon(img);
-	        									}
-	        								}*/
-	        								if(firstpageMachine.size()!=0){
-	        									for(int f=0;f<firstpageMachine.size();f+=2){
-	        										if(labelname.equals(firstpageMachine.get(f))){
-	        											if(listarray22.get(i+1).equals("41")){
-		        											if(firstpageMachine.get(f+1).equals("00")){
-		        												img = new ImageIcon(getClass().getResource("/images/GLS.png"));
-		        												l21.setIcon(img);
-		        												break;
-		        											}else if((firstpageMachine.get(f+1).equals("03"))||(firstpageMachine.get(f+1).equals("05"))||(firstpageMachine.get(f+1).equals("07"))){
-		        												img = new ImageIcon(getClass().getResource("/images/GLW.png"));
-		        												l21.setIcon(img);
-		        												break;
-		        											}else{
-		        												img = new ImageIcon(getClass().getResource("/images/GLO.png"));
-		        												l21.setIcon(img);
-		        												break;
-		        											}
-	        											}else if(listarray22.get(i+1).equals("42")){
-	        												if(firstpageMachine.get(f+1).equals("00")){
-	        													img = new ImageIcon(getClass().getResource("/images/ATS.png"));
-		        												l21.setIcon(img);
-		        												break;
-		        											}else if((firstpageMachine.get(f+1).equals("03"))||(firstpageMachine.get(f+1).equals("05"))||(firstpageMachine.get(f+1).equals("07"))){
-		        												img = new ImageIcon(getClass().getResource("/images/ATW.png"));
-		        												l21.setIcon(img);
-		        												break;
-		        											}else{
-		        												img = new ImageIcon(getClass().getResource("/images/ATO.png"));
-		        												l21.setIcon(img);
-		        												break;
-		        											}
-	        											}else if(listarray22.get(i+1).equals("43")){
-	        												if(firstpageMachine.get(f+1).equals("00")){
-	        													img = new ImageIcon(getClass().getResource("/images/FRS.png"));
-		        												l21.setIcon(img);
-		        												break;
-		        											}else if((firstpageMachine.get(f+1).equals("03"))||(firstpageMachine.get(f+1).equals("05"))||(firstpageMachine.get(f+1).equals("07"))){
-		        												img = new ImageIcon(getClass().getResource("/images/FRW.png"));
-		        												l21.setIcon(img);
-		        												break;
-		        											}else{
-		        												img = new ImageIcon(getClass().getResource("/images/FRO.png"));
-		        												l21.setIcon(img);
-		        												break;
-		        											}
-	        											}
-	        										}else{
-	    	        									if(listarray22.get(i+1).equals("41")){
-	    	        										img = new ImageIcon(getClass().getResource("/images/GL.png"));
-	    	        										l21.setIcon(img);
-	    	        									}else if(listarray22.get(i+1).equals("42")){
-	    	        										img = new ImageIcon(getClass().getResource("/images/AT.png"));
-	    	        										l21.setIcon(img);
-	    	        									}else if(listarray22.get(i+1).equals("43")){
-	    	        										img = new ImageIcon(getClass().getResource("/images/FR.png"));
-	    	        										l21.setIcon(img);
-	    	        									}
-	        										}
-	        									}
-	        								}else{
-	        									if(listarray22.get(i+1).equals("41")){
-	        										img = new ImageIcon(getClass().getResource("/images/GL.png"));
-	        										l21.setIcon(img);
-	        									}else if(listarray22.get(i+1).equals("42")){
-	        										img = new ImageIcon(getClass().getResource("/images/AT.png"));
-	        										l21.setIcon(img);
-	        									}else if(listarray22.get(i+1).equals("43")){
-	        										img = new ImageIcon(getClass().getResource("/images/FR.png"));
-	        										l21.setIcon(img);
-	        									}
-	        								}
-	        							}else if(limit.equals("false")){
-	        								if(listarray22.get(i+1).equals("41")){
-	        									img = new ImageIcon(getClass().getResource("/images/GL.png"));
-	        									l21.setIcon(img);
-	        								}else if(listarray22.get(i+1).equals("42")){
-	        									img = new ImageIcon(getClass().getResource("/images/AT.png"));
-	        									l21.setIcon(img);
-	        								}else if(listarray22.get(i+1).equals("43")){
-	        									img = new ImageIcon(getClass().getResource("/images/FR.png"));
-	        									l21.setIcon(img);
-	        								}
-	        							}
-	        							context.repaint();
-	        							l21.addMouseListener(new MouseListener(){
-	        	
-	        								//图片点击监听
-	        								@Override
-	        								public void mouseClicked(MouseEvent e) {}
-	        								@Override
-	        								public void mousePressed(MouseEvent e) {
-	        									// TODO Auto-generated method stub
-	        									
-	        								}
-	        								@Override
-	        								public void mouseReleased(MouseEvent e) {
-	        									// TODO Auto-generated method stub
-	        									
-	        								}
-	        								@Override
-	        								public void mouseEntered(MouseEvent e) {
-	        									// TODO Auto-generated method stub
-	        									
-	        								}
-	        								@Override
-	        								public void mouseExited(MouseEvent e) {
-	        									// TODO Auto-generated method stub
-	        									
-	        								}
-	        							});
-	        							
-	        							if(limit.equals("true")){
-	        								for(int i1=0;i1<listarray4.size();i1+=7){
-	        									if(labelname.equals(listarray4.get(i1+4))){
-	        									}
-	        								}
-	        							}
-	        							
-	        							l21.setText(labelname);
-	        							l22.setText("                 ");
-	        							
-	        							p2.add(l21);
-	        							p2.add(l22);
-	        						}
-	        					}
-	        					}
-	        				}
-	        				p2.repaint();
-	        				context.repaint();
+										if(limit.equals("true")){
+			/*								if(listarray4.size()!=0){
+												for(int i1=0;i1<listarray4.size();i1+=7){
+													if(labelname.equals(listarray4.get(i1+4))){
+														if(listarray22.get(i+1).equals("41")){
+															img = new ImageIcon(getClass().getResource("/images/GLW.png"));
+															l21.setIcon(img);
+															break;
+														}else if(listarray22.get(i+1).equals("42")){
+															img = new ImageIcon(getClass().getResource("/images/ATW.png"));
+															l21.setIcon(img);
+															break;
+														}else if(listarray22.get(i+1).equals("43")){
+															img = new ImageIcon(getClass().getResource("/images/FRW.png"));
+															l21.setIcon(img);
+															break;
+														}
+													}else{
+														if(listarray22.get(i+1).equals("41")){
+															img = new ImageIcon(getClass().getResource("/images/GL.png"));
+															l21.setIcon(img);
+														}else if(listarray22.get(i+1).equals("42")){
+															img = new ImageIcon(getClass().getResource("/images/AT.png"));
+															l21.setIcon(img);
+														}else if(listarray22.get(i+1).equals("43")){
+															img = new ImageIcon(getClass().getResource("/images/FR.png"));
+															l21.setIcon(img);
+														}
+													}
+												}
+											}else{
+												if(listarray22.get(i+1).equals("41")){
+													img = new ImageIcon(getClass().getResource("/images/GL.png"));
+													l21.setIcon(img);
+												}else if(listarray22.get(i+1).equals("42")){
+													img = new ImageIcon(getClass().getResource("/images/AT.png"));
+													l21.setIcon(img);
+												}else if(listarray22.get(i+1).equals("43")){
+													img = new ImageIcon(getClass().getResource("/images/FR.png"));
+													l21.setIcon(img);
+												}
+											}*/
+											if(firstpageMachine.size()!=0){
+												for(int f=0;f<firstpageMachine.size();f+=2){
+													if(labelname.equals(firstpageMachine.get(f))){
+														if(listarray22.get(i+1).equals("41")){
+			    											if(firstpageMachine.get(f+1).equals("00")){
+			    												img = new ImageIcon(getClass().getResource("/images/GLS.png"));
+			    												l21.setIcon(img);
+			    												break;
+			    											}else if((firstpageMachine.get(f+1).equals("03"))||(firstpageMachine.get(f+1).equals("05"))||(firstpageMachine.get(f+1).equals("07"))){
+			    												img = new ImageIcon(getClass().getResource("/images/GLW.png"));
+			    												l21.setIcon(img);
+			    												break;
+			    											}else{
+			    												img = new ImageIcon(getClass().getResource("/images/GLO.png"));
+			    												l21.setIcon(img);
+			    												break;
+			    											}
+														}else if(listarray22.get(i+1).equals("42")){
+															if(firstpageMachine.get(f+1).equals("00")){
+																img = new ImageIcon(getClass().getResource("/images/ATS.png"));
+			    												l21.setIcon(img);
+			    												break;
+			    											}else if((firstpageMachine.get(f+1).equals("03"))||(firstpageMachine.get(f+1).equals("05"))||(firstpageMachine.get(f+1).equals("07"))){
+			    												img = new ImageIcon(getClass().getResource("/images/ATW.png"));
+			    												l21.setIcon(img);
+			    												break;
+			    											}else{
+			    												img = new ImageIcon(getClass().getResource("/images/ATO.png"));
+			    												l21.setIcon(img);
+			    												break;
+			    											}
+														}else if(listarray22.get(i+1).equals("43")){
+															if(firstpageMachine.get(f+1).equals("00")){
+																img = new ImageIcon(getClass().getResource("/images/FRS.png"));
+			    												l21.setIcon(img);
+			    												break;
+			    											}else if((firstpageMachine.get(f+1).equals("03"))||(firstpageMachine.get(f+1).equals("05"))||(firstpageMachine.get(f+1).equals("07"))){
+			    												img = new ImageIcon(getClass().getResource("/images/FRW.png"));
+			    												l21.setIcon(img);
+			    												break;
+			    											}else{
+			    												img = new ImageIcon(getClass().getResource("/images/FRO.png"));
+			    												l21.setIcon(img);
+			    												break;
+			    											}
+														}
+													}else{
+			        									if(listarray22.get(i+1).equals("41")){
+			        										img = new ImageIcon(getClass().getResource("/images/GL.png"));
+			        										l21.setIcon(img);
+			        									}else if(listarray22.get(i+1).equals("42")){
+			        										img = new ImageIcon(getClass().getResource("/images/AT.png"));
+			        										l21.setIcon(img);
+			        									}else if(listarray22.get(i+1).equals("43")){
+			        										img = new ImageIcon(getClass().getResource("/images/FR.png"));
+			        										l21.setIcon(img);
+			        									}
+													}
+												}
+											}else{
+												if(listarray22.get(i+1).equals("41")){
+													img = new ImageIcon(getClass().getResource("/images/GL.png"));
+													l21.setIcon(img);
+												}else if(listarray22.get(i+1).equals("42")){
+													img = new ImageIcon(getClass().getResource("/images/AT.png"));
+													l21.setIcon(img);
+												}else if(listarray22.get(i+1).equals("43")){
+													img = new ImageIcon(getClass().getResource("/images/FR.png"));
+													l21.setIcon(img);
+												}
+											}
+										}else if(limit.equals("false")){
+											if(listarray22.get(i+1).equals("41")){
+												img = new ImageIcon(getClass().getResource("/images/GL.png"));
+												l21.setIcon(img);
+											}else if(listarray22.get(i+1).equals("42")){
+												img = new ImageIcon(getClass().getResource("/images/AT.png"));
+												l21.setIcon(img);
+											}else if(listarray22.get(i+1).equals("43")){
+												img = new ImageIcon(getClass().getResource("/images/FR.png"));
+												l21.setIcon(img);
+											}
+										}
+										l21.addMouseListener(new MouseListener(){
+				
+											//图片点击监听
+											@Override
+											public void mouseClicked(MouseEvent e) {}
+											@Override
+											public void mousePressed(MouseEvent e) {
+												// TODO Auto-generated method stub
+												
+											}
+											@Override
+											public void mouseReleased(MouseEvent e) {
+												// TODO Auto-generated method stub
+												
+											}
+											@Override
+											public void mouseEntered(MouseEvent e) {
+												// TODO Auto-generated method stub
+												
+											}
+											@Override
+											public void mouseExited(MouseEvent e) {
+												// TODO Auto-generated method stub
+												
+											}
+										});
+										
+										if(limit.equals("true")){
+											for(int i1=0;i1<listarray4.size();i1+=7){
+												if(labelname.equals(listarray4.get(i1+4))){
+												}
+											}
+										}
+										
+										l21.setText(labelname);
+										//l22.setText("       ");
+										
+										p3.add(l21);
+										p3.add(l22);
+									
+									}else{
+										if(listarray22.get(i+2).equals(a)){
+										if(limit.equals("true")){
+			/*								if(listarray4.size()!=0){
+												for(int i1=0;i1<listarray4.size();i1+=7){
+													if(labelname.equals(listarray4.get(i1+4))){
+														if(listarray22.get(i+1).equals("41")){
+															img = new ImageIcon(getClass().getResource("/images/GLW.png"));
+															l21.setIcon(img);
+															break;
+														}else if(listarray22.get(i+1).equals("42")){
+															img = new ImageIcon(getClass().getResource("/images/ATW.png"));
+															l21.setIcon(img);
+															break;
+														}else if(listarray22.get(i+1).equals("43")){
+															img = new ImageIcon(getClass().getResource("/images/FRW.png"));
+															l21.setIcon(img);
+															break;
+														}
+													}else{
+														if(listarray22.get(i+1).equals("41")){
+															img = new ImageIcon(getClass().getResource("/images/GL.png"));
+															l21.setIcon(img);
+														}else if(listarray22.get(i+1).equals("42")){
+															img = new ImageIcon(getClass().getResource("/images/AT.png"));
+															l21.setIcon(img);
+														}else if(listarray22.get(i+1).equals("43")){
+															img = new ImageIcon(getClass().getResource("/images/FR.png"));
+															l21.setIcon(img);
+														}
+													}
+												}
+											}else{
+												if(listarray22.get(i+1).equals("41")){
+													img = new ImageIcon(getClass().getResource("/images/GL.png"));
+													l21.setIcon(img);
+												}else if(listarray22.get(i+1).equals("42")){
+													img = new ImageIcon(getClass().getResource("/images/AT.png"));
+													l21.setIcon(img);
+												}else if(listarray22.get(i+1).equals("43")){
+													img = new ImageIcon(getClass().getResource("/images/FR.png"));
+													l21.setIcon(img);
+												}
+											}*/
+											if(firstpageMachine.size()!=0){
+												for(int f=0;f<firstpageMachine.size();f+=2){
+													if(labelname.equals(firstpageMachine.get(f))){
+														if(listarray22.get(i+1).equals("41")){
+			    											if(firstpageMachine.get(f+1).equals("00")){
+			    												img = new ImageIcon(getClass().getResource("/images/GLS.png"));
+			    												l21.setIcon(img);
+			    												break;
+			    											}else if((firstpageMachine.get(f+1).equals("03"))||(firstpageMachine.get(f+1).equals("05"))||(firstpageMachine.get(f+1).equals("07"))){
+			    												img = new ImageIcon(getClass().getResource("/images/GLW.png"));
+			    												l21.setIcon(img);
+			    												break;
+			    											}else{
+			    												img = new ImageIcon(getClass().getResource("/images/GLO.png"));
+			    												l21.setIcon(img);
+			    												break;
+			    											}
+														}else if(listarray22.get(i+1).equals("42")){
+															if(firstpageMachine.get(f+1).equals("00")){
+																img = new ImageIcon(getClass().getResource("/images/ATS.png"));
+			    												l21.setIcon(img);
+			    												break;
+			    											}else if((firstpageMachine.get(f+1).equals("03"))||(firstpageMachine.get(f+1).equals("05"))||(firstpageMachine.get(f+1).equals("07"))){
+			    												img = new ImageIcon(getClass().getResource("/images/ATW.png"));
+			    												l21.setIcon(img);
+			    												break;
+			    											}else{
+			    												img = new ImageIcon(getClass().getResource("/images/ATO.png"));
+			    												l21.setIcon(img);
+			    												break;
+			    											}
+														}else if(listarray22.get(i+1).equals("43")){
+															if(firstpageMachine.get(f+1).equals("00")){
+																img = new ImageIcon(getClass().getResource("/images/FRS.png"));
+			    												l21.setIcon(img);
+			    												break;
+			    											}else if((firstpageMachine.get(f+1).equals("03"))||(firstpageMachine.get(f+1).equals("05"))||(firstpageMachine.get(f+1).equals("07"))){
+			    												img = new ImageIcon(getClass().getResource("/images/FRW.png"));
+			    												l21.setIcon(img);
+			    												break;
+			    											}else{
+			    												img = new ImageIcon(getClass().getResource("/images/FRO.png"));
+			    												l21.setIcon(img);
+			    												break;
+			    											}
+														}
+													}else{
+			        									if(listarray22.get(i+1).equals("41")){
+			        										img = new ImageIcon(getClass().getResource("/images/GL.png"));
+			        										l21.setIcon(img);
+			        									}else if(listarray22.get(i+1).equals("42")){
+			        										img = new ImageIcon(getClass().getResource("/images/AT.png"));
+			        										l21.setIcon(img);
+			        									}else if(listarray22.get(i+1).equals("43")){
+			        										img = new ImageIcon(getClass().getResource("/images/FR.png"));
+			        										l21.setIcon(img);
+			        									}
+													}
+												}
+											}else{
+												if(listarray22.get(i+1).equals("41")){
+													img = new ImageIcon(getClass().getResource("/images/GL.png"));
+													l21.setIcon(img);
+												}else if(listarray22.get(i+1).equals("42")){
+													img = new ImageIcon(getClass().getResource("/images/AT.png"));
+													l21.setIcon(img);
+												}else if(listarray22.get(i+1).equals("43")){
+													img = new ImageIcon(getClass().getResource("/images/FR.png"));
+													l21.setIcon(img);
+												}
+											}
+										}else if(limit.equals("false")){
+											if(listarray22.get(i+1).equals("41")){
+												img = new ImageIcon(getClass().getResource("/images/GL.png"));
+												l21.setIcon(img);
+											}else if(listarray22.get(i+1).equals("42")){
+												img = new ImageIcon(getClass().getResource("/images/AT.png"));
+												l21.setIcon(img);
+											}else if(listarray22.get(i+1).equals("43")){
+												img = new ImageIcon(getClass().getResource("/images/FR.png"));
+												l21.setIcon(img);
+											}
+										}
+										l21.addMouseListener(new MouseListener(){
+				
+											//图片点击监听
+											@Override
+											public void mouseClicked(MouseEvent e) {}
+											@Override
+											public void mousePressed(MouseEvent e) {
+												// TODO Auto-generated method stub
+												
+											}
+											@Override
+											public void mouseReleased(MouseEvent e) {
+												// TODO Auto-generated method stub
+												
+											}
+											@Override
+											public void mouseEntered(MouseEvent e) {
+												// TODO Auto-generated method stub
+												
+											}
+											@Override
+											public void mouseExited(MouseEvent e) {
+												// TODO Auto-generated method stub
+												
+											}
+										});
+										
+										if(limit.equals("true")){
+											for(int i1=0;i1<listarray4.size();i1+=7){
+												if(labelname.equals(listarray4.get(i1+4))){
+												}
+											}
+										}
+										
+										l21.setText(labelname);
+										//l22.setText("       ");
+										
+										p3.add(l21);
+										p3.add(l22);
+									}
+								}
+								}
+							}
+							
+							p3.repaint();
 	            		}
 	            		
 	            		first = false;
@@ -830,7 +872,7 @@ public class Firstpage extends JFrame{
 	        			e.printStackTrace();
 	        		}
 	            }
-	        }, 0, 60000);
+	        }, 5000, 30000);
 	        machineList();
 		}
 	};
@@ -844,10 +886,10 @@ public class Firstpage extends JFrame{
 	private final JLabel label_5 = new JLabel("焊机 ：   ");
 	private final JLabel label_6 = new JLabel("类型：   ");
 	private final JLabel label_7 = new JLabel("任务：   ");
-	public Timer t;
 
 	private void time() {
 		// TODO Auto-generated method stub
+		tExit1 = null; 
 		tExit1 = new Timer();  
         tExit1.schedule(new TimerTask() {
 			
@@ -875,7 +917,7 @@ public class Firstpage extends JFrame{
 				// TODO Auto-generated method stub
 				mt.run();
 			}
-		}, 3000,10000);
+		}, 0,5000);
         //t.schedule(new MyTask(), 3000);
        
        System.out.print("Game over");
@@ -1073,7 +1115,7 @@ public class Firstpage extends JFrame{
 			@Override
 			public void insertUpdate(DocumentEvent e) {
 				// TODO Auto-generated method stub
-				
+				try{
 				weldernum = textField.getText();
 				if(weldernum.length() == 8){
 					
@@ -1114,9 +1156,8 @@ public class Firstpage extends JFrame{
 							}
 							
 							if(!exiet){
-								
 								//开启新视窗选择焊机
-								new Secondpage(worktime,welder,weldernum,weldowner,screensize,listarray21,listarray22,listarray3,listarray4,client,listarraywe,listarrayta,welderid,firstpageMachine,context);
+								new Secondpage(worktime,welder,weldernum,weldowner,screensize,listarray21,listarray22,listarray3,listarray4,client,listarraywe,listarrayta,welderid,firstpageMachine,context,itemArray,itemArraysup,insmap);
 								
 								//关闭当前视窗
 								setVisible(false);
@@ -1166,6 +1207,9 @@ public class Firstpage extends JFrame{
 						t32.setCaretPosition(4);
 					}*/
 					
+				}
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
 				}
 			}
 
@@ -1379,12 +1423,57 @@ public class Firstpage extends JFrame{
         			websocketMachine.set(j+2, "");
         		}
         	}
+	        
+	      //组织机构二级联动
+	        for(int i=0;i<ary.size();i++){
+		        String str = ary.getString(i);
+		        JSONObject js = JSONObject.fromObject(str);
+	        	listarrayins.add(js.getString("SUPINS"));
+	        	listarrayins.add(js.getString("INSFRAMEWORKNAME"));
+	        }
+	        for(int i=0;i<listarrayins.size();i+=2){
+	        	if(listarraysupins.size()==0){
+	        		listarraysupins.add(listarrayins.get(i));
+	        	}else{
+	        		if(listarraysupins.indexOf(listarrayins.get(i))==-1){
+	        			listarraysupins.add(listarrayins.get(i));
+	        		}
+	        	}
+	        }
+	        for(int i=0;i<listarraysupins.size();i++){
+	        	String ins = "";
+	            ArrayList<String> listarraybuf = new ArrayList<String>();
+	        	for(int i1=0;i1<listarrayins.size();i1+=2){
+	        		if(listarraysupins.get(i).equals(listarrayins.get(i1)) && listarraybuf.indexOf(listarrayins.get(i1+1))==-1){
+	        			ins = ins + listarrayins.get(i1+1)+",";
+	        			listarraybuf.add(listarrayins.get(i1+1));
+	        		}
+	        	}
+	        	insmap.put(listarraysupins.get(i), ins.substring(0,ins.length()-1));
+	        }
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		//班组统计
+		itemArraysup = new String[listarraysupins.size()+1];
+		for(int i=0;i<itemArraysup.length;i++){
+			if(i==0){
+				itemArraysup[i]="全部作业区";
+			}else{
+				itemArraysup[i]=listarraysupins.get(i-1);
+			}
+		}
+		
+		itemArray = new String[1];
+		itemArray[0] = "全部班组";
+		
+		
+		//二层组织机构选择
+		
+		
+		//单组织机构选择
+		/*//班组统计
 		int count = 0;
 		for(int i=0;i<listarray22.size();i+=5){
 			if(listarray21.size() == 0){
@@ -1403,7 +1492,6 @@ public class Firstpage extends JFrame{
 				}
 			}
 		}
-		
 		//班组下拉选择
 		String[] arrString = (String[])listarray21.toArray(new String[0]) ;
 		for(int i=0;i<arrString.length;i++){
@@ -1423,7 +1511,9 @@ public class Firstpage extends JFrame{
 				itemArray[i+1] = "    班组:" + arrString[i];
 			}
 			
-		}
+		}*/
+		
+		
 		
 /*			//table列名以及值
 		String[] cn = {"任务编号", "班组", "焊工编号", "焊工姓名", "焊机编号", "当前状态", "开始时间"};  
@@ -1484,10 +1574,18 @@ public class Firstpage extends JFrame{
 		panel_1.setVisible(true);
 		JLabel lblNewLabel = new JLabel("焊机列表");
 		lblNewLabel.setFont(new Font("宋体", Font.BOLD, 20));
+		
+		//jcb二级联动
+		jcbsup = new JComboBox(itemArraysup);
+		jcbsup.setBackground(Color.white);
+		jcbsup.setFont(new Font("Dialog",1,15));
+		jcbsup.setBounds((int)screensize11.getWidth()-450, 0, 200, 32);
+		
 		jcb = new JComboBox(itemArray);
 		jcb.setBackground(Color.white);
-		jcb.setFont(new Font("Dialog",1,17));
-		jcb.setBounds((int)screensize11.getWidth()-280, 0, 250, 32);
+		jcb.setFont(new Font("Dialog",1,15));
+		jcb.setBounds((int)screensize11.getWidth()-230, 0, 200, 32);
+		
 		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
 		gl_panel_1.setHorizontalGroup(
 			gl_panel_1.createParallelGroup(Alignment.TRAILING)
@@ -1508,6 +1606,7 @@ public class Firstpage extends JFrame{
 						))
 		);
 		panel_1.setLayout(gl_panel_1);
+		p2.add(jcbsup);
 		p2.add(jcb);
 		p2.repaint();
 		
@@ -1520,38 +1619,437 @@ public class Firstpage extends JFrame{
 		
 		l4.setFont(new Font("微软雅黑 Light", Font.BOLD, 23));
 		
-		Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
-		p2 = new JPanel();
-		//加载焊机列表
-		p2.removeAll();// = new JPanel();
-		p2.setLayout(new FlowLayout(FlowLayout.LEFT));
-		p2.setBounds(20,400,400,400);
-		p2.setFont(new Font("Dialog",1,20));
-		p2.setBackground(Color.white);
-		screensize.setSize(screensize.width, screensize.height);
-		jcb.addActionListener(new ActionListener(){
+		//二级响应
+		jcbsup.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				String supins = (String) jcbsup.getSelectedItem();
+				if(supins.equals("全部作业区")){
+					p2.remove(jcb);
+					p2.repaint();
+					jcb = new JComboBox();
+					jcb.setBackground(Color.white);
+					jcb.setFont(new Font("Dialog",1,17));
+					jcb.setBounds((int)screensize11.getWidth()-230, 0, 200, 32);
+					jcb.addItem("全部班组");
+					p2.add(jcb);
+				}else{
+					String ins = insmap.get(supins);
+					p2.remove(jcb);
+					p2.repaint();
+					jcb = new JComboBox();
+					jcb.setBackground(Color.white);
+					jcb.setFont(new Font("Dialog",1,17));
+					jcb.setBounds((int)screensize11.getWidth()-230, 0, 200, 32);
+					if(ins!=null){
+						String[] insbuf = ins.split(",");
+						for(int i=0;i<insbuf.length;i++){
+							jcb.addItem(insbuf[i]);
+						}
+					}
+					p2.add(jcb);
+				}
+				jcb.addActionListener(new ActionListener(){
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						//响应按钮重绘界面
+						context.remove(p3);
+						context.remove(sp2);
+						context.repaint();
+						
+						//加载焊机列表
+						p3.removeAll();// = new JPanel();
+						p3.setBounds(20,400,400,400);
+						p3.setFont(new Font("Dialog",1,20));
+						p3.setBackground(Color.white);
+						p3.setLayout(new FlowLayout(FlowLayout.LEFT));
+						screensize.setSize(screensize.width, screensize.height);
+						
+		        		s4 = new JScrollPane(p3);
+//			        		s4.setBounds(10, (int)p2.getLocation().getY()+p2.getHeight()+3, screensize.width-20, screensize.height-((int)p2.getLocation().getY()+p2.getHeight())-10);
+		        		s4.setBounds(10, 510,screensize.width-20, screensize.height-530);
+		        		s4.getViewport().setBackground(Color.white);
+		    			getContentPane().add(s4);
+						
+						String a = jcb.getSelectedItem().toString();
+						
+						for(int i=0;i<listarray22.size();i+=5){
+							String labelname = listarray22.get(i);
+							String weldtype = listarray22.get(i+1);
+							String weldposition = listarray22.get(i+3);
+							
+							//不为被清除的焊机列表
+							if(!labelname.equals("")){
+								JLabel l21 = new JLabel();
+								l21.setVerticalTextPosition(JLabel.BOTTOM); 
+								l21.setHorizontalTextPosition(JLabel.CENTER);
+								JLabel l22 = new JLabel();
+								l21.setBounds(50, 100, 200, 200);
+								l22.setBounds(70, 400, 200, 200);
+								if(a.equals("全部班组")){
+
+									if(limit.equals("true")){
+		/*								if(listarray4.size()!=0){
+											for(int i1=0;i1<listarray4.size();i1+=7){
+												if(labelname.equals(listarray4.get(i1+4))){
+													if(listarray22.get(i+1).equals("41")){
+														img = new ImageIcon(getClass().getResource("/images/GLW.png"));
+														l21.setIcon(img);
+														break;
+													}else if(listarray22.get(i+1).equals("42")){
+														img = new ImageIcon(getClass().getResource("/images/ATW.png"));
+														l21.setIcon(img);
+														break;
+													}else if(listarray22.get(i+1).equals("43")){
+														img = new ImageIcon(getClass().getResource("/images/FRW.png"));
+														l21.setIcon(img);
+														break;
+													}
+												}else{
+													if(listarray22.get(i+1).equals("41")){
+														img = new ImageIcon(getClass().getResource("/images/GL.png"));
+														l21.setIcon(img);
+													}else if(listarray22.get(i+1).equals("42")){
+														img = new ImageIcon(getClass().getResource("/images/AT.png"));
+														l21.setIcon(img);
+													}else if(listarray22.get(i+1).equals("43")){
+														img = new ImageIcon(getClass().getResource("/images/FR.png"));
+														l21.setIcon(img);
+													}
+												}
+											}
+										}else{
+											if(listarray22.get(i+1).equals("41")){
+												img = new ImageIcon(getClass().getResource("/images/GL.png"));
+												l21.setIcon(img);
+											}else if(listarray22.get(i+1).equals("42")){
+												img = new ImageIcon(getClass().getResource("/images/AT.png"));
+												l21.setIcon(img);
+											}else if(listarray22.get(i+1).equals("43")){
+												img = new ImageIcon(getClass().getResource("/images/FR.png"));
+												l21.setIcon(img);
+											}
+										}*/
+										if(firstpageMachine.size()!=0){
+											for(int f=0;f<firstpageMachine.size();f+=2){
+												if(labelname.equals(firstpageMachine.get(f))){
+													if(listarray22.get(i+1).equals("41")){
+		    											if(firstpageMachine.get(f+1).equals("00")){
+		    												img = new ImageIcon(getClass().getResource("/images/GLS.png"));
+		    												l21.setIcon(img);
+		    												break;
+		    											}else if((firstpageMachine.get(f+1).equals("03"))||(firstpageMachine.get(f+1).equals("05"))||(firstpageMachine.get(f+1).equals("07"))){
+		    												img = new ImageIcon(getClass().getResource("/images/GLW.png"));
+		    												l21.setIcon(img);
+		    												break;
+		    											}else{
+		    												img = new ImageIcon(getClass().getResource("/images/GLO.png"));
+		    												l21.setIcon(img);
+		    												break;
+		    											}
+													}else if(listarray22.get(i+1).equals("42")){
+														if(firstpageMachine.get(f+1).equals("00")){
+															img = new ImageIcon(getClass().getResource("/images/ATS.png"));
+		    												l21.setIcon(img);
+		    												break;
+		    											}else if((firstpageMachine.get(f+1).equals("03"))||(firstpageMachine.get(f+1).equals("05"))||(firstpageMachine.get(f+1).equals("07"))){
+		    												img = new ImageIcon(getClass().getResource("/images/ATW.png"));
+		    												l21.setIcon(img);
+		    												break;
+		    											}else{
+		    												img = new ImageIcon(getClass().getResource("/images/ATO.png"));
+		    												l21.setIcon(img);
+		    												break;
+		    											}
+													}else if(listarray22.get(i+1).equals("43")){
+														if(firstpageMachine.get(f+1).equals("00")){
+															img = new ImageIcon(getClass().getResource("/images/FRS.png"));
+		    												l21.setIcon(img);
+		    												break;
+		    											}else if((firstpageMachine.get(f+1).equals("03"))||(firstpageMachine.get(f+1).equals("05"))||(firstpageMachine.get(f+1).equals("07"))){
+		    												img = new ImageIcon(getClass().getResource("/images/FRW.png"));
+		    												l21.setIcon(img);
+		    												break;
+		    											}else{
+		    												img = new ImageIcon(getClass().getResource("/images/FRO.png"));
+		    												l21.setIcon(img);
+		    												break;
+		    											}
+													}
+												}else{
+		        									if(listarray22.get(i+1).equals("41")){
+		        										img = new ImageIcon(getClass().getResource("/images/GL.png"));
+		        										l21.setIcon(img);
+		        									}else if(listarray22.get(i+1).equals("42")){
+		        										img = new ImageIcon(getClass().getResource("/images/AT.png"));
+		        										l21.setIcon(img);
+		        									}else if(listarray22.get(i+1).equals("43")){
+		        										img = new ImageIcon(getClass().getResource("/images/FR.png"));
+		        										l21.setIcon(img);
+		        									}
+												}
+											}
+										}else{
+											if(listarray22.get(i+1).equals("41")){
+												img = new ImageIcon(getClass().getResource("/images/GL.png"));
+												l21.setIcon(img);
+											}else if(listarray22.get(i+1).equals("42")){
+												img = new ImageIcon(getClass().getResource("/images/AT.png"));
+												l21.setIcon(img);
+											}else if(listarray22.get(i+1).equals("43")){
+												img = new ImageIcon(getClass().getResource("/images/FR.png"));
+												l21.setIcon(img);
+											}
+										}
+									}else if(limit.equals("false")){
+										if(listarray22.get(i+1).equals("41")){
+											img = new ImageIcon(getClass().getResource("/images/GL.png"));
+											l21.setIcon(img);
+										}else if(listarray22.get(i+1).equals("42")){
+											img = new ImageIcon(getClass().getResource("/images/AT.png"));
+											l21.setIcon(img);
+										}else if(listarray22.get(i+1).equals("43")){
+											img = new ImageIcon(getClass().getResource("/images/FR.png"));
+											l21.setIcon(img);
+										}
+									}
+									context.repaint();
+									l21.addMouseListener(new MouseListener(){
+			
+										//图片点击监听
+										@Override
+										public void mouseClicked(MouseEvent e) {}
+										@Override
+										public void mousePressed(MouseEvent e) {
+											// TODO Auto-generated method stub
+											
+										}
+										@Override
+										public void mouseReleased(MouseEvent e) {
+											// TODO Auto-generated method stub
+											
+										}
+										@Override
+										public void mouseEntered(MouseEvent e) {
+											// TODO Auto-generated method stub
+											
+										}
+										@Override
+										public void mouseExited(MouseEvent e) {
+											// TODO Auto-generated method stub
+											
+										}
+									});
+									
+									if(limit.equals("true")){
+										for(int i1=0;i1<listarray4.size();i1+=7){
+											if(labelname.equals(listarray4.get(i1+4))){
+											}
+										}
+									}
+									
+									l21.setText(labelname);
+									//l22.setText("       ");
+									
+									p3.add(l21);
+									p3.add(l22);
+								
+								}else{
+									if(listarray22.get(i+2).equals(a)){
+									if(limit.equals("true")){
+		/*								if(listarray4.size()!=0){
+											for(int i1=0;i1<listarray4.size();i1+=7){
+												if(labelname.equals(listarray4.get(i1+4))){
+													if(listarray22.get(i+1).equals("41")){
+														img = new ImageIcon(getClass().getResource("/images/GLW.png"));
+														l21.setIcon(img);
+														break;
+													}else if(listarray22.get(i+1).equals("42")){
+														img = new ImageIcon(getClass().getResource("/images/ATW.png"));
+														l21.setIcon(img);
+														break;
+													}else if(listarray22.get(i+1).equals("43")){
+														img = new ImageIcon(getClass().getResource("/images/FRW.png"));
+														l21.setIcon(img);
+														break;
+													}
+												}else{
+													if(listarray22.get(i+1).equals("41")){
+														img = new ImageIcon(getClass().getResource("/images/GL.png"));
+														l21.setIcon(img);
+													}else if(listarray22.get(i+1).equals("42")){
+														img = new ImageIcon(getClass().getResource("/images/AT.png"));
+														l21.setIcon(img);
+													}else if(listarray22.get(i+1).equals("43")){
+														img = new ImageIcon(getClass().getResource("/images/FR.png"));
+														l21.setIcon(img);
+													}
+												}
+											}
+										}else{
+											if(listarray22.get(i+1).equals("41")){
+												img = new ImageIcon(getClass().getResource("/images/GL.png"));
+												l21.setIcon(img);
+											}else if(listarray22.get(i+1).equals("42")){
+												img = new ImageIcon(getClass().getResource("/images/AT.png"));
+												l21.setIcon(img);
+											}else if(listarray22.get(i+1).equals("43")){
+												img = new ImageIcon(getClass().getResource("/images/FR.png"));
+												l21.setIcon(img);
+											}
+										}*/
+										if(firstpageMachine.size()!=0){
+											for(int f=0;f<firstpageMachine.size();f+=2){
+												if(labelname.equals(firstpageMachine.get(f))){
+													if(listarray22.get(i+1).equals("41")){
+		    											if(firstpageMachine.get(f+1).equals("00")){
+		    												img = new ImageIcon(getClass().getResource("/images/GLS.png"));
+		    												l21.setIcon(img);
+		    												break;
+		    											}else if((firstpageMachine.get(f+1).equals("03"))||(firstpageMachine.get(f+1).equals("05"))||(firstpageMachine.get(f+1).equals("07"))){
+		    												img = new ImageIcon(getClass().getResource("/images/GLW.png"));
+		    												l21.setIcon(img);
+		    												break;
+		    											}else{
+		    												img = new ImageIcon(getClass().getResource("/images/GLO.png"));
+		    												l21.setIcon(img);
+		    												break;
+		    											}
+													}else if(listarray22.get(i+1).equals("42")){
+														if(firstpageMachine.get(f+1).equals("00")){
+															img = new ImageIcon(getClass().getResource("/images/ATS.png"));
+		    												l21.setIcon(img);
+		    												break;
+		    											}else if((firstpageMachine.get(f+1).equals("03"))||(firstpageMachine.get(f+1).equals("05"))||(firstpageMachine.get(f+1).equals("07"))){
+		    												img = new ImageIcon(getClass().getResource("/images/ATW.png"));
+		    												l21.setIcon(img);
+		    												break;
+		    											}else{
+		    												img = new ImageIcon(getClass().getResource("/images/ATO.png"));
+		    												l21.setIcon(img);
+		    												break;
+		    											}
+													}else if(listarray22.get(i+1).equals("43")){
+														if(firstpageMachine.get(f+1).equals("00")){
+															img = new ImageIcon(getClass().getResource("/images/FRS.png"));
+		    												l21.setIcon(img);
+		    												break;
+		    											}else if((firstpageMachine.get(f+1).equals("03"))||(firstpageMachine.get(f+1).equals("05"))||(firstpageMachine.get(f+1).equals("07"))){
+		    												img = new ImageIcon(getClass().getResource("/images/FRW.png"));
+		    												l21.setIcon(img);
+		    												break;
+		    											}else{
+		    												img = new ImageIcon(getClass().getResource("/images/FRO.png"));
+		    												l21.setIcon(img);
+		    												break;
+		    											}
+													}
+												}else{
+		        									if(listarray22.get(i+1).equals("41")){
+		        										img = new ImageIcon(getClass().getResource("/images/GL.png"));
+		        										l21.setIcon(img);
+		        									}else if(listarray22.get(i+1).equals("42")){
+		        										img = new ImageIcon(getClass().getResource("/images/AT.png"));
+		        										l21.setIcon(img);
+		        									}else if(listarray22.get(i+1).equals("43")){
+		        										img = new ImageIcon(getClass().getResource("/images/FR.png"));
+		        										l21.setIcon(img);
+		        									}
+												}
+											}
+										}else{
+											if(listarray22.get(i+1).equals("41")){
+												img = new ImageIcon(getClass().getResource("/images/GL.png"));
+												l21.setIcon(img);
+											}else if(listarray22.get(i+1).equals("42")){
+												img = new ImageIcon(getClass().getResource("/images/AT.png"));
+												l21.setIcon(img);
+											}else if(listarray22.get(i+1).equals("43")){
+												img = new ImageIcon(getClass().getResource("/images/FR.png"));
+												l21.setIcon(img);
+											}
+										}
+									}else if(limit.equals("false")){
+										if(listarray22.get(i+1).equals("41")){
+											img = new ImageIcon(getClass().getResource("/images/GL.png"));
+											l21.setIcon(img);
+										}else if(listarray22.get(i+1).equals("42")){
+											img = new ImageIcon(getClass().getResource("/images/AT.png"));
+											l21.setIcon(img);
+										}else if(listarray22.get(i+1).equals("43")){
+											img = new ImageIcon(getClass().getResource("/images/FR.png"));
+											l21.setIcon(img);
+										}
+									}
+									context.repaint();
+									l21.addMouseListener(new MouseListener(){
+			
+										//图片点击监听
+										@Override
+										public void mouseClicked(MouseEvent e) {}
+										@Override
+										public void mousePressed(MouseEvent e) {
+											// TODO Auto-generated method stub
+											
+										}
+										@Override
+										public void mouseReleased(MouseEvent e) {
+											// TODO Auto-generated method stub
+											
+										}
+										@Override
+										public void mouseEntered(MouseEvent e) {
+											// TODO Auto-generated method stub
+											
+										}
+										@Override
+										public void mouseExited(MouseEvent e) {
+											// TODO Auto-generated method stub
+											
+										}
+									});
+									
+									if(limit.equals("true")){
+										for(int i1=0;i1<listarray4.size();i1+=7){
+											if(labelname.equals(listarray4.get(i1+4))){
+											}
+										}
+									}
+									
+									l21.setText(labelname);
+									//l22.setText("       ");
+									
+									p3.add(l21);
+									p3.add(l22);
+								}
+							}
+							}
+						}
+						
+						context.repaint();
+					}
+				});
+				
 				//响应按钮重绘界面
-				context.remove(p2);
+				context.remove(p3);
 				context.remove(sp2);
 				context.repaint();
 				
 				//加载焊机列表
-				p2.removeAll();// = new JPanel();
-				p2.setBounds(20,400,400,400);
-				p2.setFont(new Font("Dialog",1,20));
-				p2.setBackground(Color.white);
-				p2.setLayout(new FlowLayout(FlowLayout.LEFT));
+				p3.removeAll();// = new JPanel();
+				p3.setBounds(20,400,400,400);
+				p3.setFont(new Font("Dialog",1,20));
+				p3.setBackground(Color.white);
+				p3.setLayout(new FlowLayout(FlowLayout.LEFT));
 				screensize.setSize(screensize.width, screensize.height);
 				
-        		s4 = new JScrollPane(p2);
-//        		s4.setBounds(10, (int)p2.getLocation().getY()+p2.getHeight()+3, screensize.width-20, screensize.height-((int)p2.getLocation().getY()+p2.getHeight())-10);
+        		s4 = new JScrollPane(p3);
+//	        		s4.setBounds(10, (int)p2.getLocation().getY()+p2.getHeight()+3, screensize.width-20, screensize.height-((int)p2.getLocation().getY()+p2.getHeight())-10);
         		s4.setBounds(10, 510,screensize.width-20, screensize.height-530);
         		s4.getViewport().setBackground(Color.white);
     			getContentPane().add(s4);
 				
-				String[] a = jcb.getSelectedItem().toString().split(":");
+				String a = jcb.getSelectedItem().toString();
 				
 				for(int i=0;i<listarray22.size();i+=5){
 					String labelname = listarray22.get(i);
@@ -1566,7 +2064,7 @@ public class Firstpage extends JFrame{
 						JLabel l22 = new JLabel();
 						l21.setBounds(50, 100, 200, 200);
 						l22.setBounds(70, 400, 200, 200);
-						if(a[1].equals("全部")){
+						if(a.equals("全部班组")){
 
 							if(limit.equals("true")){
 /*								if(listarray4.size()!=0){
@@ -1729,13 +2227,13 @@ public class Firstpage extends JFrame{
 							}
 							
 							l21.setText(labelname);
-							l22.setText("                 ");
+							//l22.setText("       ");
 							
-							p2.add(l21);
-							p2.add(l22);
+							p3.add(l21);
+							p3.add(l22);
 						
 						}else{
-							if(listarray22.get(i+2).equals(a[1])){
+							if(listarray22.get(i+2).equals(a)){
 							if(limit.equals("true")){
 /*								if(listarray4.size()!=0){
 									for(int i1=0;i1<listarray4.size();i1+=7){
@@ -1897,25 +2395,33 @@ public class Firstpage extends JFrame{
 							}
 							
 							l21.setText(labelname);
-							l22.setText("                 ");
+							//l22.setText("       ");
 							
-							p2.add(l21);
-							p2.add(l22);
+							p3.add(l21);
+							p3.add(l22);
 						}
 					}
 					}
 				}
 				
 				context.repaint();
+				
+				p3.repaint();
 			}
 		});
 		
-		/*try {
-			Thread.sleep(3000);
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}*/
+		Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
+		p3 = new JPanel();
+		//加载焊机列表
+		p3.removeAll();// = new JPanel();
+		p3.setLayout(new FlowLayout(FlowLayout.LEFT));
+		p3.setBounds(20,400,400,400);
+		p3.setFont(new Font("Dialog",1,20));
+		p3.setBackground(Color.white);
+		screensize.setSize(screensize.width, screensize.height);
+		
+		sp2 = new JScrollPane(p3);
+		
 		if(listarray22.size() == 0){
 			JOptionPane.showMessageDialog(null, "无可选择焊机.", "  错误",JOptionPane.ERROR_MESSAGE);
 		}else{				
@@ -2062,10 +2568,10 @@ public class Firstpage extends JFrame{
 						}
 						
 						l21.setText(labelname);
-						l22.setText("                 ");
+						//l22.setText("       ");
 						
-						p2.add(l21);
-						p2.add(l22);
+						p3.add(l21);
+						p3.add(l22);
 						
 						/*if(limit.equals("true")){
 							l21.setBackground(Color.BLACK);
@@ -2073,8 +2579,6 @@ public class Firstpage extends JFrame{
 				}
 			}
 			
-			sp2 = new JScrollPane(p2);
-
 			double b = panel_1.getHeight();
 			panel_1.getY();
 			

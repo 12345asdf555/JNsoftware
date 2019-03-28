@@ -38,6 +38,7 @@ public class JProcessBarDemo extends JFrame{
 	public Dimension screensize;
 	private boolean cancel = false;
 	private Secondpage sd;
+	private Firstpage fp;
 	public String weldernum;
 	public String task;
 	public String weld;
@@ -49,7 +50,6 @@ public class JProcessBarDemo extends JFrame{
 	private String weldid;
 	private String welderid;
 	private String taskid;
-	private Firstpage fp;
 	
 	public JProcessBarDemo(Dimension screensize1, Secondpage sd1, String weldid1, String welderid1, String taskid1, Firstpage fp1){
 		
@@ -175,15 +175,13 @@ public class JProcessBarDemo extends JFrame{
 						setVisible(false);
 						
 						if(!cancel){
-							new Firstpage();
-							sd.setVisible(false);
-							sd.tExit1.cancel();
-							sd=null;
-							fp.tExit.cancel();
-							fp.tExit1.cancel();
-							fp.t.cancel();
-							fp=null;
-							System.gc();
+							//new Firstpage();
+							  fp.textField.setText("");
+							  fp.setVisible(true);
+				              sd.setVisible(false);
+				              sd.tExit1.cancel();
+				              sd=null;
+				              System.gc();
 						}
 				    }else if(restr.equals("false")){
 				    	jpb.setString("失败，请重试");// 设置提示信息
