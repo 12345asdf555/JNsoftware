@@ -90,10 +90,12 @@ public void run() {
 
 		        @Override
 		        public void onMessage(String arg0) {
- 		        	if(page == 1){
-			        	//fp.websocdata(arg0);
-		        	}else if(page == 2){
-			        	sp.websocketdata(arg0);
+		        	if(arg0 != null && !"null".equals(arg0) && !"".equals(arg0)){
+	 		        	if(page == 1){
+				        	//fp.websocdata(arg0);
+			        	}else if(page == 2){
+				        	sp.websocketdata(arg0);
+			        	}
 		        	}
 		        }
 

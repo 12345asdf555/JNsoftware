@@ -83,7 +83,7 @@ public void run() {
 	  
 	  try {
 		  client = new WebSocketClient(new URI("ws://"+ip+":5550")) {
-		  //client = new WebSocketClient(new URI("ws://192.168.3.79:5550")) {
+		  //client = new WebSocketClient(new URI("ws://localhost:5550")) {
 
 		        @Override
 		        public void onOpen(ServerHandshake arg0) {
@@ -91,10 +91,12 @@ public void run() {
 
 		        @Override
 		        public void onMessage(String arg0) {
- 		        	if(page == 1){
-			        	fp.websocdata(arg0);
-		        	}else if(page == 2){
-			        	sp.websocketdata(arg0);
+		        	if(arg0 != null && !"null".equals(arg0) && !"".equals(arg0)){
+	 		        	if(page == 1){
+				        	fp.websocdata(arg0);
+			        	}else if(page == 2){
+				        	sp.websocketdata(arg0);
+			        	}
 		        	}
 		        }
 

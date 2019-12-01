@@ -57,7 +57,7 @@ public class JProcessBarDemo extends JFrame{
 		sd = sd1;
 		fp = fp1;
 		
-		l11.setText(sd.l11.getText().toString());
+		l11.setText(sd.l11.getText()+" ".toString());
 		l11.setFont(new Font("宋体", Font.BOLD, 17));
 		l11.setForeground(Color.BLACK);
 		
@@ -80,7 +80,7 @@ public class JProcessBarDemo extends JFrame{
 		setTitle("确认中");		//设置窗体标题
 		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 设置窗体退出的操作
 		screensize = Toolkit.getDefaultToolkit().getScreenSize();
-		setBounds((screensize.width-250)/2, (screensize.height-220)/2, 250, 180);// 设置窗体的位置和大小
+		setBounds((screensize.width-400)/2, (screensize.height-220)/2, 400, 180);// 设置窗体的位置和大小
 		this.getRootPane().setWindowDecorationStyle(JRootPane.INFORMATION_DIALOG);
 		setUndecorated(true);	
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

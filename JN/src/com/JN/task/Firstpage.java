@@ -166,7 +166,6 @@ public class Firstpage extends JFrame{
 		}*/
 		new Thread(websocket).start();  //获取数据
 		
-		
 		context = this;
 	}
 	
@@ -497,17 +496,17 @@ public class Firstpage extends JFrame{
 	        				
 	        				//加载焊机列表
 							p3.removeAll();// = new JPanel();
-							p3.setBounds(20,400,400,400);
+							p3.setPreferredSize(new Dimension(100,3000));
 							p3.setFont(new Font("Dialog",1,20));
 							p3.setBackground(Color.white);
 							p3.setLayout(new FlowLayout(FlowLayout.LEFT));
 							screensize.setSize(screensize.width, screensize.height);
 							
-			        		s4 = new JScrollPane(p3);
+			        		sp2 = new JScrollPane(p3);
 //				        		s4.setBounds(10, (int)p2.getLocation().getY()+p2.getHeight()+3, screensize.width-20, screensize.height-((int)p2.getLocation().getY()+p2.getHeight())-10);
-			        		s4.setBounds(10, 510,screensize.width-20, screensize.height-530);
-			        		s4.getViewport().setBackground(Color.white);
-			        		context.add(s4);
+			        		sp2.setBounds(10, 510,screensize.width-20, screensize.height-530);
+			        		sp2.getViewport().setBackground(Color.white);
+			        		context.add(sp2);
 							
 							String a = jcb.getSelectedItem().toString();
 							
@@ -872,7 +871,7 @@ public class Firstpage extends JFrame{
 	        			e.printStackTrace();
 	        		}
 	            }
-	        }, 5000, 30000);
+	        }, 100, 30000);
 	        machineList();
 		}
 	};
@@ -915,7 +914,7 @@ public class Firstpage extends JFrame{
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				mt.run();
+				//mt.run();
 			}
 		}, 0,5000);
         //t.schedule(new MyTask(), 3000);
@@ -1659,17 +1658,17 @@ public class Firstpage extends JFrame{
 						
 						//加载焊机列表
 						p3.removeAll();// = new JPanel();
-						p3.setBounds(20,400,400,400);
+						p3.setPreferredSize(new Dimension(100,3000));
 						p3.setFont(new Font("Dialog",1,20));
 						p3.setBackground(Color.white);
 						p3.setLayout(new FlowLayout(FlowLayout.LEFT));
 						screensize.setSize(screensize.width, screensize.height);
 						
-		        		s4 = new JScrollPane(p3);
+		        		sp2 = new JScrollPane(p3);
 //			        		s4.setBounds(10, (int)p2.getLocation().getY()+p2.getHeight()+3, screensize.width-20, screensize.height-((int)p2.getLocation().getY()+p2.getHeight())-10);
-		        		s4.setBounds(10, 510,screensize.width-20, screensize.height-530);
-		        		s4.getViewport().setBackground(Color.white);
-		    			getContentPane().add(s4);
+		        		sp2.setBounds(10, 510,screensize.width-20, screensize.height-530);
+		        		sp2.getViewport().setBackground(Color.white);
+		        		context.add(sp2);
 						
 						String a = jcb.getSelectedItem().toString();
 						
@@ -2037,17 +2036,16 @@ public class Firstpage extends JFrame{
 				
 				//加载焊机列表
 				p3.removeAll();// = new JPanel();
-				p3.setBounds(20,400,400,400);
+				p3.setPreferredSize(new Dimension(100,3000));
 				p3.setFont(new Font("Dialog",1,20));
 				p3.setBackground(Color.white);
 				p3.setLayout(new FlowLayout(FlowLayout.LEFT));
 				screensize.setSize(screensize.width, screensize.height);
 				
-        		s4 = new JScrollPane(p3);
-//	        		s4.setBounds(10, (int)p2.getLocation().getY()+p2.getHeight()+3, screensize.width-20, screensize.height-((int)p2.getLocation().getY()+p2.getHeight())-10);
-        		s4.setBounds(10, 510,screensize.width-20, screensize.height-530);
-        		s4.getViewport().setBackground(Color.white);
-    			getContentPane().add(s4);
+        		sp2 = new JScrollPane(p3);
+        		sp2.setBounds(10, 510,screensize.width-20, screensize.height-530);
+        		sp2.getViewport().setBackground(Color.white);
+    			getContentPane().add(sp2);
 				
 				String a = jcb.getSelectedItem().toString();
 				
@@ -2415,9 +2413,9 @@ public class Firstpage extends JFrame{
 		//加载焊机列表
 		p3.removeAll();// = new JPanel();
 		p3.setLayout(new FlowLayout(FlowLayout.LEFT));
-		p3.setBounds(20,400,400,400);
 		p3.setFont(new Font("Dialog",1,20));
 		p3.setBackground(Color.white);
+		p3.setPreferredSize(new Dimension(100,3000));
 		screensize.setSize(screensize.width, screensize.height);
 		
 		sp2 = new JScrollPane(p3);

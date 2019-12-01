@@ -30,6 +30,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -68,6 +69,7 @@ public class Secondpage extends JFrame{
 	public JLabel l12 = new JLabel("焊工编号:   ");
 	public JLabel l15 = new JLabel("所在班组:   ");
 	public JLabel l13 = new JLabel("焊机编号:   ");
+	public JLabel l16 = new JLabel("任务焊工:");
 	public JLabel l14 = new JLabel("任务编号:");
 	private JLabel l21;
 	private JLabel l22;
@@ -96,7 +98,7 @@ public class Secondpage extends JFrame{
             g.drawImage(img, 0, 0, getWidth(), getHeight(), this);  
         }  
 	};
-	
+
 	private Firstpage firstpage;
 	public String worktime;
 	public String welder;
@@ -473,33 +475,39 @@ public class Secondpage extends JFrame{
 		l11.setText("焊工姓名:" + welder);
 		l11.setFont(new Font("宋体", Font.BOLD, 17));
 		l11.setForeground(Color.WHITE);
-		l11.setBounds(14, 23, 200, 22);
+		l11.setBounds(10, 23, 200, 22);
 		p1.add(l11);
 		
 		//焊工编号
 		l12.setText("焊工编号:" + weldernum);
 		l12.setFont(new Font("宋体", Font.BOLD, 17));
 		l12.setForeground(Color.WHITE);
-		l12.setBounds(14, 121, 400, 22);
+		l12.setBounds(205, 23, 177, 22);
 		p1.add(l12);
 		
 		//所在班组
 		l15.setText("所在班组:" + weldowner);
 		l15.setFont(new Font("宋体", Font.BOLD, 17));
 		l15.setForeground(Color.WHITE);
-		l15.setBounds(14, 75, 200, 22);
+		l15.setBounds(10, 60, 200, 22);
 		p1.add(l15);
 		
 		//焊机编号
 		l13.setFont(new Font("宋体", Font.BOLD, 17));
 		l13.setForeground(Color.WHITE);
-		l13.setBounds(213, 23, 177, 22);
+		l13.setBounds(10, 97, 400, 22);
 		p1.add(l13);
+
+		//任务焊工
+		l16.setFont(new Font("宋体", Font.BOLD, 17));
+		l16.setForeground(Color.WHITE);
+		l16.setBounds(10, 134, 400, 22);
+		p1.add(l16);
 		
 		//任务编号
 		l14.setFont(new Font("宋体", Font.BOLD, 17));
 		l14.setForeground(Color.WHITE);
-		l14.setBounds(14, 167, 400, 22);
+		l14.setBounds(10, 171, 400, 22);
 		p1.add(l14);
 		
 		Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -720,7 +728,7 @@ public class Secondpage extends JFrame{
         Dimension screensize11 = Toolkit.getDefaultToolkit().getScreenSize();
         
 		sp3 = new JScrollPane(t3);
-		sp3.setBounds((int)screensize11.getWidth()-400, 390, 415, (int)screensize11.getHeight()-420-90);
+		sp3.setBounds((int)screensize11.getWidth()-400, 420, 390, (int)screensize11.getHeight()-420-85);
 		sp3.setBackground(Color.white);
 		repaint();
 		
@@ -1037,7 +1045,7 @@ public class Secondpage extends JFrame{
 													Component asdf = p2.getComponent(i);
 													((JComponent) asdf).setBorder(null);
 												}
-												l21.setBorder(BorderFactory.createLineBorder(Color.RED,4));
+												l21.setBorder(BorderFactory.createLineBorder(Color.RED,1));
 												weld = labelname;
 												if(listarray4.size()==0){
 													l13.setText("焊机编号:" + weld);
@@ -1053,7 +1061,10 @@ public class Secondpage extends JFrame{
 												for(int i=0;i<listarray4.size();i+=8){
 													if(weld.equals(listarray4.get(i+3))){
 														l13.setText("焊机编号:" + weld);
+														l16.setText("焊机焊工:" + listarray4.get(i+2));
 														l14.setText("任务编号:" + listarray4.get(i+4));
+														int i1 = JOptionPane.showConfirmDialog(null, "已绑定任务:"+listarray4.get(i+4), "确认",JOptionPane.OK_OPTION);
+														if(i1!=0){}else{}
 														if(weldtype.equals("41")){
 															label_1.setText("焊机类型:" + "MAG");
 														}else if(weldtype.equals("42")){
@@ -1064,6 +1075,7 @@ public class Secondpage extends JFrame{
 														break;
 													}else{
 														l13.setText("焊机编号:" + weld);
+														l16.setText("任务焊工:");
 														l14.setText("任务编号:");
 														if(weldtype.equals("41")){
 															label_1.setText("焊机类型:" + "MAG");
@@ -1314,7 +1326,7 @@ public class Secondpage extends JFrame{
 											Component asdf = p2.getComponent(i);
 											((JComponent) asdf).setBorder(null);
 										}
-										l21.setBorder(BorderFactory.createLineBorder(Color.RED,4));
+										l21.setBorder(BorderFactory.createLineBorder(Color.RED,1));
 										weld = labelname;
 										if(listarray4.size()==0){
 											l13.setText("焊机编号:" + weld);
@@ -1330,7 +1342,10 @@ public class Secondpage extends JFrame{
 										for(int i=0;i<listarray4.size();i+=8){
 											if(weld.equals(listarray4.get(i+3))){
 												l13.setText("焊机编号:" + weld);
+												l16.setText("焊机焊工:" + listarray4.get(i+2));
 												l14.setText("任务编号:" + listarray4.get(i+4));
+												int i1 = JOptionPane.showConfirmDialog(null, "已绑定任务:"+listarray4.get(i+4), "确认",JOptionPane.OK_OPTION);
+												if(i1!=0){}else{}
 												if(weldtype.equals("41")){
 													label_1.setText("焊机类型:" + "MAG");
 												}else if(weldtype.equals("42")){
@@ -1341,6 +1356,7 @@ public class Secondpage extends JFrame{
 												break;
 											}else{
 												l13.setText("焊机编号:" + weld);
+												l16.setText("任务焊工:");
 												l14.setText("任务编号:");
 												if(weldtype.equals("41")){
 													label_1.setText("焊机类型:" + "MAG");
@@ -1395,10 +1411,8 @@ public class Secondpage extends JFrame{
 				sd.repaint();
 			}
 		});
-
 		
-		//旧调试
-		/*jcb.addActionListener(new ActionListener(){
+		jcb.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
@@ -1420,7 +1434,7 @@ public class Secondpage extends JFrame{
 				sp2.setBackground(Color.white);
 				getContentPane().add(sp2);
 				
-				String[] a = jcb.getSelectedItem().toString().split(":");
+				String a = jcb.getSelectedItem().toString();
 				
 				for(int i=0;i<listarray22.size();i+=5){
 					String labelname = listarray22.get(i);
@@ -1436,9 +1450,9 @@ public class Secondpage extends JFrame{
 						l21.setBounds(50, 100, 200, 200);
 						l22.setBounds(70, 400, 200, 200);
 						
-						if(listarray22.get(i+2).equals(a[1])){
+						if(listarray22.get(i+2).equals(a)){
 							if(limit.equals("true")){
-								if(listarray4.size()!=0){
+/*								if(listarray4.size()!=0){
 									for(int i1=0;i1<listarray4.size();i1+=8){
 										if(labelname.equals(listarray4.get(i1+3))){
 											if(listarray22.get(i+1).equals("41")){
@@ -1478,7 +1492,7 @@ public class Secondpage extends JFrame{
 										img = new ImageIcon(getClass().getResource("/images/FR.png"));
 										l21.setIcon(img);
 									}
-								}
+								}*/
 								if(secondpageMachine.size()!=0){
 									for(int f=0;f<secondpageMachine.size();f+=2){
 										if(labelname.equals(secondpageMachine.get(f))){
@@ -1570,7 +1584,7 @@ public class Secondpage extends JFrame{
 									// TODO Auto-generated method stub
 									
 									if(e.getClickCount()==2){
-										String weldid = "";
+										/*String weldid = "";
 										weld = labelname;
 										for(int i=0;i<listarraywe.size();i+=2){
 											if(weld.equals(listarraywe.get(i))){
@@ -1589,7 +1603,7 @@ public class Secondpage extends JFrame{
 											l21.setIcon(img);
 										}
 										
-										JWeldButton jb = new JWeldButton(weldposition,weldtype,weld,img,sd,listarraywe,listarrayta,weldid,welderid,cc);
+										JWeldButton jb = new JWeldButton(weldposition,weldtype,weld,img,sd,listarraywe,listarrayta,weldid,welderid,cc);*/
 										//jb.setVisible(true);
 										
 									}else if(e.getClickCount()==1){
@@ -1597,9 +1611,8 @@ public class Secondpage extends JFrame{
 											int afre = p2.getComponentCount();
 											Component asdf = p2.getComponent(i);
 											((JComponent) asdf).setBorder(null);
-											System.out.println(asdf);
 										}
-										l21.setBorder(BorderFactory.createLineBorder(Color.RED,4));
+										l21.setBorder(BorderFactory.createLineBorder(Color.RED,1));
 										weld = labelname;
 										if(listarray4.size()==0){
 											l13.setText("焊机编号:" + weld);
@@ -1615,7 +1628,10 @@ public class Secondpage extends JFrame{
 										for(int i=0;i<listarray4.size();i+=8){
 											if(weld.equals(listarray4.get(i+3))){
 												l13.setText("焊机编号:" + weld);
+												l16.setText("焊机焊工:" + listarray4.get(i+2));
 												l14.setText("任务编号:" + listarray4.get(i+4));
+												int i1 = JOptionPane.showConfirmDialog(null, "已绑定任务:"+listarray4.get(i+4), "确认",JOptionPane.OK_OPTION);
+												if(i1!=0){}else{}
 												if(weldtype.equals("41")){
 													label_1.setText("焊机类型:" + "MAG");
 												}else if(weldtype.equals("42")){
@@ -1626,6 +1642,7 @@ public class Secondpage extends JFrame{
 												break;
 											}else{
 												l13.setText("焊机编号:" + weld);
+												l16.setText("任务焊工:");
 												l14.setText("任务编号:");
 												if(weldtype.equals("41")){
 													label_1.setText("焊机类型:" + "MAG");
@@ -1679,7 +1696,8 @@ public class Secondpage extends JFrame{
 				
 				sd.repaint();
 			}
-		});*/
+		});
+
 		l32.setFont(new Font("宋体", Font.BOLD, 20));
 		l32.setForeground(Color.BLACK);
 		l32.setText("任务数:"+count);
@@ -1801,7 +1819,7 @@ public class Secondpage extends JFrame{
 		
 		label_1.setForeground(Color.WHITE);
 		label_1.setFont(new Font("宋体", Font.BOLD, 17));
-		label_1.setBounds(213, 75, 177, 22);
+		label_1.setBounds(205, 97, 177, 22);
 		p1.add(label_1);
 		getContentPane().add(panel_2);
 		getContentPane().add(panel_4);
@@ -1809,28 +1827,6 @@ public class Secondpage extends JFrame{
 		if(listarray22.size() == 0){
 			JOptionPane.showMessageDialog(null, "无可选择焊机.", "  错误",JOptionPane.ERROR_MESSAGE);
 		}else{
-			
-			/*int j = 0;
-			String[] weldtotal = new String[100];
-			for(int i =0;i<listarray22.size();i+=3){
-				String labelname = listarray22.get(i);
-				String weldtype = listarray22.get(i+1);
-				String weldins = listarray22.get(i+2);
-				if(j == 0){
-					weldtotal[j] = weldins;
-					j++;
-				}else{
-					for(int k=0;k<j;k++){
-						if(!weldtotal[k].equals(weldins)){
-							weldtotal[j] = weldins;
-							j++;
-						}else{
-							break;
-						}
-					}
-				}
-			}*/
-			
 			for(int i=0;i<listarray22.size();i+=5){
 				String labelname = listarray22.get(i);
 				String weldtype = listarray22.get(i+1);
@@ -2010,7 +2006,7 @@ public class Secondpage extends JFrame{
 										Component asdf = p2.getComponent(i);
 										((JComponent) asdf).setBorder(null);
 									}
-									l21.setBorder(BorderFactory.createLineBorder(Color.RED,4));
+									l21.setBorder(BorderFactory.createLineBorder(Color.RED,1));
 									weld = labelname;
 									if(listarray4.size()==0){
 										l13.setText("焊机编号:" + weld);
@@ -2026,7 +2022,10 @@ public class Secondpage extends JFrame{
 									for(int i=0;i<listarray4.size();i+=8){
 										if(weld.equals(listarray4.get(i+3))){
 											l13.setText("焊机编号:" + weld);
+											l16.setText("任务焊工:" + listarray4.get(i+2));
 											l14.setText("任务编号:" + listarray4.get(i+4));
+											int i1 = JOptionPane.showConfirmDialog(null, "已绑定任务:"+listarray4.get(i+4), "确认",JOptionPane.OK_OPTION);
+											if(i1!=0){}else{}
 											if(weldtype.equals("41")){
 												label_1.setText("焊机类型:" + "MAG");
 											}else if(weldtype.equals("42")){
@@ -2037,6 +2036,7 @@ public class Secondpage extends JFrame{
 											break;
 										}else{
 											l13.setText("焊机编号:" + weld);
+											l16.setText("任务焊工:");
 											l14.setText("任务编号:");
 											if(weldtype.equals("41")){
 												label_1.setText("焊机类型:" + "MAG");
@@ -2098,6 +2098,293 @@ public class Secondpage extends JFrame{
 			
 		}
 		
+
+		Timer tExit = new Timer();  
+        tExit.schedule(new TimerTask() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				//响应按钮重绘界面
+				sd.remove(p2);
+				sd.remove(sp2);
+				sd.repaint();
+				
+				//加载焊机列表
+				p2.removeAll();// = new JPanel();
+				p2.setBounds(20,400,400,400);
+				p2.setFont(new Font("Dialog",1,20));
+				p2.setBackground(Color.white);
+				screensize.setSize(screensize.width, screensize.height);
+				
+				sp2 = new JScrollPane(p2);
+				sp2.setBounds(10, (int)panel_1.getHeight()+panel_1.getY()+10, (int)panel_1.getWidth(), panel_4.getY()-10-((int)panel_1.getHeight()+panel_1.getY()+5));
+				sp2.setBackground(Color.white);
+				getContentPane().add(sp2);
+				
+				String a = jcb.getSelectedItem().toString();
+				
+				for(int i=0;i<listarray22.size();i+=5){
+					String labelname = listarray22.get(i);
+					String weldtype = listarray22.get(i+1);
+					String weldposition = listarray22.get(i+3);
+					
+					//不为被清除的焊机列表
+					if(!labelname.equals("")){
+						JLabel l21 = new JLabel();
+						l21.setVerticalTextPosition(JLabel.BOTTOM); 
+						l21.setHorizontalTextPosition(JLabel.CENTER);
+						JLabel l22 = new JLabel();
+						l21.setBounds(50, 100, 200, 200);
+						l22.setBounds(70, 400, 200, 200);
+						
+						if(listarray22.get(i+2).equals(a)){
+							if(limit.equals("true")){
+/*								if(listarray4.size()!=0){
+									for(int i1=0;i1<listarray4.size();i1+=8){
+										if(labelname.equals(listarray4.get(i1+3))){
+											if(listarray22.get(i+1).equals("41")){
+												img = new ImageIcon(getClass().getResource("/images/GLW.png"));
+												l21.setIcon(img);
+												break;
+											}else if(listarray22.get(i+1).equals("42")){
+												img = new ImageIcon(getClass().getResource("/images/ATW.png"));
+												l21.setIcon(img);
+												break;
+											}else if(listarray22.get(i+1).equals("43")){
+												img = new ImageIcon(getClass().getResource("/images/FRW.png"));
+												l21.setIcon(img);
+												break;
+											}
+										}else{
+											if(listarray22.get(i+1).equals("41")){
+												img = new ImageIcon(getClass().getResource("/images/GL.png"));
+												l21.setIcon(img);
+											}else if(listarray22.get(i+1).equals("42")){
+												img = new ImageIcon(getClass().getResource("/images/AT.png"));
+												l21.setIcon(img);
+											}else if(listarray22.get(i+1).equals("43")){
+												img = new ImageIcon(getClass().getResource("/images/FR.png"));
+												l21.setIcon(img);
+											}
+										}
+									}
+								}else{
+									if(listarray22.get(i+1).equals("41")){
+										img = new ImageIcon(getClass().getResource("/images/GL.png"));
+										l21.setIcon(img);
+									}else if(listarray22.get(i+1).equals("42")){
+										img = new ImageIcon(getClass().getResource("/images/AT.png"));
+										l21.setIcon(img);
+									}else if(listarray22.get(i+1).equals("43")){
+										img = new ImageIcon(getClass().getResource("/images/FR.png"));
+										l21.setIcon(img);
+									}
+								}*/
+								if(secondpageMachine.size()!=0){
+									for(int f=0;f<secondpageMachine.size();f+=2){
+										if(labelname.equals(secondpageMachine.get(f))){
+											if(listarray22.get(i+1).equals("41")){
+    											if(secondpageMachine.get(f+1).equals("00")){
+    												img = new ImageIcon(getClass().getResource("/images/GLS.png"));
+    												l21.setIcon(img);
+    												break;
+    											}else if((secondpageMachine.get(f+1).equals("03"))||(secondpageMachine.get(f+1).equals("05"))||(secondpageMachine.get(f+1).equals("07"))){
+    												img = new ImageIcon(getClass().getResource("/images/GLW.png"));
+    												l21.setIcon(img);
+    												break;
+    											}else{
+    												img = new ImageIcon(getClass().getResource("/images/GLO.png"));
+    												l21.setIcon(img);
+    												break;
+    											}
+											}else if(listarray22.get(i+1).equals("42")){
+												if(secondpageMachine.get(f+1).equals("00")){
+													img = new ImageIcon(getClass().getResource("/images/ATS.png"));
+    												l21.setIcon(img);
+    												break;
+    											}else if((secondpageMachine.get(f+1).equals("03"))||(secondpageMachine.get(f+1).equals("05"))||(secondpageMachine.get(f+1).equals("07"))){
+    												img = new ImageIcon(getClass().getResource("/images/ATW.png"));
+    												l21.setIcon(img);
+    												break;
+    											}else{
+    												img = new ImageIcon(getClass().getResource("/images/ATO.png"));
+    												l21.setIcon(img);
+    												break;
+    											}
+											}else if(listarray22.get(i+1).equals("43")){
+												if(secondpageMachine.get(f+1).equals("00")){
+													img = new ImageIcon(getClass().getResource("/images/FRS.png"));
+    												l21.setIcon(img);
+    												break;
+    											}else if((secondpageMachine.get(f+1).equals("03"))||(secondpageMachine.get(f+1).equals("05"))||(secondpageMachine.get(f+1).equals("07"))){
+    												img = new ImageIcon(getClass().getResource("/images/FRW.png"));
+    												l21.setIcon(img);
+    												break;
+    											}else{
+    												img = new ImageIcon(getClass().getResource("/images/FRO.png"));
+    												l21.setIcon(img);
+    												break;
+    											}
+											}
+										}else{
+        									if(listarray22.get(i+1).equals("41")){
+        										img = new ImageIcon(getClass().getResource("/images/GL.png"));
+        										l21.setIcon(img);
+        									}else if(listarray22.get(i+1).equals("42")){
+        										img = new ImageIcon(getClass().getResource("/images/AT.png"));
+        										l21.setIcon(img);
+        									}else if(listarray22.get(i+1).equals("43")){
+        										img = new ImageIcon(getClass().getResource("/images/FR.png"));
+        										l21.setIcon(img);
+        									}
+										}
+									}
+								}else{
+									if(listarray22.get(i+1).equals("41")){
+										img = new ImageIcon(getClass().getResource("/images/GL.png"));
+										l21.setIcon(img);
+									}else if(listarray22.get(i+1).equals("42")){
+										img = new ImageIcon(getClass().getResource("/images/AT.png"));
+										l21.setIcon(img);
+									}else if(listarray22.get(i+1).equals("43")){
+										img = new ImageIcon(getClass().getResource("/images/FR.png"));
+										l21.setIcon(img);
+									}
+								}
+							}else if(limit.equals("false")){
+								if(listarray22.get(i+1).equals("41")){
+									img = new ImageIcon(getClass().getResource("/images/GL.png"));
+									l21.setIcon(img);
+								}else if(listarray22.get(i+1).equals("42")){
+									img = new ImageIcon(getClass().getResource("/images/AT.png"));
+									l21.setIcon(img);
+								}else if(listarray22.get(i+1).equals("43")){
+									img = new ImageIcon(getClass().getResource("/images/FR.png"));
+									l21.setIcon(img);
+								}
+							}
+							l21.addMouseListener(new MouseListener(){
+	
+								//图片点击监听
+								@Override
+								public void mouseClicked(MouseEvent e) {
+									// TODO Auto-generated method stub
+									
+									if(e.getClickCount()==2){
+										/*String weldid = "";
+										weld = labelname;
+										for(int i=0;i<listarraywe.size();i+=2){
+											if(weld.equals(listarraywe.get(i))){
+												weldid = listarraywe.get(i+1);
+											}
+										}
+										
+										if(weldtype.equals("41")){
+											img = new ImageIcon(getClass().getResource("/images/GL.png"));
+											l21.setIcon(img);
+										}else if(weldtype.equals("42")){
+											img = new ImageIcon(getClass().getResource("/images/AT.png"));
+											l21.setIcon(img);
+										}else if(weldtype.equals("43")){
+											img = new ImageIcon(getClass().getResource("/images/FR.png"));
+											l21.setIcon(img);
+										}
+										
+										JWeldButton jb = new JWeldButton(weldposition,weldtype,weld,img,sd,listarraywe,listarrayta,weldid,welderid,cc);*/
+										//jb.setVisible(true);
+										
+									}else if(e.getClickCount()==1){
+										for(int i=0;i<p2.getComponentCount();i++){
+											int afre = p2.getComponentCount();
+											Component asdf = p2.getComponent(i);
+											((JComponent) asdf).setBorder(null);
+										}
+										l21.setBorder(BorderFactory.createLineBorder(Color.RED,1));
+										weld = labelname;
+										if(listarray4.size()==0){
+											l13.setText("焊机编号:" + weld);
+											l14.setText("任务编号:");
+											if(weldtype.equals("41")){
+												label_1.setText("焊机类型:" + "MAG");
+											}else if(weldtype.equals("42")){
+												label_1.setText("焊机类型:"+"手工焊");
+											}else{
+												label_1.setText("焊机类型:"+"二氧焊机");
+											}
+										}
+										for(int i=0;i<listarray4.size();i+=8){
+											if(weld.equals(listarray4.get(i+3))){
+												l13.setText("焊机编号:" + weld);
+												l16.setText("焊机焊工:" + listarray4.get(i+2));
+												l14.setText("任务编号:" + listarray4.get(i+4));
+												int i1 = JOptionPane.showConfirmDialog(null, "已绑定任务:"+listarray4.get(i+4), "确认",JOptionPane.OK_OPTION);
+												if(i1!=0){}else{}
+												if(weldtype.equals("41")){
+													label_1.setText("焊机类型:" + "MAG");
+												}else if(weldtype.equals("42")){
+													label_1.setText("焊机类型:"+"手工焊");
+												}else{
+													label_1.setText("焊机类型:"+"二氧焊机");
+												}
+												break;
+											}else{
+												l13.setText("焊机编号:" + weld);
+												l16.setText("任务焊工:");
+												l14.setText("任务编号:");
+												if(weldtype.equals("41")){
+													label_1.setText("焊机类型:" + "MAG");
+												}else if(weldtype.equals("42")){
+													label_1.setText("焊机类型:"+"手工焊");
+												}else{
+													label_1.setText("焊机类型:"+"二氧焊机");
+												}
+											}
+										}
+									}
+									
+								}
+								@Override
+								public void mousePressed(MouseEvent e) {
+									// TODO Auto-generated method stub
+									
+								}
+								@Override
+								public void mouseReleased(MouseEvent e) {
+									// TODO Auto-generated method stub
+									
+								}
+								@Override
+								public void mouseEntered(MouseEvent e) {
+									// TODO Auto-generated method stub
+									
+								}
+								@Override
+								public void mouseExited(MouseEvent e) {
+									// TODO Auto-generated method stub
+									
+								}
+							});
+							
+							if(limit.equals("true")){
+								for(int i1=0;i1<listarray4.size();i1+=8){
+									if(labelname.equals(listarray4.get(i1+3))){
+									}
+								}
+							}
+							
+							l21.setText(labelname);
+							//l22.setText("       ");
+							
+							p2.add(l21);
+							p2.add(l22);
+						}
+					}
+				}
+				
+				sd.repaint();
+			}
+        }, 100, 30000);
 		
 	}
 
