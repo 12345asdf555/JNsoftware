@@ -29,7 +29,7 @@ class MyTask extends TimerTask{
 	}
   public MyTask(Firstpage fp) {
 	// TODO 自动生成的构造函数存根
-	  /*this.fp = fp;
+	  this.fp = fp;
 	  starcore= StarCoreFactory.GetFactory();  
          Service=starcore._InitSimple("test","123",0,0);  
          SrvGroup = (StarSrvGroupClass)Service._Get("_ServiceGroup"); 
@@ -39,7 +39,7 @@ class MyTask extends TimerTask{
  		
  	
  		
- 		Class1 = Service._ImportRawContext("csharp4","testcs.Class1",true,"");*/
+ 		Class1 = Service._ImportRawContext("csharp4","testcs.Class1",true,"");
 	}
 	protected void finalize()
 

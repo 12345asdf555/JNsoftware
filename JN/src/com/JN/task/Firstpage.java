@@ -80,7 +80,7 @@ public class Firstpage extends JFrame{
 	private String connet = "jdbc:mysql://192.168.3.231:3306/CIWJN?user=db_admin&password=PIJXmcLRa0QgOw2c&useUnicode=true&autoReconnect=true&characterEncoding=UTF8";
 	public Secondpage sp = new Secondpage();
 	public Clientconnect1 cc = new Clientconnect1(this,1);
-	public MyTask mt = new MyTask(this);
+	//public MyTask mt = new MyTask(this);
 	public String webdata;
 	private java.sql.Connection conn = null;
 	private java.sql.Statement stmt =null;
